@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta name="theme-color" content="#2D2D2D" />
+
+<head>
+    <title>DAM(Monaco)</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8;color-scheme=dark;" />
+    <link rel="stylesheet" href="./monaco.css" />
+    <link rel="manifest" href="./manifest.json" crossorigin="use-credentials" />
+    <link rel="icon" type="image/png" href="./images/icons/icon-128x128.png">
+</head>
+
+<body>
+    <dialog open id="loadingPopUp">
+        <p>Loading Editor...</p>
+        <div class="loader"></div>
+    </dialog>
+    <header>
+        <div class="editorModeArea">
+            <div>
+                <input type="radio" class="displayHide" id="control-EditorModeChange-code"
+                    name="control-EditorModeChange" value="code" checked></input>
+                <label for="control-EditorModeChange-code" class="control-iconButton"><img class="refSize"
+                        src="./icon/code.svg"></label>
+            </div>
+            <div>
+                <input type="radio" class="displayHide" id="control-EditorModeChange-diff"
+                    name="control-EditorModeChange" value="diff"></input>
+                <label for="control-EditorModeChange-diff" class="control-iconButton"><img class="refSize"
+                        src="./icon/arrows-diff.svg"></label>
+            </div>
+            <div class="alignLine"></div>
+            <div>
+                <span id="control-Reload" class="control-iconButton" style="-webkit-app-region: no-drag"><img
+                        class="refSize" src="./icon/reload.svg"></span>
+            </div>
+            <div class="alignLine"></div>
+        </div>
+
+        <div style="display:flex;position:relative;overflow: hidden;width: 100%;">
+            <div class="control-FolderFileArea">
+                <span></span>
+                <input type="checkbox" class="displayHide" id="control-dynamic-Left"></input>
+                <label for="control-dynamic-Left" class="control-iconButton"><img class="refSize"
+                        src="./icon/dynamic.svg"></label>
+                <span></span>
+                <select name="control-Folder-Left" id="control-Library-Left"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-Folder-Left" id="control-Folder-Left"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-File-Left" id="control-File-Left" class="control-FileFolder-pulldown"></select>
+                <select name="control-Version-Left" id="control-Version-Left" 
+                    class="control-FileFolder-pulldown">
+                </select>
+            </div>
+
+            <div class="control-FolderFileArea">
+                <span></span>
+                <input type="checkbox" class="displayHide" id="control-dynamic-Right"></input>
+                <label for="control-dynamic-Right" class="control-iconButton"><img class="refSize"
+                        src="./icon/dynamic.svg"></label>
+                <span></span>
+                <select name="control-Folder-Right" id="control-Library-Right"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-Folder-Right" id="control-Folder-Right"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-File-Right" id="control-File-Right" class="control-FileFolder-pulldown"></select>
+                <select name="control-Version-Right" id="control-Version-Right" class="control-FileFolder-pulldown"></select>
+            </div>
+            <div style="width: 10%;display: flex;">
+                <div style="margin: 0 0.3rem">
+                    <span id="control-FileSelectSync" class="control-iconButton hoverButton"><img class="refSize"
+                            src="./icon/link.svg"></span>
+                </div>
+                <div style="margin: 0 0.3rem" class="control-diffArea">
+                    <input type="checkbox" class="displayHide" id="control-diffExtension"></input>
+                    <label for="control-diffExtension" class="control-iconButton"><img class="refSize"
+                            src="./icon/extension.svg"></label>
+                </div>
+                <div style="margin: 0 0.3rem; display: flex;" class="control-diffArea">
+                    <input type="checkbox" class="displayHide" id="control-diffViewChange"></input>
+                    <label for="control-diffViewChange" class="control-iconButton"><img class="refSize"
+                            src="./icon/diffView.svg"></label>
+                </div>
+            </div>
+            <div id="control-subArea" class="">
+                <div class="alignLine"></div>
+                <div>
+                    <input type="checkbox" class="displayHide" id="control-extraReadOnly"></input>
+                    <label for="control-extraReadOnly" class="control-iconButton"><img class="refSize"
+                            src="./icon/edit.svg"></label>
+                </div>
+                <div>
+                    <input type="checkbox" class="displayHide" id="control-extraInsertText" checked></input>
+                    <label for="control-extraInsertText" class="control-iconButton"><img class="refSize"
+                            src="./icon/cursor-text.svg"></label>
+                </div>
+                <div>
+                    <input type="checkbox" class="displayHide" id="control-extraRuler" checked></input>
+                    <label for="control-extraRuler" class="control-iconButton"><img class="refSize"
+                            src="./icon/ruler-2.svg"></label>
+                </div>
+                <div class="alignLine"></div>
+                <div style="margin: 0 0.3rem">
+                    
+                </div>
+                <span id="control-extraTheme" class="control-iconButton hoverButton"><img class="refSize"
+                        src="./icon/palette.svg"></span>
+                <input type="checkbox" class="displayHide" id="control-initRead"></input>
+                <label for="control-initRead" class="control-iconButton"><img class="refSize"
+                        src="./icon/terminal-2.svg"></label>
+                <div class="alignLine"></div>
+                <span id="control-extraLinkFile" class="control-iconButton hoverButton"><img class="refSize"
+                        src="./icon/file-symlink.svg"></span>
+                <span style="-webkit-app-region: drag;"></span>
+                <span id="control-otherTab" class="control-iconButton hoverButton">
+                    <img class="refSize" src="./icon/navigation.svg"></img>
+                </span>
+                <div class="alignLine"></div>
+            </div>
+        </div>
+        <div>
+            <span id="control-extraButton" class="control-iconButton" style="-webkit-app-region: no-drag"><img
+                    class="refSize" src="./icon/caret-down.svg"></span>
+        </div>
+    </header>
+    <div id="main">
+        <div id="monaco-area">
+            <ul id="monaco-tab">
+            </ul>
+            <div id="monaco-code" style="border: 1px solid grey;"></div>
+            <div id="monaco-diff" style="border: 1px solid grey;"></div>
+        </div>
+        <div id="right-sideBar">
+            <div class="sidebar-mode">
+                <input type="radio" class="displayHide" id="rs-mode-file" name="rs-mode" value="file" checked></input>
+                <label for="rs-mode-file" class="control-iconButton"><img class="refSize"
+                        src="./icon/database-search.svg">File</label>
+                <input type="radio" class="displayHide" id="rs-mode-def" name="rs-mode" value="def"></input>
+                <label for="rs-mode-def" class="control-iconButton"><img class="refSize"
+                        src="./icon/code-asterix.svg">Definition</label>
+                <input type="radio" class="displayHide" id="rs-mode-setting" name="rs-mode" value="setting"></input>
+                <label for="rs-mode-setting" class="control-iconButton" style="width: 4rem;min-width: 0;"><img
+                        class="refSize" src="./icon/setting.svg"></label>
+            </div>
+            <div class="verticalLine"></div>
+            <div id="right-sideBar-contents">
+            </div>
+        </div>
+    </div>
+    <script src="./idb-keyval.js"></script>
+    <script src="./lib/min/vs/loader.js"></script>
+    <script src="./src/root.js" type="module"></script>
+</body>
+
+</html>

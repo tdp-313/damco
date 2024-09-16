@@ -1,0 +1,335 @@
+:root {
+    --backgroundColor: #2d2d2d;
+    --font-color: rgb(196, 229, 224);
+    --headerHeight: 1.3rem;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background-color: var(--backgroundColor);
+    overflow: hidden;
+    color: var(--font-color);
+    transition: 0.3s;
+    height: calc(100vh - 8px);
+    margin: 0 8px 8px 8px;
+}
+
+#main {
+    width: 100%;
+    height: calc(100% - 2rem);
+    display: flex;
+}
+
+header {
+    height: var(--headerHeight);
+    display: grid;
+    grid-template-columns: 10rem 1fr 2rem;
+    width: env(titlebar-area-width, 100%);
+    margin-bottom: 0.5rem;
+    user-select: none;
+    position: relative;
+    left: env(titlebar-area-x, 0);
+    top: env(titlebar-area-y, 0);
+    -webkit-app-region: drag;
+    padding-top: 8px;
+}
+
+header input ,header label ,header select{
+    -webkit-app-region: no-drag;
+} 
+#loadingPopUp {
+    top: 30%;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader {
+    border: 0.5rem solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 0.5rem solid #3498db;
+    width: 2rem;
+    height: 2rem;
+    animation: spin 2s linear infinite;
+    margin-left: 0.5rem;
+}
+
+header .editorModeArea {
+    display: grid;
+    grid-template-columns: 3rem 3rem 1rem 2rem 1rem;
+}
+
+#monaco-area {
+    width: 100%;
+    height: calc(100% - 1.5rem);
+    position: relative;
+    transition: 0.3s;
+}
+
+.monaco-area-sidebar-open {
+    width: calc(100% - max(25%, 20rem)) !important;
+}
+
+.monaco-area-tab-hidden {
+    height: 100% !important;
+}
+
+#monaco-code,
+#monaco-diff {
+    height: 100%;
+    width: 100%;
+}
+
+#monaco-tab {
+    height: 1.5rem;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+.tab-libnameText {
+    font-size: 0.6rem;
+    overflow: hidden;
+    padding-left: 0.2rem;
+    align-items: flex-end;
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.tab-libnameArea {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 50% 50%;
+}
+
+.tab-pgmName {
+    grid-row: 1/2;
+    grid-column: 1;
+}
+
+.tab-versionInfo {
+    font-size: 0.6rem;
+    grid-row: 1;
+    grid-column: 2;
+    overflow: hidden;
+    padding-left: 30%;
+    display: flex;
+    justify-content: flex-end;
+}
+.triangle-left {
+    display: inline-block;
+    border-style: solid;
+    border-width: 0.5rem 1rem 0.5rem 0;
+    border-color: transparent #000 transparent transparent;
+}
+
+.displayHide {
+    display: none !important;
+}
+
+.alignLine {
+    background-color: var(--font-color);
+    width: 0.15rem;
+    height: 100%;
+
+    margin: auto;
+}
+
+.verticalLine {
+    background-color: var(--font-color);
+    width: 100%;
+    height: 0.15rem;
+    margin: 0.2rem auto;
+}
+
+.refSize {
+    height: var(--headerHeight);
+}
+
+/***********************/
+.hoverButton {
+    transition: 0.3s;
+}
+
+header input[type="radio"]:checked+label,
+.hoverButton:hover,
+#control-subArea input[type="checkbox"]:checked+label,
+.control-diffArea input[type="checkbox"]:checked+label,
+#right-sideBar input[type="radio"]:checked+label,
+#monaco-tab input[type="radio"]:checked+label,
+#sidebar-filter-root input[type="checkbox"]:checked+label,
+.control-FolderFileArea input[type="checkbox"]:checked+label {
+    background-color: rgba(255, 174, 0, 0.35)
+}
+
+.control-FolderFileArea input[type="checkbox"]:checked~select {
+    border: solid;
+    border-color: goldenrod;
+}
+
+.control-iconButton {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    border-radius: .3rem;
+    transition: 0.3s;
+    user-select: none;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+#control-Reload:active {
+    rotate: 360deg;
+}
+
+.control-FolderFileArea {
+    width: 45%;
+    display: grid;
+    grid-template-columns: 0.4rem 2rem 0.4rem 0.35fr 0.3fr 0.35fr 2.5rem;
+    justify-items: center;
+}
+
+.control-FolderFileArea select {
+    width: 100%;
+}
+
+#control-subArea {
+    position: absolute;
+    background-color: var(--backgroundColor);
+    right: 0;
+    top: 0;
+    width: 55%;
+    display: grid;
+    grid-template-columns: 0.5rem 2rem 2rem 2rem 0.5rem 2rem 2rem 2rem 0.5rem 2rem 1fr 2rem 0.5rem;
+    transition: 0.3s ease;
+}
+
+#control-subArea.close {
+    top: 2rem;
+}
+
+#right-sideBar {
+    width: max(25%, 20rem);
+    margin-left: 9px;
+    height: calc(100% - 3rem);
+    position: absolute;
+    transition: 0.3s;
+    right: calc(-1 * max(25%, 20rem));
+}
+
+.r-side-open {
+    right: 0 !important;
+}
+
+#right-sideBar .sidebar-mode {
+    display: flex;
+    width: calc(100% - 0.4rem * 2 - 0.2rem * 2);
+    align-items: center;
+    height: 2.5rem;
+    padding: 0.4rem;
+    border: 0.2rem;
+}
+
+#right-sideBar .sidebar-mode label {
+    align-items: center;
+    min-width: 5rem;
+    margin: auto;
+}
+
+#right-sideBar-contents {
+    height: calc(100% - 3.7rem);
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+#right-sideBar-contents .sidebar-contents {
+    display: grid;
+    grid-template-columns: 2rem 6rem 1fr;
+    grid-template-rows: 1.2rem 0.6rem;
+    align-items: center;
+    padding: 0.2rem;
+    margin-top: 0.2rem;
+    border-left: 0.2rem solid var(--font-color);
+}
+
+#right-sideBar-contents::-webkit-scrollbar {
+    display: block;
+}
+
+#right-sideBar-contents::-webkit-scrollbar-thumb {
+    background: #aeaeae;
+    border-radius: 0.3rem;
+}
+
+#monaco-tab .tab-design {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 0.3rem;
+    width: 10rem;
+    height: 1.5rem;
+    border: 2px solid var(--font-color);
+    overflow: hidden;
+    word-wrap: normal;
+}
+
+.tabLayout {
+    display: block;
+}
+
+.output_border {
+    border-color: brown !important;
+}
+
+.update_border {
+    border-color: yellowgreen !important;
+}
+
+.input_border {
+    border-color: skyblue !important;
+}
+
+#sidebar-filter-root {
+    display: flex;
+    flex-direction: row;
+    grid-template-columns: 0,3rem;
+    grid-template-rows: 1rem;
+}
+
+#sidebar-filter-root input[type="checkbox"] {
+    display: none;
+}
+
+#sidebar-filter-root label {
+    width: 2.5rem;
+    height: 1rem;
+    padding: 0.2rem;
+    border: #aeaeae 0.1rem solid;
+    margin: 0.2rem 0.3rem;
+    align-items: center;
+}
+#sidebar-filter-count {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
