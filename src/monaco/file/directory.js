@@ -1,7 +1,7 @@
 export const Directory_Handle_RegisterV2 = async (name, isNew = false, rw_mode = 'readwrite') => {
     // Indexed Database から FileSystemDirectoryHandle オブジェクトを取得
     if (typeof linkStatus[name] === 'undefined') {
-        linkStatus[name] = new linkStatusClass;
+        linkStatus[name] = new linkStatusClass();
     }
     linkStatus[name].handle = await idbKeyval.get(name);
     if (linkStatus[name].handle) {
@@ -25,8 +25,11 @@ export const Directory_Handle_RegisterV2 = async (name, isNew = false, rw_mode =
     } else {
         // ディレクトリ選択ダイアログを表示
         console.warn(name + ' : not Registered');
-        return ('NG');
-        //linkStatus[name].handle = await window.showDirectoryPicker();
+        try {
+            linkStatus[name].handle = await window.showDirectoryPicker();
+        } catch (error) {
+            console.warn(error)
+        }
     }
     linkStatus[name].ishandle = true;
     // FileSystemDirectoryHandle オブジェクトを Indexed Database に保存
