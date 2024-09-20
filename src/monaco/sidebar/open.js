@@ -1,8 +1,3 @@
-import upIcon from "../../../icon/caret-up.svg"
-import rightIcon from "../../../icon/caret-right.svg"
-import leftIcon from "../../../icon/caret-left.svg"
-import downIcon from "../../../icon/caret-down.svg"
-
 let useFileList_Open = false;
 let extraControl = false;
 
@@ -35,6 +30,10 @@ export const sidebarEventStart = () => {
 export const extraControlClick = (open, mode = "") => {
     const control_extraArea = document.getElementById('control-extraButton');
     let img = control_extraArea.querySelector("img");
+    const upIcon = "./icon/caret-up.svg";
+    const rightIcon = "./icon/caret-right.svg";
+    const leftIcon = "./icon/caret-left.svg";
+    const downIcon = "./icon/caret-down.svg";
     const control_extra = document.getElementById('control-subArea');
     const sidebar = document.getElementById('right-sideBar');
     const mainArea = document.getElementById('monaco-area');

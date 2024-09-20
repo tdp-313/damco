@@ -8,7 +8,6 @@ import { regReference } from "./Provider/reference.js";
 import { regCodeLens } from "./Provider/codeLens.js";
 import { regFolding } from "./Provider/folding.js";
 import { regHover } from "./Provider/hover.js";
-import * as monaco from 'monaco-editor';
 
 export const monacoLang = async () => {
     monaco.languages.register({ id: 'rpg' });

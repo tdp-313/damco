@@ -1,8 +1,5 @@
 import { Setting } from "../../setting.js";
 import { diffEditor } from "../monaco_root.js";
-import * as monaco from 'monaco-editor';
-import darkTheme from "./dark_1.json"
-import whiteTheme from "./white.json"
 //https://github.com/brijeshb42/monaco-themes/
 
 let $metaColor = document.querySelector('meta[name="theme-color"]');
@@ -56,11 +53,11 @@ export const themeApply = async (themeState) => {
     case 1:
       //white
       theme_whiteSetting();
-      monaco.editor.defineTheme('myTheme', whiteTheme);
+      monaco.editor.defineTheme('myTheme', await fetchJSON_Read("./src/monaco/theme/white.json"));
       break;
     default:
       theme_blackSetting();
-      monaco.editor.defineTheme('myTheme', darkTheme);
+      monaco.editor.defineTheme('myTheme', await fetchJSON_Read("./src/monaco/theme/dark_1.json"));
       themeState = 0;
   }
   Setting.setTheme = themeState;

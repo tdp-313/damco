@@ -12,10 +12,10 @@ import { fileTypeChange } from "../file/read.js";
 
 export let refListFile = {};
 let firstEditorLoading = false;
-let a = 0;
+
 export const refDefStart = async (model) => {
     normalRefDef.clear();
-    console.log(a++)
+
     const libFileName = model.uri.path.split('/').filter(str => str !== '');
 
     if (libFileName.length !== 3) {

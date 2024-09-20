@@ -5,7 +5,6 @@ import { tip_dds } from "../syntax/dds_text.js";
 import { tip_rpg } from "../syntax/rpg_indent_text.js";
 import { normalRefDef } from "../../ref/other.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
-import * as monaco from 'monaco-editor';
 
 export const regHover = () => {
     monaco.languages.registerHoverProvider('rpg-indent', {

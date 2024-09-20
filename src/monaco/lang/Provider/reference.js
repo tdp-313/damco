@@ -1,7 +1,5 @@
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
 import { normalRefDef } from "../../ref/other.js";
-import * as monaco from 'monaco-editor';
-
 
 export const regReference = () => {
     monaco.languages.registerReferenceProvider('rpg-indent', {

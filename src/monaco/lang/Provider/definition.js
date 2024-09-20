@@ -3,7 +3,6 @@ import { normalRefDef } from "../../ref/other.js";
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
 import { sourceRefDef } from "../../ref/other.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
-import * as monaco from 'monaco-editor';
 
 export const regDefinition = () => {
     monaco.languages.registerDefinitionProvider('rpg-indent', {

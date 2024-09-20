@@ -1,11 +1,9 @@
-import { get, set } from 'idb-keyval';
-
 export const Directory_Handle_RegisterV2 = async (name, isNew = false, rw_mode = 'readwrite') => {
     // Indexed Database から FileSystemDirectoryHandle オブジェクトを取得
     if (typeof linkStatus[name] === 'undefined') {
         linkStatus[name] = new linkStatusClass();
     }
-    linkStatus[name].handle = await get(name);
+    linkStatus[name].handle = await idbKeyval.get(name);
     if (linkStatus[name].handle) {
         if (isNew) {
             linkStatus[name].handle = await window.showDirectoryPicker();
@@ -35,7 +33,7 @@ export const Directory_Handle_RegisterV2 = async (name, isNew = false, rw_mode =
     }
     linkStatus[name].ishandle = true;
     // FileSystemDirectoryHandle オブジェクトを Indexed Database に保存
-    await set(name, linkStatus[name].handle);
+    await idbKeyval.set(name, linkStatus[name].handle);
     return ('OK');
 }
 

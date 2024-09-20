@@ -1,5 +1,3 @@
-import * as monaco from 'monaco-editor';
-
 export const sourceRefDefStart = async (refModel, refDef) => {
     refDef.clear();
     var lineCount = await refModel.getLineCount();

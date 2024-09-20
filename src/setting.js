@@ -1,9 +1,7 @@
-import { get, set } from 'idb-keyval';
-
 const SETTING_IDB = "monaco-setting";
 
 export const SettingLoad = async () => {
-    let loadData = await get(SETTING_IDB);
+    let loadData = await idbKeyval.get(SETTING_IDB);
     if (loadData) {
         Setting = new localSetting(loadData);
     } else {
@@ -78,7 +76,7 @@ class localSetting {
     }
 
     save() {
-        set(SETTING_IDB, this);
+        idbKeyval.set(SETTING_IDB, this);
     }
 }
 

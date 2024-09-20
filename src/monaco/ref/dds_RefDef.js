@@ -1,5 +1,3 @@
-import * as monaco from 'monaco-editor';
-
 export const dds_DefinitionList = async (model, map, refName, handle, use, reflist) => {
     const createDescription = async (start_row, i, model, max, loopCheck = 0) => {
         let sp_op_full = start_row.substring(44, 80).trim();

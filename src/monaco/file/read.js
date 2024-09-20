@@ -92,7 +92,7 @@ export const fileReadBoth = async () => {
     history.register('left', new historyItemLayout(lang[0].model));
     history.register('right', new historyItemLayout(lang[2].model));
     await textModelEditorApply(lang[0].model, lang[1].model, lang[2].model);
-    //rulerChange(document.getElementById('control-extraRuler').checked);
+    rulerChange(document.getElementById('control-extraRuler').checked);
     await tabs_add(lang[0].model, false);
 }
 
