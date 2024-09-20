@@ -1,4 +1,5 @@
 import { normalEditor } from "../../monaco_root.js";
+import * as monaco from 'monaco-editor';
 
 export const regCodeLens = () => {
     let nowork = "";

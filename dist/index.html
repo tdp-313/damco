@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta name="theme-color" content="#2D2D2D" />
+    <title>DAM(Monaco)</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8;color-scheme=dark;" />
+    <link rel="manifest" href="/assets/manifest-BD2j3SFW.json" crossorigin="use-credentials" />
+    <link rel="icon" type="image/png" href="/assets/icon-128x128-D4xhRZl-.png">
+  <script type="module" crossorigin src="/assets/index-BFd9xi2I.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DCYec1fh.css">
+</head>
+
+<body>
+    <dialog open id="loadingPopUp">
+        <p>Loading Editor...</p>
+        <div class="loader"></div>
+    </dialog>
+    <header>
+        <div class="editorModeArea">
+            <div>
+                <input type="radio" class="displayHide" id="control-EditorModeChange-code"
+                    name="control-EditorModeChange" value="code" checked></input>
+                <label for="control-EditorModeChange-code" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-code'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M7%208l-4%204l4%204'%20/%3e%3cpath%20d='M17%208l4%204l-4%204'%20/%3e%3cpath%20d='M14%204l-4%2016'%20/%3e%3c/svg%3e"></label>
+            </div>
+            <div>
+                <input type="radio" class="displayHide" id="control-EditorModeChange-diff"
+                    name="control-EditorModeChange" value="diff"></input>
+                <label for="control-EditorModeChange-diff" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-arrows-diff'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M11%2016h10'%20/%3e%3cpath%20d='M11%2016l4%204'%20/%3e%3cpath%20d='M11%2016l4%20-4'%20/%3e%3cpath%20d='M13%208h-10'%20/%3e%3cpath%20d='M13%208l-4%204'%20/%3e%3cpath%20d='M13%208l-4%20-4'%20/%3e%3c/svg%3e"></label>
+            </div>
+            <div class="alignLine"></div>
+            <div>
+                <span id="control-Reload" class="control-iconButton" style="-webkit-app-region: no-drag"><img
+                        class="refSize" src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-reload'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M19.933%2013.041a8%208%200%201%201%20-9.925%20-8.788c3.899%20-1%207.935%201.007%209.425%204.747'%20/%3e%3cpath%20d='M20%204v5h-5'%20/%3e%3c/svg%3e"></span>
+            </div>
+            <div class="alignLine"></div>
+        </div>
+
+        <div style="display:flex;position:relative;overflow: hidden;width: 100%;">
+            <div class="control-FolderFileArea">
+                <span></span>
+                <input type="checkbox" class="displayHide" id="control-dynamic-Left"></input>
+                <label for="control-dynamic-Left" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24'%20viewBox='0%20-960%20960%20960'%20width='24'%3e%3cpath%20d='M160-520q-33%200-56.5-23.5T80-600v-120q0-33%2023.5-56.5T160-800h360v280H160Zm0-80h280v-120H160v120Zm0%20440q-33%200-56.5-23.5T80-240v-120q0-33%2023.5-56.5T160-440h440v280H160Zm0-80h360v-120H160v120Zm520%2080v-360h-80v-280h280l-80%20200h80L680-160ZM190-270h60v-60h-60v60Zm0-360h60v-60h-60v60Zm-30%2030v-120%20120Zm0%20360v-120%20120Z'/%3e%3c/svg%3e"></label>
+                <span></span>
+                <select name="control-Folder-Left" id="control-Library-Left"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-Folder-Left" id="control-Folder-Left"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-File-Left" id="control-File-Left" class="control-FileFolder-pulldown"></select>
+                <select name="control-Version-Left" id="control-Version-Left" 
+                    class="control-FileFolder-pulldown">
+                </select>
+            </div>
+
+            <div class="control-FolderFileArea">
+                <span></span>
+                <input type="checkbox" class="displayHide" id="control-dynamic-Right"></input>
+                <label for="control-dynamic-Right" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24'%20viewBox='0%20-960%20960%20960'%20width='24'%3e%3cpath%20d='M160-520q-33%200-56.5-23.5T80-600v-120q0-33%2023.5-56.5T160-800h360v280H160Zm0-80h280v-120H160v120Zm0%20440q-33%200-56.5-23.5T80-240v-120q0-33%2023.5-56.5T160-440h440v280H160Zm0-80h360v-120H160v120Zm520%2080v-360h-80v-280h280l-80%20200h80L680-160ZM190-270h60v-60h-60v60Zm0-360h60v-60h-60v60Zm-30%2030v-120%20120Zm0%20360v-120%20120Z'/%3e%3c/svg%3e"></label>
+                <span></span>
+                <select name="control-Folder-Right" id="control-Library-Right"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-Folder-Right" id="control-Folder-Right"
+                    class="control-FileFolder-pulldown"></select>
+                <select name="control-File-Right" id="control-File-Right" class="control-FileFolder-pulldown"></select>
+                <select name="control-Version-Right" id="control-Version-Right" class="control-FileFolder-pulldown"></select>
+            </div>
+            <div style="width: 10%;display: flex;">
+                <div style="margin: 0 0.3rem">
+                    <span id="control-FileSelectSync" class="control-iconButton hoverButton"><img class="refSize"
+                            src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-link'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M9%2015l6%20-6'%20/%3e%3cpath%20d='M11%206l.463%20-.536a5%205%200%200%201%207.071%207.072l-.534%20.464'%20/%3e%3cpath%20d='M13%2018l-.397%20.534a5.068%205.068%200%200%201%20-7.127%200a4.972%204.972%200%200%201%200%20-7.071l.524%20-.463'%20/%3e%3c/svg%3e"></span>
+                </div>
+                <div style="margin: 0 0.3rem" class="control-diffArea">
+                    <input type="checkbox" class="displayHide" id="control-diffExtension"></input>
+                    <label for="control-diffExtension" class="control-iconButton"><img class="refSize"
+                            src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24px'%20viewBox='0%20-960%20960%20960'%20width='24px'%3e%3cpath%20d='m720-80-57-57%2064-63H560v-80h167l-63-64%2056-56%20160%20160L720-80Zm-520-40q-33%200-56.5-23.5T120-200v-160h80v160h160v80H200Zm-80-480v-160q0-33%2023.5-56.5T200-840h160v80H200v160h-80Zm640%200v-160H600v-80h160q33%200%2056.5%2023.5T840-760v160h-80Z'/%3e%3c/svg%3e"></label>
+                </div>
+                <div style="margin: 0 0.3rem; display: flex;" class="control-diffArea">
+                    <input type="checkbox" class="displayHide" id="control-diffViewChange"></input>
+                    <label for="control-diffViewChange" class="control-iconButton"><img class="refSize"
+                            src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24px'%20viewBox='0%20-960%20960%20960'%20width='24px'%3e%3cpath%20d='M40-160v-640h400v160h-80v-80H120v480h240v-80h80v160H40Zm480%200v-160h80v80h80v80H520Zm240%200v-80h80v-80h80v160H760ZM520-640v-160h160v80h-80v80h-80Zm320%200v-80h-80v-80h160v160h-80ZM120-240v-480%20480Zm560-80-56-56%2063-64H240v-80h447l-63-64%2056-56%20160%20160-160%20160Z'/%3e%3c/svg%3e"></label>
+                </div>
+            </div>
+            <div id="control-subArea" class="">
+                <div class="alignLine"></div>
+                <div>
+                    <input type="checkbox" class="displayHide" id="control-extraReadOnly"></input>
+                    <label for="control-extraReadOnly" class="control-iconButton"><img class="refSize"
+                            src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-edit'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M7%207h-1a2%202%200%200%200%20-2%202v9a2%202%200%200%200%202%202h9a2%202%200%200%200%202%20-2v-1'%20/%3e%3cpath%20d='M20.385%206.585a2.1%202.1%200%200%200%20-2.97%20-2.97l-8.415%208.385v3h3l8.385%20-8.415z'%20/%3e%3cpath%20d='M16%205l3%203'%20/%3e%3c/svg%3e"></label>
+                </div>
+                <div>
+                    <input type="checkbox" class="displayHide" id="control-extraInsertText" checked></input>
+                    <label for="control-extraInsertText" class="control-iconButton"><img class="refSize"
+                            src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-cursor-text'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M10%2012h4'%20/%3e%3cpath%20d='M9%204a3%203%200%200%201%203%203v10a3%203%200%200%201%20-3%203'%20/%3e%3cpath%20d='M15%204a3%203%200%200%200%20-3%203v10a3%203%200%200%200%203%203'%20/%3e%3c/svg%3e"></label>
+                </div>
+                <div>
+                    <input type="checkbox" class="displayHide" id="control-extraRuler" checked></input>
+                    <label for="control-extraRuler" class="control-iconButton"><img class="refSize"
+                            src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-ruler-2'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M17%203l4%204l-14%2014l-4%20-4z'%20/%3e%3cpath%20d='M16%207l-1.5%20-1.5'%20/%3e%3cpath%20d='M13%2010l-1.5%20-1.5'%20/%3e%3cpath%20d='M10%2013l-1.5%20-1.5'%20/%3e%3cpath%20d='M7%2016l-1.5%20-1.5'%20/%3e%3c/svg%3e"></label>
+                </div>
+                <div class="alignLine"></div>
+                <div style="margin: 0 0.3rem">
+                    
+                </div>
+                <span id="control-extraTheme" class="control-iconButton hoverButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-palette'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M12%2021a9%209%200%200%201%200%20-18c4.97%200%209%203.582%209%208c0%201.06%20-.474%202.078%20-1.318%202.828c-.844%20.75%20-1.989%201.172%20-3.182%201.172h-2.5a2%202%200%200%200%20-1%203.75a1.3%201.3%200%200%201%20-1%202.25'%20/%3e%3cpath%20d='M8.5%2010.5m-1%200a1%201%200%201%200%202%200a1%201%200%201%200%20-2%200'%20/%3e%3cpath%20d='M12.5%207.5m-1%200a1%201%200%201%200%202%200a1%201%200%201%200%20-2%200'%20/%3e%3cpath%20d='M16.5%2010.5m-1%200a1%201%200%201%200%202%200a1%201%200%201%200%20-2%200'%20/%3e%3c/svg%3e"></span>
+                <input type="checkbox" class="displayHide" id="control-initRead"></input>
+                <label for="control-initRead" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-terminal-2'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M8%209l3%203l-3%203'%20/%3e%3cpath%20d='M13%2015l3%200'%20/%3e%3cpath%20d='M3%204m0%202a2%202%200%200%201%202%20-2h14a2%202%200%200%201%202%202v12a2%202%200%200%201%20-2%202h-14a2%202%200%200%201%20-2%20-2z'%20/%3e%3c/svg%3e"></label>
+                <div class="alignLine"></div>
+                <span id="control-extraLinkFile" class="control-iconButton hoverButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-file-symlink'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M4%2021v-4a3%203%200%200%201%203%20-3h5'%20/%3e%3cpath%20d='M9%2017l3%20-3l-3%20-3'%20/%3e%3cpath%20d='M14%203v4a1%201%200%200%200%201%201h4'%20/%3e%3cpath%20d='M5%2011v-6a2%202%200%200%201%202%20-2h7l5%205v11a2%202%200%200%201%20-2%202h-9.5'%20/%3e%3c/svg%3e"></span>
+                <span style="-webkit-app-region: drag;"></span>
+                <span id="control-otherTab" class="control-iconButton hoverButton">
+                    <img class="refSize" src="data:image/svg+xml,%3c?xml%20version='1.0'%20?%3e%3csvg%20width='800px'%20height='800px'%20viewBox='0%200%2024%2024'%20xmlns='http://www.w3.org/2000/svg'%3e%3ctitle/%3e%3cpolyline%20fill='none'%20points='21.5%202.5%202.5%2010.2%209.6%2014.4%2013.8%2021.5%2021.5%202.5'%20stroke='%23000000'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='2'/%3e%3c/svg%3e"></img>
+                </span>
+                <div class="alignLine"></div>
+            </div>
+        </div>
+        <div>
+            <span id="control-extraButton" class="control-iconButton" style="-webkit-app-region: no-drag"><img
+                    class="refSize" src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-caret-down'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M6%2010l6%206l6%20-6h-12'%20/%3e%3c/svg%3e"></span>
+        </div>
+    </header>
+    <div id="main">
+        <div id="monaco-area">
+            <ul id="monaco-tab">
+            </ul>
+            <div id="monaco-code" style="border: 1px solid grey;"></div>
+            <div id="monaco-diff" style="border: 1px solid grey;"></div>
+        </div>
+        <div id="right-sideBar">
+            <div class="sidebar-mode">
+                <input type="radio" class="displayHide" id="rs-mode-file" name="rs-mode" value="file" checked></input>
+                <label for="rs-mode-file" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-database-search'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M4%206c0%201.657%203.582%203%208%203s8%20-1.343%208%20-3s-3.582%20-3%20-8%20-3s-8%201.343%20-8%203'%20/%3e%3cpath%20d='M4%206v6c0%201.657%203.582%203%208%203m8%20-3.5v-5.5'%20/%3e%3cpath%20d='M4%2012v6c0%201.657%203.582%203%208%203'%20/%3e%3cpath%20d='M18%2018m-3%200a3%203%200%201%200%206%200a3%203%200%201%200%20-6%200'%20/%3e%3cpath%20d='M20.2%2020.2l1.8%201.8'%20/%3e%3c/svg%3e">File</label>
+                <input type="radio" class="displayHide" id="rs-mode-def" name="rs-mode" value="def"></input>
+                <label for="rs-mode-def" class="control-iconButton"><img class="refSize"
+                        src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20class='icon%20icon-tabler%20icon-tabler-code-asterix'%20width='24'%20height='24'%20viewBox='0%200%2024%2024'%20stroke-width='2'%20stroke='currentColor'%20fill='none'%20stroke-linecap='round'%20stroke-linejoin='round'%3e%3cpath%20stroke='none'%20d='M0%200h24v24H0z'%20fill='none'/%3e%3cpath%20d='M6%2019a2%202%200%200%201%20-2%20-2v-4l-1%20-1l1%20-1v-4a2%202%200%200%201%202%20-2'%20/%3e%3cpath%20d='M12%2011.875l3%20-1.687'%20/%3e%3cpath%20d='M12%2011.875v3.375'%20/%3e%3cpath%20d='M12%2011.875l-3%20-1.687'%20/%3e%3cpath%20d='M12%2011.875l3%201.688'%20/%3e%3cpath%20d='M12%208.5v3.375'%20/%3e%3cpath%20d='M12%2011.875l-3%201.688'%20/%3e%3cpath%20d='M18%2019a2%202%200%200%200%202%20-2v-4l1%20-1l-1%20-1v-4a2%202%200%200%200%20-2%20-2'%20/%3e%3c/svg%3e">Definition</label>
+                <input type="radio" class="displayHide" id="rs-mode-setting" name="rs-mode" value="setting"></input>
+                <label for="rs-mode-setting" class="control-iconButton" style="width: 4rem;min-width: 0;"><img
+                        class="refSize" src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20height='24'%20viewBox='0%20-960%20960%20960'%20width='24'%3e%3cpath%20d='m370-80-16-128q-13-5-24.5-12T307-235l-119%2050L78-375l103-78q-1-7-1-13.5v-27q0-6.5%201-13.5L78-585l110-190%20119%2050q11-8%2023-15t24-12l16-128h220l16%20128q13%205%2024.5%2012t22.5%2015l119-50%20110%20190-103%2078q1%207%201%2013.5v27q0%206.5-2%2013.5l103%2078-110%20190-118-50q-11%208-23%2015t-24%2012L590-80H370Zm70-80h79l14-106q31-8%2057.5-23.5T639-327l99%2041%2039-68-86-65q5-14%207-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99%2042q-22-23-48.5-38.5T533-694l-13-106h-79l-14%20106q-31%208-57.5%2023.5T321-633l-99-41-39%2068%2086%2064q-5%2015-7%2030t-2%2032q0%2016%202%2031t7%2030l-86%2065%2039%2068%2099-42q22%2023%2048.5%2038.5T427-266l13%20106Zm42-180q58%200%2099-41t41-99q0-58-41-99t-99-41q-59%200-99.5%2041T342-480q0%2058%2040.5%2099t99.5%2041Zm-2-140Z'/%3e%3c/svg%3e"></label>
+            </div>
+            <div class="verticalLine"></div>
+            <div id="right-sideBar-contents">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

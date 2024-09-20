@@ -1,3 +1,5 @@
+import * as monaco from 'monaco-editor';
+
 export const regFolding = () => {
     monaco.languages.registerFoldingRangeProvider('rpg-indent', {
         provideFoldingRanges: function (model, context, token) {

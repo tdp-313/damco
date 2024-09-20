@@ -5,6 +5,7 @@ import { isFileSelectSync } from "../header/header_button.js";
 import { fileReadBoth, fileTypeGet, fileReadBothModel } from "./read.js";
 import { modelChange } from "../textmodel.js";
 import { Setting } from "../../setting.js";
+import * as monaco from 'monaco-editor';
 
 
 export let fileListHandleSet = {};
@@ -92,7 +93,7 @@ export const pullDownCreate = async (target = 'All', part = "All") => {
         }
         if (partA.indexOf("Version") !== -1) {
             history.reset(targetA[i].toLowerCase());
-            await history.pullDownCreate(targetA[i].toLowerCase(), UsingHandle[targetA[i]].handle.name, LibLeft.value, FolderLeft.value, FileLeft.value);
+            history.pullDownCreate(targetA[i].toLowerCase(), UsingHandle[targetA[i]].handle.name, LibLeft.value, FolderLeft.value, FileLeft.value);
         }
     }
 }

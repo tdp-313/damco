@@ -1,4 +1,6 @@
 import { normalEditor, diffEditor } from "./monaco_root.js";
+import * as monaco from 'monaco-editor';
+import { refleshTextModel } from "./reflesh.js";
 
 export const createURI = async (rootHandleName, libName, fileName, memberName, time) => {
     let path = "file://" + encodeURIComponent(rootHandleName);
@@ -6,7 +8,7 @@ export const createURI = async (rootHandleName, libName, fileName, memberName, t
     path = path + '/' + encodeURIComponent(fileName);
     path = path + '/' + encodeURIComponent(memberName);
     path = path + '?timestamp=' + encodeURIComponent(time);
-    return (await monaco.Uri.parse(path));
+    return (monaco.Uri.parse(path));
 }
 
 const rpgEditorOption = () => {
@@ -21,7 +23,7 @@ const rpgEditorOption = () => {
 }
 
 export const modelChange = async (text, lang, uri) => {
-    let model = await monaco.editor.getModel(uri);
+    let model = monaco.editor.getModel(uri);
     
     if (model) {
         if (text !== 'N/A') {
@@ -35,7 +37,7 @@ export const modelChange = async (text, lang, uri) => {
 }
 
 export const textModelEditorApply = async (model, model1, model2) => {
-
+    refleshTextModel();
     document.title = model.uri.path;
     //normalEditor 
     normalEditor.setModel(model);
