@@ -179,7 +179,4 @@ export class hisotoryPullodown {
     }
 }
 
-
-
 export const history = new hisotoryPullodown();
-

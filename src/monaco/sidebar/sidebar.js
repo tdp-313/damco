@@ -7,6 +7,8 @@ import { UseIO_Layout } from "../ref/other.js";
 import { libraryListSave } from "../../setting.js";
 import { fileTypeGet2 } from "../file/read.js";
 
+import databese_search_svg from "../../icon/database-search.svg"
+
 const sidebar_mode_file = document.getElementById('rs-mode-file');
 
 sidebar_mode_file.addEventListener('click', async (event) => {
@@ -34,7 +36,7 @@ export const createUseFileList = async (refDef) => {
         if (use.io.size === 0) {
             let temp = "";
             temp += '<div id="sidebar-contents-' + fileName + ' " class="sidebar-contents hoverButton">';
-            temp += '<img  class="refSize control-iconButton" style="filter: ' + filter + ';" src="./icon/' + langIcon + '.svg">';
+            temp += '<img  class="refSize control-iconButton" style="filter: ' + filter + ';" src="' + langIcon + '">';
             temp += '<span class="sidebar-filename">' + fileName + '</span>';
             temp += '<span style="overflow: overlay; text-wrap: nowrap;">' + desc + '</span>';
             temp += '<span style="font-size: 0.8rem; padding-left: 2rem;">' + library + '</span>';
@@ -63,7 +65,7 @@ export const createUseFileList = async (refDef) => {
 
             let temp = "";
             temp += '<div id="sidebar-contents-' + fileName + ' " class="sidebar-contents hoverButton ' + border_class + '">';
-            temp += '<img  class="refSize control-iconButton" style="filter: ' + filter + ';" src="./icon/' + langIcon + '.svg">';
+            temp += '<img  class="refSize control-iconButton" style="filter: ' + filter + ';" src="' + langIcon + '">';
             temp += '<span class="sidebar-filename">' + fileName + '</span>';
             temp += '<span style="overflow: overlay; text-wrap: nowrap;">' + desc + '</span>';
             temp += '<span style="font-size: 0.8rem; justly-contents: center;">' + useStr + '</span>';
@@ -77,9 +79,9 @@ export const createUseFileList = async (refDef) => {
         //Filter Element Create
         html += '<div id="sidebar-filter-root">';
         if (filter.Ref) {
-            html += '<span id="sidebar-filter"><input id="sidebar-filter-Ref" type="checkbox" checked/><label id="sidebar-filter" class="control-iconButton" for="sidebar-filter-Ref"><img id="sidebar-filter-svg" class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="./icon/database-search.svg" ></label></span>';
+            html += '<span id="sidebar-filter"><input id="sidebar-filter-Ref" type="checkbox" checked/><label id="sidebar-filter" class="control-iconButton" for="sidebar-filter-Ref"><img id="sidebar-filter-svg" class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="' + databese_search_svg + '" ></label></span>';
         } else {
-            html += '<span id="sidebar-filter"><input id="sidebar-filter-Ref" type="checkbox"/><label id="sidebar-filter" class="control-iconButton" for="sidebar-filter-Ref"><img id="sidebar-filter-svg" class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="./icon/database-search.svg" ></label></span>';
+            html += '<span id="sidebar-filter"><input id="sidebar-filter-Ref" type="checkbox"/><label id="sidebar-filter" class="control-iconButton" for="sidebar-filter-Ref"><img id="sidebar-filter-svg" class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="' + databese_search_svg + '" ></label></span>';
         }
         if (filter.Input) {
             html += '<span id="sidebar-filter"><input id="sidebar-filter-Input" type="checkbox" checked/><label id="sidebar-filter" class="control-iconButton" for="sidebar-filter-Input">I</label></span>';
@@ -115,7 +117,7 @@ export const createUseFileList = async (refDef) => {
                 if (langType === 'dsp') {
                     maxFile++;
                     existFile.push(key);
-                    filterContents.push(get_template(key, value.s_description, value.location.uri.path,get_langIcon(langType), filter_style, value.use));
+                    filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, value.use));
                 }
             }
         });

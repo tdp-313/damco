@@ -1,3 +1,5 @@
+import * as monaco from 'monaco-editor';
+
 export const pgm_nameGet = async (model, map, refName, handle, use) => {
     let lineCount = model.getLineCount();
     let fileDescription = "CALL PGM";

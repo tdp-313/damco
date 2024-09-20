@@ -2,6 +2,14 @@ import { fileTypeGet2 } from "./monaco/file/read.js";
 import { refDefStart } from "./monaco/ref/init.js";
 import { getNormalEditor_Model, getNormalEditor_View, setNormalEditor_Model, setNormalEditor_View } from "./monaco/textmodel.js";
 import { themeCSS_FilterStyle } from "./monaco/theme/theme.js";
+import x_svg from "./icon/x.svg"
+import print_svg from "./icon/print.svg"
+import database_svg from "./icon/database.svg"
+import databese_search_svg from "./icon/database-search.svg"
+import terminal_2_svg from "./icon/terminal-2.svg"
+import letter_r_svg from "./icon/letter-r.svg"
+import hash_svg from "./icon/hash.svg"
+import code_asterix_svg from "./icon/code-asterix.svg"
 
 export const tabs = new Map();
 
@@ -93,7 +101,7 @@ export const tabs_add = async (model, new_data) => {
     }
     else {//*の更新
         id = "*"
-        lang_icon = "code-asterix";
+        lang_icon = get_langIcon("")
     }
     //Prev Save
     let now_model = await getNormalEditor_Model();
@@ -146,13 +154,13 @@ export const tabs_add = async (model, new_data) => {
         let temp = "";
         temp += '<input type="radio" class="displayHide" id="monaco-tab-' + id + '" name="rs-tab" value="' + id + '" checked></input>';
         temp += '<label for="monaco-tab-' + id + '" class="tab-design">';
-        temp += '<img class="refSize" style="width: 1rem; filter:' + filter + ' " src="./icon/' + lang + '.svg">';
+        temp += '<img class="refSize" style="width: 1rem; filter:' + filter + ' " src="' + lang + '">';
         temp += '<span class="tab-libnameArea">';
         temp += '<span class="tab-pgmName">' + name + '</span>';
         temp += '<span class="tab-libnameText">' + path.substring(1, path.lastIndexOf('/')) + '</span>';
         temp += '<span class="tab-versionInfo">' + versionText + '</span>';
         temp += '</span>'
-        temp += '<img class="refSize control-iconButton" style="width: 1.5rem;filter:' + filter + '" src="./icon/x.svg">';
+        temp += '<img class="refSize control-iconButton" style="width: 1.5rem;filter:' + filter + '" src=' + x_svg + '>';
         temp += '<span class="tab-item" style="display: none;">' + id + '</span>';
         temp += '</label>';
         li.innerHTML = temp;
@@ -168,27 +176,27 @@ export const tabs_add = async (model, new_data) => {
     tabs.set(id, { model: model, view: await setNormalEditor_View() });
 }
 
-export const get_langIcon = (langType, original = true, device = "") => {
+export const get_langIcon = (langType, original = true, device = "", iconPath = true) => {
     let lang_icon = "";
     if (langType === 'dds') {
         if (device === "PRINTER") {
-            lang_icon = 'print';
+            lang_icon = iconPath ? print_svg : 'print';
         } else {
             if (original) {
-                lang_icon = 'database';
+                lang_icon = iconPath ? database_svg : 'database';
             } else {
-                lang_icon = 'database-search';
+                lang_icon = iconPath ? databese_search_svg : 'database-search';
             }
         }
 
     } else if (langType === 'dsp') {
-        lang_icon = 'terminal-2';
-    } else if (langType === 'rpg' ||langType === 'rpgle') {
-        lang_icon = 'letter-r';
+        lang_icon = iconPath ? terminal_2_svg : 'terminal-2';
+    } else if (langType === 'rpg' || langType === 'rpgle') {
+        lang_icon = iconPath ? letter_r_svg : 'letter-r';
     } else if (langType === 'cl') {
-        lang_icon = 'hash';
+        lang_icon = iconPath ? hash_svg : 'hash';
     } else {
-        lang_icon = 'code-asterix';
+        lang_icon = iconPath ? code_asterix_svg : 'code-asterix';
     }
     return (lang_icon);
 }
