@@ -31,6 +31,7 @@ export const Directory_Handle_RegisterV2 = async (name, isNew = false, rw_mode =
             linkStatus[name].handle = await window.showDirectoryPicker();
         } catch (error) {
             console.warn(error)
+            return 'NG';
         }
     }
     linkStatus[name].ishandle = true;
