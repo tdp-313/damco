@@ -60,26 +60,28 @@ export const fileReadBoth = async () => {
 
     let LeftFileName = FileLeft.value.indexOf('.') !== -1 ? FileLeft.value.substring(0, FileLeft.value.indexOf('.')) : FileLeft.value;
     let RightFileName = FileRight.value.indexOf('.') !== -1 ? FileRight.value.substring(0, FileRight.value.indexOf('.')) : FileRight.value;
+    let modelLang = [fileTypeGet(FolderLeft.value), fileTypeGet(FolderLeft.value, Setting.diffIndent), fileTypeGet(FolderRight.value, Setting.diffIndent)];
     let lang = [
         {//Normal Editor
-            lang: fileTypeGet(FolderLeft.value),
+            lang: modelLang[0],
             formattedText: LeftFile.text,
-            uri: await createURI(fileListHandleSet.Left.root.handle.name, control_LibLeft.value, FolderLeft.value, LeftFileName, LeftFile.time),
+            uri: await createURI(fileListHandleSet.Left.root.handle.name, control_LibLeft.value, FolderLeft.value, LeftFileName, LeftFile.time, modelLang[0]),
             model: null
         },
         {//Diff Editor (Left)
-            lang: fileTypeGet(FolderLeft.value, Setting.diffIndent),
+            lang: modelLang[1],
             formattedText: LeftFile.text,
-            uri: await createURI(fileListHandleSet.Left.root.handle.name, control_LibLeft.value, FolderLeft.value, LeftFileName, LeftFile.time),
+            uri: await createURI(fileListHandleSet.Left.root.handle.name, control_LibLeft.value, FolderLeft.value, LeftFileName, LeftFile.time, modelLang[1]),
             model: null
         },
         {//Diff Editor (Right)
-            lang: fileTypeGet(FolderRight.value, Setting.diffIndent),
+            lang: modelLang[2],
             formattedText: RightFile.text,
-            uri: await createURI(fileListHandleSet.Right.root.handle.name, control_LibRight.value, FolderRight.value, RightFileName, RightFile.time),
+            uri: await createURI(fileListHandleSet.Right.root.handle.name, control_LibRight.value, FolderRight.value, RightFileName, RightFile.time, modelLang[2]),
             model: null
         }
     ];
+
     for (let i = 0; i < lang.length; i++) {
         if (lang[i].lang.indexOf("indent") !== -1) {
             lang[i].formattedText = await addIndent(lang[i].formattedText);
@@ -128,7 +130,7 @@ export const fileTypeGet = (fileName, Indent = true) => {
         default:
             return 'dds';
     }
-} 
+}
 
 export const fileTypeGet2 = (fileName) => {
     switch (fileName) {
@@ -141,11 +143,11 @@ export const fileTypeGet2 = (fileName) => {
         case "QDSPSRC":
             return 'dsp';
         case "QRPGLESRC":
-                return 'dsp';
+            return 'dsp';
         default:
             return 'dds';
     }
-} 
+}
 
 export const fileTypeChange = (type) => {
     switch (type) {

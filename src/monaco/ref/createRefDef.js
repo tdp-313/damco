@@ -83,10 +83,11 @@ export const refDefCreate = async (FileArray, handle, refDef, reflist, rootHandl
     for (const [key, value] of reflist.entries()) {
         let textData = await getFolderExistList_Text(current_SRC, value.name);
         if (textData !== null) {
-            let uri = await createURI(rootHandleName, handle.name, textData.list.file, value.name, textData.time);
+            let lang = fileTypeGet(textData.list.file);
+            let uri = await createURI(rootHandleName, handle.name, textData.list.file, value.name, textData.time,lang);
             if (FileName === "PGM") {
                 let model = null;
-                let lang = fileTypeGet(textData.list.file);
+                //let lang = fileTypeGet(textData.list.file);
                 if (lang.includes("indent")) {
                     model = await modelChange(await addIndent(textData.text), lang, uri);
                 } else {
@@ -95,7 +96,7 @@ export const refDefCreate = async (FileArray, handle, refDef, reflist, rootHandl
                 refDef = await pgm_nameGet(model, refDef, value.name, textData.list.handle, value.use);
                 //refDef.set("'" + reflist[i].name + "'", { location: { range: new monaco.Range(1, 5, await model.getLineCount(), Number.MAX_VALUE), uri: uri }, description: reflist[i].name, s_description: "CALL PGM", sourceType: "PGM", handle: textData.list.handle, use: reflist[i].use });
             } else {
-                let model = await modelChange(addSpaces(textData.text), 'dds', uri);
+                let model = await modelChange(addSpaces(textData.text), lang, uri);
                 refDef = await dds_DefinitionList(model, refDef, value.name, textData.list.handle, value.use, P_FILE);
             }
             //見つかったので削除

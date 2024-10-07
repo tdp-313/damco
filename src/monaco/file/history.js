@@ -10,7 +10,8 @@ export class historyItemLayout {
     constructor(model) {
         this.model = model;
         this.StrURI = model.uri.toString();
-        this.time = model.uri.query.substring(model.uri.query.indexOf("=") + 1, model.uri.query.length);
+        this.time = model.uri.query.substring(model.uri.query.indexOf("=") + 1, model.uri.query.lastIndexOf("&language"));
+        this.langQuery = model.uri.query.substring(model.uri.query.lastIndexOf("=") + 1, model.uri.query.length);
     }
 }
 
@@ -34,7 +35,7 @@ const searchmemberHandle = async (lib, file, member, readhandle) => {
     return rtn;
 }
 
-export class hisotoryPullodown {
+export class hisotoryPulldown {
     constructor() {
         this.left = new Map();
         this.right = new Map();
@@ -164,8 +165,9 @@ export class hisotoryPullodown {
 
         for (let i = 0; i < memberHandle.length; i++) {
             let FileData = await file_read_text("", memberHandle[i].handle, false, "text");
-            let Uri = await createURI(rootHisHandle.name, memberHandle[i].parent, memberHandle[i].file, memberHandle[i].name, FileData.time);
             let lang = fileTypeGet(memberHandle[i].file, Setting.diffIndent);
+            let Uri = await createURI(rootHisHandle.name, memberHandle[i].parent, memberHandle[i].file, memberHandle[i].name, FileData.time, lang);
+
             let text = FileData.text;
             if (lang.includes('indent')) {
                 text = await addIndent(text);
@@ -179,4 +181,4 @@ export class hisotoryPullodown {
     }
 }
 
-export const history = new hisotoryPullodown();
+export const history = new hisotoryPulldown();

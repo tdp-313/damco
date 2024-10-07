@@ -8,14 +8,12 @@ import { refDefCreate } from "./createRefDef.js";
 import { Directory_Handle_RegisterV2 } from "../file/directory.js";
 import { loadingPopUpClose } from "../monaco_root.js";
 import { UseIO_Layout } from "./other.js";
-import { fileTypeChange } from "../file/read.js";
+import { fileTypeChange,fileTypeGet2 } from "../file/read.js";
 
 export let refListFile = {};
 let firstEditorLoading = false;
 
 export const refDefStart = async (model) => {
-    normalRefDef.clear();
-
     const libFileName = model.uri.path.split('/').filter(str => str !== '');
 
     if (libFileName.length !== 3) {
@@ -29,9 +27,9 @@ export const refDefStart = async (model) => {
         refListFile = await createRefList(model);
     } else if (model.getLanguageId() === 'dds') {
         refListFile = { dds: new Map(), dsp: new Map(), pgm: new Map() };
-        if (libFileName[1].indexOf('DDS') !== -1) {
+        if (fileTypeGet2(libFileName[1]) === "dds") {
             refListFile.dds.set(libFileName[2], { name: libFileName[2], use: new UseIO_Layout(false) });
-        } else if (libFileName[1].indexOf('DSP') !== -1) {
+        } else if (fileTypeGet2(libFileName[1]) === "dsp") {
             refListFile.dsp.set(libFileName[2], { name: libFileName[2], use: new UseIO_Layout(false) });
         } else {
             return null;
