@@ -14,8 +14,8 @@ export let refListFile = {};
 let firstEditorLoading = false;
 
 export const refDefStart = async (model) => {
+    normalRefDef.clear();
     const libFileName = model.uri.path.split('/').filter(str => str !== '');
-
     if (libFileName.length !== 3) {
         return null;
     }

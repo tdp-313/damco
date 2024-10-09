@@ -7,6 +7,9 @@ import { searchOpen } from "./searchOpen.js";
 import { otherTabsOpenInit } from "./otherTabsOpen.js";
 import { pullDownEvent } from "../file/pulldown.js";
 
+import link_off_svg from "../../icon/link-off.svg"
+import link_on_svg from "../../icon/link.svg"
+
 export let isFileSelectSync = true;
 
 export const readFileButtonCreate = () => {
@@ -30,12 +33,12 @@ export const readFileButtonCreate = () => {
         if (isFileSelectSync) {
             //On => Off
             isFileSelectSync = false;
-            e.target.src = "./icon/link-off.svg";
+            e.target.src = link_off_svg;
 
         } else {
             //Off => On
             isFileSelectSync = true;
-            e.target.src = "./icon/link.svg";
+            e.target.src = link_on_svg;
         }
     });
 
