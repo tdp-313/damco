@@ -3,7 +3,6 @@ import { normalRefDef } from "../ref/other.js";
 import { tabs_add } from "../../tabs.js";
 import { getNormalEditor_Model_URI } from "../textmodel.js";
 import { filterSettingUpdate } from "./sidebar.js";
-import { libraryListSave } from "../../setting.js";
 
 export const rightSidebarRead = async () => {
   const r_sidebar_contents = document.getElementById('right-sideBar-contents');
