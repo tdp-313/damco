@@ -64,7 +64,6 @@ export const extraControlClick = (open, mode = "") => {
         if (!control_extra.classList.contains('close')) {
             control_extra.classList.add('close');
         }
-
     } else {
         if (mode === "init") {
             img.src = leftIcon;

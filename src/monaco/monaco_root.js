@@ -72,24 +72,15 @@ export const monacoStart = async () => {
     }
     diffEditor.updateOptions(editorOptionGeneral);
 
-    document.getElementById('monaco-code').style.display = 'block';
-    document.getElementById('monaco-diff').style.display = 'none';
-
-    const modeChangeCode = document.getElementById('control-EditorModeChange-code');
-    modeChangeCode.addEventListener('click', (e) => {
+    
+    let nowUrl = new URL(window.location.href);
+    let initOpenEditor = nowUrl.searchParams.get("init");
+    if (initOpenEditor === 'code' || initOpenEditor === 'diff') {
+        setModeChange(initOpenEditor);
+    } else {
         setModeChange('code');
-        normalEditor.layout();
-        extraControlClick(false, "init");
-    });
-
-    const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
-    modeChangeDiff.addEventListener('click', (e) => {
-        setModeChange('diff');
-        diffEditor.layout();
-        extraControlClick(true);
-    });
-
-    extraControlClick(false, "init");
+    }
+    
 
     let isInsert = true;
     const insertChange = document.getElementById('control-extraInsertText');

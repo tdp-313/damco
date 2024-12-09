@@ -6,6 +6,9 @@ import { initReloadButton } from "./updateButton.js";
 import { searchOpen } from "./searchOpen.js";
 import { otherTabsOpenInit } from "./otherTabsOpen.js";
 import { pullDownEvent } from "../file/pulldown.js";
+import { extraControlClick } from "../sidebar/open.js";
+import { normalEditor, diffEditor } from "../monaco_root.js";
+import { wakeLockInit } from "./otherTabsOpen.js";
 
 import link_off_svg from "../../icon/link-off.svg"
 import link_on_svg from "../../icon/link.svg"
@@ -17,6 +20,7 @@ export const readFileButtonCreate = () => {
     otherTabsOpenInit();
     searchOpen();
     pullDownEvent();
+    wakeLockInit(Setting.getWakeLock);
     const initReadButton = document.getElementById('control-initRead');
     initReadButton.addEventListener('click', async (event) => {
         Setting.setInitRead = initReadButton.checked;
@@ -46,6 +50,16 @@ export const readFileButtonCreate = () => {
     const dynamicHandle_Right = document.getElementById('control-dynamic-Right');
     dynamicHandle_Left.addEventListener("click", (e) => fileHandleChange("Left", dynamicHandle_Left.checked));
     dynamicHandle_Right.addEventListener("click", (e) => fileHandleChange("Right", dynamicHandle_Right.checked));
+
+    const modeChangeCode = document.getElementById('control-EditorModeChange-code');
+    modeChangeCode.addEventListener('click', (e) => {
+        setModeChange('code');
+    });
+
+    const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
+    modeChangeDiff.addEventListener('click', (e) => {
+        setModeChange('diff');
+    });
 }
 
 export const reload_Process = () => {
@@ -61,8 +75,15 @@ export const setModeChange = (mode) => {
     if (mode === 'code') {
         document.getElementById('monaco-code').style.display = 'block';
         document.getElementById('monaco-diff').style.display = 'none';
-    } else {
+        normalEditor.layout();
+        extraControlClick(false, "init");
+        document.getElementById('control-EditorModeChange-code').checked = true;
+        
+    } else{
         document.getElementById('monaco-code').style.display = 'none';
         document.getElementById('monaco-diff').style.display = 'block';
+        diffEditor.layout();
+        extraControlClick(true);
+        document.getElementById('control-EditorModeChange-diff').checked = true;
     }
 }

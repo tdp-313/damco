@@ -19,8 +19,10 @@ class localSetting {
         this.initRead = typeof (data.initRead) === 'undefined' ? true : data.initRead;
         this.diffIndent = typeof (data.diffIndent) === 'undefined' ? true : data.diffIndent;
 
+        this.wakelock = typeof (data.wakelock) === 'undefined' ? true : data.wakelock;
         const initRead_DOM = document.getElementById('control-initRead');
         initRead_DOM.checked = this.initRead;
+
         const initRead_diffIndent = document.getElementById('control-diffExtension');
         initRead_diffIndent.checked = this.diffIndent;
         const diffViewChange = document.getElementById('control-diffViewChange');
@@ -52,6 +54,10 @@ class localSetting {
         return this.initRead;
     }
 
+    get getWakeLock() {
+        return this.wakelock;
+    }
+
     set setTheme(theme) {
         this.theme = theme;
         this.save();
@@ -74,6 +80,11 @@ class localSetting {
 
     set setdiffIndent(init) {
         this.diffIndent = init;
+        this.save();
+    }
+
+    set setWakeLock (isLock) {
+        this.wakelock = isLock;
         this.save();
     }
 
