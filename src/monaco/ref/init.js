@@ -2,19 +2,20 @@ import { linkStatus } from "../file/directory.js";
 import { monaco_handleName, monaco_handleName_RefMaster } from "../../root.js";
 import { createUseFileList } from "../sidebar/sidebar.js";
 import { createRefList } from "./createRefDef.js";
-import { normalRefDef } from "./other.js";
+import { normalRefDef, otherFileFlagReference } from "./other.js";
 import { Setting } from "../../setting.js";
 import { refDefCreate } from "./createRefDef.js";
 import { Directory_Handle_RegisterV2 } from "../file/directory.js";
 import { loadingPopUpClose } from "../monaco_root.js";
 import { UseIO_Layout } from "./other.js";
-import { fileTypeChange,fileTypeGet2 } from "../file/read.js";
+import { fileTypeChange, fileTypeGet2 } from "../file/read.js";
 
 export let refListFile = {};
 let firstEditorLoading = false;
 
 export const refDefStart = async (model) => {
     normalRefDef.clear();
+    otherFileFlagReference.clear();
     const libFileName = model.uri.path.split('/').filter(str => str !== '');
     if (libFileName.length !== 3) {
         return null;

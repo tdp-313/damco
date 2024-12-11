@@ -7,5 +7,6 @@ export class UseIO_Layout {
 }
 
 export const normalRefDef = new Map();
+export const otherFileFlagReference = new Map()
 export const sourceRefDef = new Map();
 export const P_FILE = new Map();

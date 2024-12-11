@@ -1,5 +1,5 @@
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
-import { normalRefDef } from "../../ref/other.js";
+import { normalRefDef, otherFileFlagReference } from "../../ref/other.js";
 import * as monaco from 'monaco-editor';
 
 
@@ -10,6 +10,7 @@ export const regReference = () => {
             let text = getRow_Text(row, position.column);
             const wordStr = text.text.trim();
             const flag_regex = /\*IN[0-9][0-9]/;
+            let FlagSearchStr = "";
             if (wordStr === "") {
                 return null;
             }
@@ -37,7 +38,7 @@ export const regReference = () => {
                                 ranges.push({ range: new monaco.Range(i, row.indexOf(wordStr_flag) + 1, i, row.lastIndexOf(wordStr_flag) + wordStr_flag.length + 1), uri: model.uri });
                             }
                         }
-
+                        FlagSearchStr = wordStr_flag;
                     }
                     if (flag_regex.test(wordStr)) {
                         let flag = [];
@@ -50,6 +51,7 @@ export const regReference = () => {
                         if (flag.includes(wordStr.substring(3, 5))) {
                             ranges.push({ range: new monaco.Range(i, row.indexOf(wordStr.substring(3, 5)) + 1, i, row.lastIndexOf(wordStr.substring(3, 5)) + 3), uri: model.uri });
                         }
+                        FlagSearchStr = wordStr;
                     }
                 } else if (row.substring(6, 7) !== "*" && row.substring(5, 6) === "I") {
                     let field = row.substring(52, 58).trim();
@@ -79,6 +81,14 @@ export const regReference = () => {
             let refDef = await normalRefDef.get(wordStr);
             if (typeof (refDef) !== 'undefined') {
                 ranges.push(refDef.location);
+            }
+            if (FlagSearchStr !== "") {
+                let flagRef = await otherFileFlagReference.get(FlagSearchStr);
+                if (typeof (flagRef) !== 'undefined') {
+                    for (let i = 0; i < flagRef.length; i++){
+                        ranges.push(flagRef[i].location);
+                    }
+                }
             }
             return ranges;
         }

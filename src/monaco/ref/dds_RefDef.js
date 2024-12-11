@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor';
+import { otherFileFlagReference } from './other';
 
 export const dds_DefinitionList = async (model, map, refName, handle, use, reflist) => {
     const createDescription = async (start_row, i, model, max, loopCheck = 0) => {
@@ -135,7 +136,22 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, refli
                     description = await createDescription(row, i, model, lineCount);
                 }
             }
+            //Flag Reference
+            if (use.device === 'WORKSTN') {
+                let flagA = [row.substring(8, 10).trim(), row.substring(11, 13).trim(), row.substring(14, 16).trim()];
+                for (let p = 0; p < flagA.length; p++){
+                    if (flagA[p] !== "") {
+                        let key = "*IN" + flagA[p];
+                        let rowData = [{ location: { range: new monaco.Range(i, 5, i, Number.MAX_VALUE), uri: model.uri }, description: "flag", s_description: "flag", sourceType: "definition", handle: handle }];
+                        if (otherFileFlagReference.has(key)) {
+                            rowData = rowData.concat(otherFileFlagReference.get(key));
+                        }
+                        otherFileFlagReference.set(key, rowData);
+                    }
+                }                
+            }
         }
+
         if (rangeContinue > 0 && lineCount === i) {
             map.set(rangeContinue_value, { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle });
         }
