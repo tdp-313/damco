@@ -9,6 +9,7 @@ import * as monaco from 'monaco-editor';
 
 
 export let fileListHandleSet = {};
+let preFileHandleSet = {};
 export const pullDownEvent = () => {
     const fileFolderPulldown = document.querySelectorAll('.control-FileFolder-pulldown');
     fileFolderPulldown.forEach((pulldown) => {
@@ -17,7 +18,6 @@ export const pullDownEvent = () => {
             let file = e.target.id.substring(e.target.id.indexOf("-") + 1, e.target.id.lastIndexOf("-"));
             let L_R = e.target.id.substring(e.target.id.lastIndexOf("-") + 1, e.target.id.length);
             let FileLR = document.getElementById('control-' + file + '-' + L_R);
-
             if (file === 'Library') {
                 let handleName = monaco_handleName;
                 await monaco_pulldownCreate(FileLR, L_R, UsingHandle[L_R].handle, 'Library');
@@ -89,7 +89,8 @@ export const pullDownCreate = async (target = 'All', part = "All") => {
         }
         const FileLeft = document.getElementById('control-File-' + targetA[i]);
         if (partA.indexOf("File") !== -1) {
-            await monaco_pulldownCreate(FileLeft, targetA[i], fileListHandleSet[targetA[i]]["Folder"][FolderLeft.value].handle, "File");
+            let path = UsingHandle[targetA[i]].handle.name + "/" + LibLeft.value + "/" + FolderLeft.value;
+            await monaco_pulldownCreate(FileLeft, targetA[i], fileListHandleSet[targetA[i]]["Folder"][FolderLeft.value].handle, "File", path);
         }
         if (partA.indexOf("Version") !== -1) {
             history.reset(targetA[i].toLowerCase());
@@ -98,7 +99,7 @@ export const pullDownCreate = async (target = 'All', part = "All") => {
     }
 }
 
-export async function monaco_pulldownCreate(create_target, L_R, readHandle, readKind) {
+export async function monaco_pulldownCreate(create_target, L_R, readHandle, readKind, fullpath = "") {
     let count = 0;
     let backup_target = null;
 
@@ -115,7 +116,28 @@ export async function monaco_pulldownCreate(create_target, L_R, readHandle, read
     if (readKind === "Library") {
         fileListHandleSet[L_R].root = { handle: readHandle }
     }
-    for await (const handle of readHandle.values()) {
+
+    //console.time("monaco_pulldownCreate");
+    
+    let sortedHandle = new Map();
+    let preFileHandleSetArray = Object.keys(preFileHandleSet);
+
+    if (preFileHandleSetArray.indexOf(fullpath) !== -1 && fullpath !== "") {
+        sortedHandle = preFileHandleSet[fullpath];
+    } else {
+        for await (const [key, value] of readHandle.entries()) {
+            sortedHandle.set(key, value);
+        }
+        if (fullpath !== "") {
+            preFileHandleSet[fullpath] = sortedHandle;
+        }
+    }
+    //console.timeLog("monaco_pulldownCreate");
+
+    let keysSortedAsc = Array.from(sortedHandle.keys()).sort((a, b) => a > b ? 1 : -1);
+
+    for (let i = 0; i < keysSortedAsc.length; i++) {
+        let handle = sortedHandle.get(keysSortedAsc[i]);
         let file_set = new monaco_file(handle, readHandle.name, readHandle.name);
         let insert = document.createElement('option');
         insert.value = file_set.name;
@@ -123,10 +145,14 @@ export async function monaco_pulldownCreate(create_target, L_R, readHandle, read
         await create_target.appendChild(insert);
         fileListHandleSet[L_R][readKind][file_set.name] = file_set;
         if (backup_target.name === file_set.name) {
-            //console.log("Restore", backup_target.name);
             create_target.selectedIndex = count;
         }
         count++;
+    }
+    //console.timeEnd("monaco_pulldownCreate");
+    if (count === 0) {
+        window.alert("No Data '" + readHandle.name + "' Handle : The folder must contain Lib/File/Member.");
+        return false;
     }
 }
 

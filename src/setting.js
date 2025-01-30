@@ -72,7 +72,7 @@ class localSetting {
         this.libraryList = LibList;
         this.save();
     }
-    
+
     set setInitRead(init) {
         this.initRead = init;
         this.save();
@@ -83,7 +83,7 @@ class localSetting {
         this.save();
     }
 
-    set setWakeLock (isLock) {
+    set setWakeLock(isLock) {
         this.wakelock = isLock;
         this.save();
     }
@@ -98,6 +98,9 @@ export let Setting = new localSetting({});
 export const libraryListSave = () => {
     const settingLibraryList = document.getElementById('settingLibraryList');
     let inputText = settingLibraryList.value;
+    if (inputText === "") {
+        inputText = "{}";
+    }
     isJSON(inputText);
 }
 

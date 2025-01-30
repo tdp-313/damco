@@ -178,12 +178,10 @@ export const createUseFileList = async (refDef) => {
         html += "<div></div>";
         html += '<textarea id="settingLibraryList"rows="15" cols="41">' + JSON.stringify(Setting.libraryList) + '</textarea>';
         html += "<button id='settingLibrarySaveButton'>Save</button>";
-    }
-    sidebar_contents.innerHTML = html;
-    if (mode === 'setting') {
-        const librarySaveButton = document.getElementById('settingLibrarySaveButton');
-        librarySaveButton.addEventListener('click', libraryListSave());
 
+        sidebar_contents.innerHTML = html;
+        const librarySaveButton = document.getElementById('settingLibrarySaveButton');
+        librarySaveButton.addEventListener('click', () => { libraryListSave() });
     }
 }
 let filter = { Input: true, Update: true, Output: true, Ref: true };
