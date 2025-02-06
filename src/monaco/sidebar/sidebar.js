@@ -178,9 +178,10 @@ export const createUseFileList = async (refDef) => {
         html += "<div></div>";
         html += '<textarea id="settingLibraryList"rows="15" cols="41">' + JSON.stringify(Setting.libraryList) + '</textarea>';
         html += "<button id='settingLibrarySaveButton'>Save</button>";
-
-        sidebar_contents.innerHTML = html;
-        const librarySaveButton = document.getElementById('settingLibrarySaveButton');
+    }
+    sidebar_contents.innerHTML = html;
+    const librarySaveButton = document.getElementById('settingLibrarySaveButton');
+    if (mode === 'setting') { 
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
     }
 }

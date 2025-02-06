@@ -118,20 +118,24 @@ export async function monaco_pulldownCreate(create_target, L_R, readHandle, read
     }
 
     //console.time("monaco_pulldownCreate");
-    
+
     let sortedHandle = new Map();
     let preFileHandleSetArray = Object.keys(preFileHandleSet);
-
+    let promiseResults = [];
     if (preFileHandleSetArray.indexOf(fullpath) !== -1 && fullpath !== "") {
         sortedHandle = preFileHandleSet[fullpath];
     } else {
-        for await (const [key, value] of readHandle.entries()) {
-            sortedHandle.set(key, value);
+        for await (const entry of readHandle.entries()) {
+            promiseResults.push(entry);
         }
         if (fullpath !== "") {
             preFileHandleSet[fullpath] = sortedHandle;
         }
     }
+
+    await Promise.all(promiseResults.map(async ([key, value]) => {
+        sortedHandle.set(key, value);
+    }));
     //console.timeLog("monaco_pulldownCreate");
 
     let keysSortedAsc = Array.from(sortedHandle.keys()).sort((a, b) => a > b ? 1 : -1);
