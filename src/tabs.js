@@ -122,10 +122,10 @@ export const tabs_add = async (model, new_data) => {
     const input_dom = document.getElementById('monaco-tab-' + id);
     if (typeof (tab_check) !== 'undefined' && input_dom !== null) {
         if (new_data) {
-            await setNormalEditor_Model(tab_check.model);
+            setNormalEditor_Model(tab_check.model);
             await setNormalEditor_View(tab_check.view);
         } else {
-            await setNormalEditor_Model(model);
+            setNormalEditor_Model(model);
             const libnameArea = input_dom.parentNode.getElementsByClassName('tab-libnameArea')[0];
             libnameArea.innerHTML = "";
             let pgmName = document.createElement('span');
@@ -168,7 +168,7 @@ export const tabs_add = async (model, new_data) => {
         li.classList.add('tabLayout');
         return li;
     }
-    await setNormalEditor_Model(model);
+    setNormalEditor_Model(model);
     const tabs_dom = document.getElementById('monaco-tab');
 
     let dom_li = tabs_html(name, id, lang_icon, path, filter_style, versionText);

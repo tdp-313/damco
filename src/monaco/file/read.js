@@ -39,7 +39,7 @@ export const fileReadBothModel = async (normal, diff1, diff2) => {
         return null;
     }
 
-    await textModelEditorApply(normal, diff1, diff2);
+    await textModelEditorApply( diff1, diff2);
     rulerChange(document.getElementById('control-extraRuler').checked);
     await tabs_add(normal, false);
 }
@@ -93,7 +93,7 @@ export const fileReadBoth = async () => {
 
     history.register('left', new historyItemLayout(lang[0].model));
     history.register('right', new historyItemLayout(lang[2].model));
-    await textModelEditorApply(lang[0].model, lang[1].model, lang[2].model);
+    await textModelEditorApply(lang[1].model, lang[2].model);
     //rulerChange(document.getElementById('control-extraRuler').checked);
     await tabs_add(lang[0].model, false);
 }

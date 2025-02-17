@@ -37,37 +37,109 @@
             <div class="alignLine"></div>
         </div>
 
-        <div style="display:flex;position:relative;overflow: hidden;width: 100%;">
-            <div class="control-FolderFileArea">
-                <span></span>
-                <input type="checkbox" class="displayHide" id="control-dynamic-Left"></input>
-                <label for="control-dynamic-Left" class="control-iconButton"><img class="refSize"
-                        src="./icon/dynamic.svg"></label>
-                <span></span>
-                <select name="control-Folder-Left" id="control-Library-Left"
-                    class="control-FileFolder-pulldown"></select>
-                <select name="control-Folder-Left" id="control-Folder-Left"
-                    class="control-FileFolder-pulldown"></select>
-                <select name="control-File-Left" id="control-File-Left" class="control-FileFolder-pulldown"></select>
-                <select name="control-Version-Left" id="control-Version-Left" class="control-FileFolder-pulldown">
-                </select>
+        <div class="header-top-root">
+            <div id="header-left-root" style="width: 100%;">
+                <div class="header-normalEditor" style="width: 100%;">
+                    <div class="control-FolderFileArea">
+                        <span></span>
+                        <input type="checkbox" class="displayHide" id="control-dynamic-normal"></input>
+                        <label for="control-dynamic-normal" class="control-iconButton"><img class="refSize"
+                                src="./icon/dynamic.svg"></label>
+                        <span></span>
+                        <select name="control-Folder-normal" id="control-Library-normal"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-Folder-normal" id="control-Folder-normal"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-File-normal" id="control-File-normal"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-Version-normal" id="control-Version-normal"
+                            class="control-FileFolder-pulldown">
+                        </select>
+                    </div>
+                </div>
+                <div class="header-diffEditor" style="width: 100%;">
+                    <div class="control-FolderFileArea">
+                        <span></span>
+                        <input type="checkbox" class="displayHide" id="control-dynamic-Left"></input>
+                        <label for="control-dynamic-Left" class="control-iconButton"><img class="refSize"
+                                src="./icon/dynamic.svg"></label>
+                        <span></span>
+                        <select name="control-Folder-Left" id="control-Library-Left"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-Folder-Left" id="control-Folder-Left"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-File-Left" id="control-File-Left"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-Version-Left" id="control-Version-Left"
+                            class="control-FileFolder-pulldown">
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="control-FolderFileArea">
-                <span></span>
-                <input type="checkbox" class="displayHide" id="control-dynamic-Right"></input>
-                <label for="control-dynamic-Right" class="control-iconButton"><img class="refSize"
-                        src="./icon/dynamic.svg"></label>
-                <span></span>
-                <select name="control-Folder-Right" id="control-Library-Right"
-                    class="control-FileFolder-pulldown"></select>
-                <select name="control-Folder-Right" id="control-Folder-Right"
-                    class="control-FileFolder-pulldown"></select>
-                <select name="control-File-Right" id="control-File-Right" class="control-FileFolder-pulldown"></select>
-                <select name="control-Version-Right" id="control-Version-Right"
-                    class="control-FileFolder-pulldown"></select>
+            <div id="header-right-root" style="width: 100%; position: relative;">
+                <!--div class="header-normalEditor" style="width: 100%;"-->
+                <div style="width: 100%; position: absolute;">
+                    <div id="control-subArea">
+                        <div class="alignLine"></div>
+                        <div>
+                            <input type="checkbox" class="displayHide" id="control-extraReadOnly"></input>
+                            <label for="control-extraReadOnly" class="control-iconButton"><img class="refSize"
+                                    src="./icon/edit.svg"></label>
+                        </div>
+                        <div>
+                            <input type="checkbox" class="displayHide" id="control-extraInsertText" checked></input>
+                            <label for="control-extraInsertText" class="control-iconButton"><img class="refSize"
+                                    src="./icon/cursor-text.svg"></label>
+                        </div>
+                        <div>
+                            <input type="checkbox" class="displayHide" id="control-extraRuler" checked></input>
+                            <label for="control-extraRuler" class="control-iconButton"><img class="refSize"
+                                    src="./icon/ruler-2.svg"></label>
+                        </div>
+                        <div class="alignLine"></div>
+                        <span id="control-wakelock" class="control-iconButton hoverButton">
+                            <img class="refSize" src="./icon/bedtime_on.svg"></img>
+                        </span>
+                        <span id="control-extraTheme" class="control-iconButton hoverButton"><img class="refSize"
+                                src="./icon/palette.svg"></span>
+                        <input type="checkbox" class="displayHide" id="control-initRead"></input>
+                        <label for="control-initRead" class="control-iconButton"><img class="refSize"
+                                src="./icon/terminal-2.svg"></label>
+
+                    </div>
+                </div>
+                <div class="header-diffEditor" style="width: 100%; position: relative;">
+                    <div class="control-FolderFileArea" style="position: absolute;">
+                        <span></span>
+                        <input type="checkbox" class="displayHide" id="control-dynamic-Right"></input>
+                        <label for="control-dynamic-Right" class="control-iconButton"><img class="refSize"
+                                src="./icon/dynamic.svg"></label>
+                        <span></span>
+                        <select name="control-Folder-Right" id="control-Library-Right"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-Folder-Right" id="control-Folder-Right"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-File-Right" id="control-File-Right"
+                            class="control-FileFolder-pulldown"></select>
+                        <select name="control-Version-Right" id="control-Version-Right"
+                            class="control-FileFolder-pulldown">
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div style="width: 10%;display: flex;">
+        </div>
+        <div style="display: flex;">
+            <div class="header-normalEditor" style="width: max-content;">
+                <span id="control-extraLinkFile" class="control-iconButton hoverButton" style="padding: 0 0.3rem;"><img
+                        class="refSize" src="./icon/file-symlink.svg"></span>
+                <span style="-webkit-app-region: drag;"></span>
+                <div class="alignLine" style="margin: 0 0.2rem;"></div>
+                <span id="control-otherTab" class="control-iconButton hoverButton" style="padding: 0 0.3rem">
+                    <img class="refSize" src="./icon/navigation.svg"></img>
+                </span>
+            </div>
+            <div class="header-diffEditor" style="width: max-content;">
                 <div style="margin: 0 0.3rem">
                     <span id="control-FileSelectSync" class="control-iconButton hoverButton"><img class="refSize"
                             src="./icon/link.svg"></span>
@@ -83,45 +155,11 @@
                             src="./icon/diffView.svg"></label>
                 </div>
             </div>
-            <div id="control-subArea" class="">
-                <div class="alignLine"></div>
-                <div>
-                    <input type="checkbox" class="displayHide" id="control-extraReadOnly"></input>
-                    <label for="control-extraReadOnly" class="control-iconButton"><img class="refSize"
-                            src="./icon/edit.svg"></label>
-                </div>
-                <div>
-                    <input type="checkbox" class="displayHide" id="control-extraInsertText" checked></input>
-                    <label for="control-extraInsertText" class="control-iconButton"><img class="refSize"
-                            src="./icon/cursor-text.svg"></label>
-                </div>
-                <div>
-                    <input type="checkbox" class="displayHide" id="control-extraRuler" checked></input>
-                    <label for="control-extraRuler" class="control-iconButton"><img class="refSize"
-                            src="./icon/ruler-2.svg"></label>
-                </div>
-                <div class="alignLine"></div>
-                <span id="control-wakelock" class="control-iconButton hoverButton">
-                    <img class="refSize" src="./icon/bedtime_on.svg"></img>
-                </span>
-                <span id="control-extraTheme" class="control-iconButton hoverButton"><img class="refSize"
-                        src="./icon/palette.svg"></span>
-                <input type="checkbox" class="displayHide" id="control-initRead"></input>
-                <label for="control-initRead" class="control-iconButton"><img class="refSize"
-                        src="./icon/terminal-2.svg"></label>
-                <div class="alignLine"></div>
-                <span id="control-extraLinkFile" class="control-iconButton hoverButton"><img class="refSize"
-                        src="./icon/file-symlink.svg"></span>
-                <span style="-webkit-app-region: drag;"></span>
-                <span id="control-otherTab" class="control-iconButton hoverButton">
-                    <img class="refSize" src="./icon/navigation.svg"></img>
-                </span>
-                <div class="alignLine"></div>
-            </div>
         </div>
         <div>
-            <span id="control-extraButton" class="control-iconButton" style="-webkit-app-region: no-drag"><img
-                    class="refSize" src="./icon/caret-down.svg"></span>
+            <span id="control-extraButton" class="control-iconButton" style="-webkit-app-region: no-drag">
+                <img class="refSize" src="./icon/caret-down.svg">
+            </span>
         </div>
     </header>
     <div id="main">

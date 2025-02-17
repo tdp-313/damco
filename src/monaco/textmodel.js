@@ -37,11 +37,8 @@ export const modelChange = async (text, lang, uri) => {
     return model;
 }
 
-export const textModelEditorApply = async (model, model1, model2) => {
+export const textModelEditorApply = async (model1, model2) => {
     refleshTextModel();
-    document.title = model.uri.path;
-    //normalEditor 
-    normalEditor.setModel(model);
     //diffEditor
     diffEditor.setModel({
         original: model1,

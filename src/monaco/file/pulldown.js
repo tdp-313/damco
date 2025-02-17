@@ -3,6 +3,7 @@ import { history } from "./history.js";
 import { monaco_handleName } from "../../root.js";
 import { isFileSelectSync } from "../header/header_button.js";
 import { fileReadBoth, fileTypeGet, fileReadBothModel } from "./read.js";
+import { pullDownEventMain } from "./newPulldown.js";
 import { modelChange } from "../textmodel.js";
 import { Setting } from "../../setting.js";
 import * as monaco from 'monaco-editor';
@@ -14,7 +15,10 @@ export const pullDownEvent = () => {
     const fileFolderPulldown = document.querySelectorAll('.control-FileFolder-pulldown');
     fileFolderPulldown.forEach((pulldown) => {
         pulldown.addEventListener('change', async (e) => {
-
+            if (e.target.id.indexOf("normal") !== -1) { 
+                pullDownEventMain(e.target.id)
+                return;
+            }
             let file = e.target.id.substring(e.target.id.indexOf("-") + 1, e.target.id.lastIndexOf("-"));
             let L_R = e.target.id.substring(e.target.id.lastIndexOf("-") + 1, e.target.id.length);
             let FileLR = document.getElementById('control-' + file + '-' + L_R);

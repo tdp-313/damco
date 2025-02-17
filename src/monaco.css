@@ -25,11 +25,18 @@ body {
     height: calc(100% - 2rem);
     display: flex;
 }
-
+#header-left-root, #header-right-root {
+    display: flex;
+    justify-content: center;
+    height: var(--headerHeight);
+    width: 50%;
+    background-color: var(--backgroundColor);
+    border-bottom: 0.1rem solid var(--font-color);
+}
 header {
     height: var(--headerHeight);
     display: grid;
-    grid-template-columns: 10rem 1fr 2rem;
+    grid-template-columns: 10rem 1fr 6rem 2rem;
     width: env(titlebar-area-width, 100%);
     margin-bottom: 0.5rem;
     user-select: none;
@@ -38,6 +45,7 @@ header {
     top: env(titlebar-area-y, 0);
     -webkit-app-region: drag;
     padding-top: 8px;
+    justify-items: center;
 }
 
 header input ,header label ,header select{
@@ -105,6 +113,22 @@ header .editorModeArea {
     overflow-y: hidden;
 }
 
+header .header-normalEditor {
+    display: flex;
+    align-items: center;
+}
+
+header .header-diffEditor {
+    display: none;
+}
+
+.header-top-root{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
 .tab-libnameText {
     font-size: 0.6rem;
     overflow: hidden;
@@ -203,10 +227,11 @@ header input[type="radio"]:checked+label,
 }
 
 .control-FolderFileArea {
-    width: 45%;
+    width: 100%;
     display: grid;
-    grid-template-columns: 0.4rem 2rem 0.4rem 0.35fr 0.3fr 0.35fr 2.5rem;
+    grid-template-columns: 0.4rem 2rem 0.4rem 0.35fr 0.3fr 0.35fr 2.4rem;
     justify-items: center;
+    margin-right: 0.3rem;
 }
 
 .control-FolderFileArea select {
@@ -216,12 +241,13 @@ header input[type="radio"]:checked+label,
 #control-subArea {
     position: absolute;
     background-color: var(--backgroundColor);
-    right: 0;
-    top: 0;
-    width: 55%;
     display: grid;
+    top: 0rem;
+    width: 100%;
     grid-template-columns: 0.5rem 2rem 2rem 2rem 0.5rem 2rem 2rem 2rem 0.5rem 2rem 1fr 2rem 0.5rem;
+    z-index: 1;
     transition: 0.3s ease;
+    margin-left: 0.5rem;
 }
 
 #control-subArea.close {

@@ -9,6 +9,7 @@ import { pullDownEvent } from "../file/pulldown.js";
 import { extraControlClick } from "../sidebar/open.js";
 import { normalEditor, diffEditor } from "../monaco_root.js";
 import { wakeLockInit } from "./otherTabsOpen.js";
+import { dynamicChange } from "../file/dynamicChange.js";
 
 import link_off_svg from "../../icon/link-off.svg"
 import link_on_svg from "../../icon/link.svg"
@@ -45,6 +46,9 @@ export const readFileButtonCreate = () => {
             e.target.src = link_on_svg;
         }
     });
+    const dynamicHandle_Normal = document.getElementById('control-dynamic-normal');
+
+    dynamicHandle_Normal.addEventListener("click", (e) => dynamicChange("Normal", dynamicHandle_Normal.checked));
 
     const dynamicHandle_Left = document.getElementById('control-dynamic-Left');
     const dynamicHandle_Right = document.getElementById('control-dynamic-Right');
@@ -72,16 +76,30 @@ export const reload_Process = () => {
 }
 
 export const setModeChange = (mode) => {
+    let normalElem = document.querySelectorAll('.header-normalEditor');
+    let diffElem = document.querySelectorAll('.header-diffEditor');
+
     if (mode === 'code') {
         document.getElementById('monaco-code').style.display = 'block';
         document.getElementById('monaco-diff').style.display = 'none';
+        normalElem.forEach((elem) => {
+            elem.style.display = 'flex';
+        });
+        diffElem.forEach((elem) => {
+            elem.style.display = 'none';
+        });
         normalEditor.layout();
         extraControlClick(false, "init");
         document.getElementById('control-EditorModeChange-code').checked = true;
-        
-    } else{
+    } else {
         document.getElementById('monaco-code').style.display = 'none';
         document.getElementById('monaco-diff').style.display = 'block';
+        normalElem.forEach((elem) => {
+            elem.style.display = 'none';
+        });
+        diffElem.forEach((elem) => {
+            elem.style.display = 'flex';
+        });
         diffEditor.layout();
         extraControlClick(true);
         document.getElementById('control-EditorModeChange-diff').checked = true;
