@@ -25,23 +25,19 @@ export const fileReadStart = async (isNew = false, init = "reSync") => {
     await fileReadBoth();
 }
 
-export const fileReadBothModel = async (normal, diff1, diff2) => {
-    if (normal === null) {
-        normal = await normalEditor.getModel();
-    }
+export const fileReadBothModel = async (diff1, diff2) => {
     if (diff1 === null) {
         diff1 = await diffEditor.getModel().original;
     }
     if (diff2 === null) {
         diff2 = await diffEditor.getModel().modified;
     }
-    if (normal === null || diff1 === null || diff2 === null) {
+    if (diff1 === null || diff2 === null) {
         return null;
     }
 
     await textModelEditorApply( diff1, diff2);
     rulerChange(document.getElementById('control-extraRuler').checked);
-    await tabs_add(normal, false);
 }
 
 export const fileReadBoth = async () => {
@@ -65,7 +61,7 @@ export const fileReadBoth = async () => {
         {//Normal Editor
             lang: modelLang[0],
             formattedText: LeftFile.text,
-            uri: await createURI(fileListHandleSet.Left.root.handle.name, control_LibLeft.value, FolderLeft.value, LeftFileName, LeftFile.time, modelLang[0]),
+            uri: "",//await createURI(fileListHandleSet.Left.root.handle.name, control_LibLeft.value, FolderLeft.value, LeftFileName, LeftFile.time, modelLang[0]),
             model: null
         },
         {//Diff Editor (Left)
@@ -91,11 +87,10 @@ export const fileReadBoth = async () => {
         lang[i].model = await modelChange(lang[i].formattedText, lang[i].lang, lang[i].uri);
     }
 
-    history.register('left', new historyItemLayout(lang[0].model));
+    history.register('left', new historyItemLayout(lang[1].model));
     history.register('right', new historyItemLayout(lang[2].model));
     await textModelEditorApply(lang[1].model, lang[2].model);
     //rulerChange(document.getElementById('control-extraRuler').checked);
-    await tabs_add(lang[0].model, false);
 }
 
 export const createFolderExistList = async (libHandle, folder) => {

@@ -43,12 +43,11 @@ export const pullDownEvent = () => {
                 const fileNameDOM = document.getElementById('control-Folder-' + [L_R]).value;
                 let uri = await monaco.Uri.parse(FileLR.value);
                 if (L_R === 'Left') {
-                    let model1 = await modelChange('N/A', fileTypeGet(fileNameDOM), uri);
                     let model2 = await modelChange('N/A', fileTypeGet(fileNameDOM, Setting.diffIndent), uri);
-                    await fileReadBothModel(model1, model2, null);
+                    await fileReadBothModel(model2, null);
                 } else if (L_R === 'Right') {
                     let model3 = await modelChange('N/A', fileTypeGet(fileNameDOM, Setting.diffIndent), uri);
-                    await fileReadBothModel(null, null, model3);
+                    await fileReadBothModel(null, model3);
                 }
                 return null;
             }

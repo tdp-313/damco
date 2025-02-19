@@ -1,6 +1,7 @@
 import { normalEditor, diffEditor } from "./monaco_root.js";
 import * as monaco from 'monaco-editor';
 import { refleshTextModel } from "./reflesh.js";
+import { refDefStart } from "./ref/init.js";
 
 export const createURI = async (rootHandleName, libName, fileName, memberName, time, lang = "dds") => {
     let path = "file://" + encodeURIComponent(rootHandleName);
@@ -66,6 +67,7 @@ export const getNormalEditor_Model_URI = async (uri_parm) => {
     return monaco.editor.getModel(uri_parm);
 }
 
-export const setNormalEditor_Model = (model) => {
+export const setNormalEditor_Model = async(model) => {
     normalEditor.setModel(model);
+    refDefStart(model);
 }

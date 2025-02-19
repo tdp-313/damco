@@ -1,5 +1,4 @@
 import { fileTypeGet2 } from "./monaco/file/read.js";
-import { refDefStart } from "./monaco/ref/init.js";
 import { getNormalEditor_Model, getNormalEditor_View, setNormalEditor_Model, setNormalEditor_View } from "./monaco/textmodel.js";
 import { themeCSS_FilterStyle } from "./monaco/theme/theme.js";
 import x_svg from "./icon/x.svg"
@@ -35,9 +34,8 @@ export const tabs_eventStart = async () => {
             }
             let select_tabs_MAP = await tabs.get(e.target.value);
             if (typeof (select_tabs_MAP) !== 'undefined') {
-                await setNormalEditor_Model(select_tabs_MAP.model);
+                setNormalEditor_Model(select_tabs_MAP.model);
                 await setNormalEditor_View(select_tabs_MAP.view);
-                await refDefStart(select_tabs_MAP.model);
             }
         }
 
@@ -65,8 +63,7 @@ export const tabs_eventStart = async () => {
                         }
                         const next_input = document.getElementById('monaco-tab-' + nextTabID);
                         next_input.checked = true;
-                        await setNormalEditor_Model(nextTabValue.model);
-                        await refDefStart(nextTabValue.model);
+                        setNormalEditor_Model(nextTabValue.model);
                         break;
                     }
                 }
@@ -80,7 +77,7 @@ export const tabs_eventStart = async () => {
 }
 
 export const tabs_add = async (model, new_data) => {
-    await refDefStart(model);
+    
     let id = "";
     let path = model.uri.path;
     let pathA = path.split("/");
@@ -168,6 +165,7 @@ export const tabs_add = async (model, new_data) => {
         li.classList.add('tabLayout');
         return li;
     }
+
     setNormalEditor_Model(model);
     const tabs_dom = document.getElementById('monaco-tab');
 
