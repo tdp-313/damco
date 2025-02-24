@@ -6,7 +6,6 @@ import { file_read_text } from "./IO.js";
 import { addIndent, addSpaces } from "./text_extend.js";
 import { modelChange, textModelEditorApply, createURI } from "../textmodel.js";
 import { rulerChange } from "../lang/ruler.js";
-import { tabs_add } from "../../tabs.js";
 import { Setting } from "../../setting.js";
 import { history, historyItemLayout } from "./history.js";
 import { diffEditor, normalEditor } from "../monaco_root.js";
@@ -78,7 +77,7 @@ export const fileReadBoth = async () => {
         }
     ];
 
-    for (let i = 0; i < lang.length; i++) {
+    for (let i = 1; i < lang.length; i++) {
         if (lang[i].lang.indexOf("indent") !== -1) {
             lang[i].formattedText = await addIndent(lang[i].formattedText);
         } else {
@@ -122,23 +121,6 @@ export const fileTypeGet = (fileName, Indent = true) => {
             return 'cl';
         case "QDSPSRC":
             return 'dds';
-        default:
-            return 'dds';
-    }
-}
-
-export const fileTypeGet2 = (fileName) => {
-    switch (fileName) {
-        case "QRPGSRC":
-            return 'rpg';
-        case "QDDSSRC":
-            return 'dds';
-        case "QCLSRC":
-            return 'cl';
-        case "QDSPSRC":
-            return 'dsp';
-        case "QRPGLESRC":
-            return 'dsp';
         default:
             return 'dds';
     }

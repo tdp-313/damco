@@ -23,7 +23,7 @@ export const searchOpen = () => {
         if (text === null) {
             return null;
         }
-        await readText_Model(array_uri_path[0] + "*", array_uri_path[1], text, handle);
+        await readText_Model(array_uri_path[0] + "*", array_uri_path[1], text, handle, monaco_handleName_RefMaster);
     });
     exLinkFile.addEventListener('contextmenu', async (e) => {
         e.preventDefault();
@@ -47,6 +47,6 @@ export const searchOpen = () => {
             return null;
         }
         console.log(result_array[0], result_array[1], result_array[2]);
-        await readText_Model(result_array[0], result_array[1], result_array[2], handle);
+        await readText_Model(result_array[0], result_array[1], result_array[2], handle, monaco_handleName_RefMaster);
     });
 } 

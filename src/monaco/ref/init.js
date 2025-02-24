@@ -1,19 +1,25 @@
+/*
 import { linkStatus } from "../file/directory.js";
 import { monaco_handleName, monaco_handleName_RefMaster } from "../../root.js";
 import { createUseFileList } from "../sidebar/sidebar.js";
 import { createRefList } from "./createRefDef.js";
-import { normalRefDef, otherFileFlagReference } from "./other.js";
+//import { normalRefDef, otherFileFlagReference } from "./other.js";
 import { Setting } from "../../setting.js";
 import { refDefCreate } from "./createRefDef.js";
 import { Directory_Handle_RegisterV2 } from "../file/directory.js";
 import { loadingPopUpClose } from "../monaco_root.js";
 import { UseIO_Layout } from "./other.js";
-import { fileTypeChange, fileTypeGet2 } from "../file/read.js";
-
+import { fileTypeChange } from "../file/read.js";
+import { fileTypeGet2 } from "../file/fileType.js";
+import { newRefDefStart } from "./new_init.js";
 export let refListFile = {};
 let firstEditorLoading = false;
 
+
+window.normalRefDef = normalRefDef;
+
 export const refDefStart = async (model) => {
+    newRefDefStart(model);
     normalRefDef.clear();
     otherFileFlagReference.clear();
     const libFileName = model.uri.path.split('/').filter(str => str !== '');
@@ -122,3 +128,4 @@ export const refDefStart = async (model) => {
     //sidebar
     await createUseFileList(normalRefDef);
 }
+*/

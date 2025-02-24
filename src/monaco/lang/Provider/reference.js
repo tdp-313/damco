@@ -1,7 +1,5 @@
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
-import { normalRefDef, otherFileFlagReference } from "../../ref/other.js";
 import * as monaco from 'monaco-editor';
-
 
 export const regReference = () => {
     monaco.languages.registerReferenceProvider('rpg-indent', {
@@ -78,12 +76,12 @@ export const regReference = () => {
                 }
             }
             //
-            let refDef = await normalRefDef.get(wordStr);
+            let refDef = await model.otherData.normalRefDef.get(wordStr);
             if (typeof (refDef) !== 'undefined') {
                 ranges.push(refDef.location);
             }
             if (FlagSearchStr !== "") {
-                let flagRef = await otherFileFlagReference.get(FlagSearchStr);
+                let flagRef = await model.otherData.otherFileFlagReference.get(FlagSearchStr);
                 if (typeof (flagRef) !== 'undefined') {
                     for (let i = 0; i < flagRef.length; i++){
                         ranges.push(flagRef[i].location);

@@ -1,5 +1,5 @@
 import { getRow_DDSText } from "../syntax/dds_text.js";
-import { normalRefDef } from "../../ref/other.js";
+
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
 import { sourceRefDef } from "../../ref/other.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
@@ -87,7 +87,7 @@ export const regDefinition = () => {
                     }
                 }
             }
-            let refDef = await normalRefDef.get(wordStr);
+            let refDef = await model.otherData.normalRefDef.get(wordStr);
             if (typeof (refDef) !== 'undefined') {
                 ranges.push(refDef.location);
             } else {
@@ -113,7 +113,7 @@ export const regDefinition = () => {
                 return null;
             }
             let ranges = [];
-            let refDef = await normalRefDef.get(wordStr);
+            let refDef = await model.otherData.normalRefDef.get(wordStr);
             if (typeof (refDef) !== 'undefined') {
                 ranges.push(refDef.location);
             }

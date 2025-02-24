@@ -54,6 +54,14 @@ class localSetting {
         return this.initRead;
     }
 
+    getLibraryList(data) {
+        if (Array.isArray(this.libraryList[data])){
+            return this.libraryList[data];
+        } else {
+            return [];
+        }
+    }
+
     get getWakeLock() {
         return this.wakelock;
     }

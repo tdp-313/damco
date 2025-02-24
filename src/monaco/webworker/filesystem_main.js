@@ -17,7 +17,7 @@ const history_worker = new Worker(new URL('./history_worker.js', import.meta.url
   type: 'module',
 })
 
-export const cacheNormal = { root: null, lib: null, folder: null, file: null, version: new Map() };
+export const cacheNormal = { root: null, rootName: "", lib: null, folder: null, file: null, version: new Map() };
 window.cacheNormal = cacheNormal;
 
 export class initOpenCache_Layout {
@@ -41,6 +41,7 @@ export const headerFileListCreate = async (initOpen = {}) => {
   initOpenCache = new initOpenCache_Layout(initOpen);
   await Directory_Handle_RegisterV2(initOpenCache.root, false, 'read');
   cacheNormal.root = linkStatus[initOpenCache.root].handle;
+  cacheNormal.rootName = initOpenCache.root;
   sendDirectoryHandleToWorker(linkStatus[initOpenCache.root].handle, 'root-lib');
 }
 
@@ -70,13 +71,13 @@ filesystem_worker.addEventListener(
       case 'fileOpen_change':
         let textRaw = e.data.body;
         let nowReadHandle = {
-          root: cacheNormal.root.name,
+          root: cacheNormal.rootName,
           lib: document.getElementById('control-Library-normal').value,
           folder: document.getElementById('control-Folder-normal').value,
           file: document.getElementById('control-File-normal').value,
           lang: "",
           formattedText: "",
-          extTimestamp : textRaw.ext + "__" + textRaw.timestamp
+          extTimestamp: textRaw.ext + "__" + textRaw.timestamp
         }
         nowReadHandle.lang = fileTypeGet(nowReadHandle.folder, true);
         let uri = await createURI(nowReadHandle.root, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, nowReadHandle.extTimestamp, nowReadHandle.lang);

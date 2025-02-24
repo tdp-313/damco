@@ -1,4 +1,4 @@
-import { fileTypeGet2 } from "./monaco/file/read.js";
+import { fileTypeGet2 } from "./monaco/file/fileType.js";
 import { getNormalEditor_Model, getNormalEditor_View, setNormalEditor_Model, setNormalEditor_View } from "./monaco/textmodel.js";
 import { themeCSS_FilterStyle } from "./monaco/theme/theme.js";
 import x_svg from "./icon/x.svg"

@@ -4,7 +4,7 @@ import { tabs_add } from "../../tabs.js";
 import { addIndent } from "./text_extend.js";
 import { fileTypeGet } from "./read.js";
 
-export const readText_Model = async (lib, file, member, r_handle) => {
+export const readText_Model = async (lib, file, member, r_handle, rootHandleName) => {
     let libHandle = null;
     let fileHandle = null;
     let memberHandle = null;
@@ -51,7 +51,7 @@ export const readText_Model = async (lib, file, member, r_handle) => {
     //Found !!
     let lang = fileTypeGet(file);
     let source_File = await file_read_text(memberHandle.name, memberHandle, false, "text", false);
-    let new_uri = await createURI(r_handle.name, libHandle.name, file, filename_c, source_File.time, lang);
+    let new_uri = await createURI(rootHandleName, libHandle.name, file, filename_c, source_File.time, lang);
     let source_text = source_File.text;
 
     let normalEditorModel = await modelChange(await addIndent(source_text), lang, new_uri);

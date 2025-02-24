@@ -1,23 +1,24 @@
 import { themeCSS_FilterStyle } from "../theme/theme.js";
 import { Setting } from "../../setting.js";
-import { refListFile } from "../ref/init.js";
 import { get_langIcon } from "../../tabs.js";
-import { normalRefDef } from "../ref/other.js";
 import { UseIO_Layout } from "../ref/other.js";
 import { libraryListSave } from "../../setting.js";
-import { fileTypeGet2 } from "../file/read.js";
+import { fileTypeGet2 } from "../file/fileType.js";
+import { getNormalEditor_Model } from "../textmodel.js";
 
 import databese_search_svg from "../../icon/database-search.svg"
 
 const sidebar_mode_file = document.getElementById('rs-mode-file');
 
 sidebar_mode_file.addEventListener('click', async (event) => {
-    await createUseFileList(normalRefDef);
+    let model = await getNormalEditor_Model();
+    await createUseFileList(model);
 });
 
 const sidebar_mode_def = document.getElementById('rs-mode-def');
 sidebar_mode_def.addEventListener('click', async (event) => {
-    await createUseFileList(normalRefDef);
+    let model = await getNormalEditor_Model();
+    await createUseFileList(model);
 });
 
 const sidebar_mode_setting = document.getElementById('rs-mode-setting');
@@ -25,7 +26,12 @@ sidebar_mode_setting.addEventListener('click', async (event) => {
     await createUseFileList(null);
 });
 
-export const createUseFileList = async (refDef) => {
+export const createUseFileList = async (model) => {
+    let refDef = null;
+    if (model !== null) {
+        refDef = model.otherData.normalRefDef;
+    }
+    
     let html = "";
     const sidebar_contents = document.getElementById('right-sideBar-contents');
     const selectedRadio = document.querySelector('input[name="rs-mode"]:checked');
@@ -113,7 +119,7 @@ export const createUseFileList = async (refDef) => {
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'file') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
                 if (langType === 'dsp') {
                     maxFile++;
                     existFile.push(key);
@@ -124,7 +130,7 @@ export const createUseFileList = async (refDef) => {
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'file') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
                 if (langType !== 'dsp') {
                     maxFile++;
                     existFile.push(key);
@@ -134,7 +140,7 @@ export const createUseFileList = async (refDef) => {
                 }
             }
         });
-        for (let value of refListFile.dds) {
+        for (let value of model.otherData.refListFile.dds) {
             if (!existFile.includes(value[0])) {
                 maxFile++;
                 let notFoundFile = value[1];
@@ -154,7 +160,7 @@ export const createUseFileList = async (refDef) => {
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'definition') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
                 if (langType === 'dsp') {
                     html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
                 }
@@ -163,7 +169,7 @@ export const createUseFileList = async (refDef) => {
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'definition') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
                 if (langType !== 'dsp') {
                     html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
                 }
@@ -187,9 +193,10 @@ export const createUseFileList = async (refDef) => {
 }
 let filter = { Input: true, Update: true, Output: true, Ref: true };
 
-export const filterSettingUpdate = (target, isFilter) => {
+export const filterSettingUpdate = async (target, isFilter) => {
     filter[target] = isFilter;
-    createUseFileList(normalRefDef);
+    let model = await getNormalEditor_Model();
+    createUseFileList(model);
 }
 
 export const isDisplayCheck = (useType) => {

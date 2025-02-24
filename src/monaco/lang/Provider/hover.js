@@ -3,7 +3,6 @@ import { sourceRefDef } from "../../ref/other.js";
 import { getRow_DDSText } from "../syntax/dds_text.js";
 import { tip_dds } from "../syntax/dds_text.js";
 import { tip_rpg } from "../syntax/rpg_indent_text.js";
-import { normalRefDef } from "../../ref/other.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
 import * as monaco from 'monaco-editor';
 
@@ -24,7 +23,7 @@ export const regHover = () => {
             //rpg-source create
             await sourceRefDefStart(model, sourceRefDef);
 
-            let tooltip_text = await hoverTextCreate(text, wordStr, "rpg-indent");
+            let tooltip_text = await hoverTextCreate(text, wordStr, "rpg-indent", model);
             // ホバー情報の作成
             return {
                 range: new monaco.Range(position.lineNumber, text.startColumn, position.lineNumber, text.endColumn),
@@ -50,7 +49,7 @@ export const regHover = () => {
             if (wordStr.length === 0) {
                 return null;
             }
-            let tooltip_text = await hoverTextCreate(text, wordStr, "dds");
+            let tooltip_text = await hoverTextCreate(text, wordStr, "dds", model);
             // ホバー情報の作成
             return {
                 range: new monaco.Range(position.lineNumber, text.startColumn, position.lineNumber, text.endColumn),
@@ -64,7 +63,7 @@ export const regHover = () => {
     });
 }
 
-const hoverTextCreate = async (text, wordStr, lang) => {
+const hoverTextCreate = async (text, wordStr, lang, model) => {
     let tooltip_text = ["", "", ""];
     let target = 'tip_' + text.type;
     let tipSrc = lang === "dds" ? tip_dds[target] : tip_rpg[target];
@@ -93,7 +92,7 @@ const hoverTextCreate = async (text, wordStr, lang) => {
         tooltip_text[1] = tip.description;
     } else if (tipSrc.type === "auto-fixed") {
         tooltip_text[0] = '**' + wordStr + '**';
-        let refDef = await normalRefDef.get(wordStr);
+        let refDef = await model.otherData.normalRefDef.get(wordStr);
         if (typeof (refDef) !== 'undefined') {
             tooltip_text[1] = refDef.description;
         } else {

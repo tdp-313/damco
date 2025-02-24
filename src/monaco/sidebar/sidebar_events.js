@@ -1,7 +1,7 @@
 import { sidebarEventStart } from "./open.js";
-import { normalRefDef } from "../ref/other.js";
+
 import { tabs_add } from "../../tabs.js";
-import { getNormalEditor_Model_URI } from "../textmodel.js";
+import { getNormalEditor_Model_URI, getNormalEditor_Model } from "../textmodel.js";
 import { filterSettingUpdate } from "./sidebar.js";
 
 export const rightSidebarRead = async () => {
@@ -19,10 +19,10 @@ export const rightSidebarRead = async () => {
     }
     let click_node = e.target.parentNode;
     let filename = click_node.getElementsByClassName('sidebar-filename')[0].innerText;
-
-    let selectMap = await normalRefDef.get(filename);
+    let nowModel = await getNormalEditor_Model();
+    let selectMap = await nowModel.otherData.normalRefDef.get(filename);
     if (typeof (selectMap) === 'undefined') {
-      selectMap = await normalRefDef.get("'" + filename + "'");
+      selectMap = await nowModel.otherData.normalRefDef.get("'" + filename + "'");
     }
     if (typeof (selectMap) !== 'undefined') {
       let model = await getNormalEditor_Model_URI(selectMap.location.uri);
