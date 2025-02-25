@@ -197,9 +197,3 @@ export const monacoStart = async () => {
     });
 
 }
-
-export const loadingPopUpClose = () => {
-    const dialog = document.getElementById('loadingPopUp');
-    dialog.close();
-    dialog.remove();
-}

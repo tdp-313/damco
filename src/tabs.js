@@ -39,7 +39,7 @@ export const tabs_eventStart = async () => {
             }
         }
 
-        if (e.target.tagName === 'IMG' && e.target.src.indexOf("x.svg") !== -1) {
+        if (e.target.tagName === 'IMG' && e.target.src.indexOf(x_svg) !== -1) {
             const selectedRadio = document.querySelector('input[name="rs-tab"]:checked');
             let li = e.target.parentNode.parentNode;
             if (li.getElementsByClassName('tab-item')[0].innerText === selectedRadio.value) {
@@ -77,7 +77,7 @@ export const tabs_eventStart = async () => {
 }
 
 export const tabs_add = async (model, new_data) => {
-    
+
     let id = "";
     let path = model.uri.path;
     let pathA = path.split("/");

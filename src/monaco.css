@@ -51,12 +51,6 @@ header {
 header input ,header label ,header select{
     -webkit-app-region: no-drag;
 } 
-#loadingPopUp {
-    top: 30%;
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.7);
-}
 
 @keyframes spin {
     0% {

@@ -14,6 +14,7 @@ class originalData_Layout {
             member: uri_split[2],
         }
         this.normalRefDef = new Map();
+        this.sourceRefDef = new Map();
         this.otherFileFlagReference = new Map();
         this.refListFile = { dds: new Map(), dsp: new Map(), pgm: new Map() };
         this.searchLibName = [];

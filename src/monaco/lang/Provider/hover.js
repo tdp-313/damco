@@ -1,5 +1,4 @@
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
-import { sourceRefDef } from "../../ref/other.js";
 import { getRow_DDSText } from "../syntax/dds_text.js";
 import { tip_dds } from "../syntax/dds_text.js";
 import { tip_rpg } from "../syntax/rpg_indent_text.js";
@@ -21,7 +20,7 @@ export const regHover = () => {
                 return null;
             }
             //rpg-source create
-            await sourceRefDefStart(model, sourceRefDef);
+            model.otherData.sourceRefDef = await sourceRefDefStart(model);
 
             let tooltip_text = await hoverTextCreate(text, wordStr, "rpg-indent", model);
             // ホバー情報の作成
@@ -96,7 +95,7 @@ const hoverTextCreate = async (text, wordStr, lang, model) => {
         if (typeof (refDef) !== 'undefined') {
             tooltip_text[1] = refDef.description;
         } else {
-            let sourceDef = await sourceRefDef.get(wordStr);
+            let sourceDef = await model.otherData.sourceRefDef.get(wordStr);
             if (typeof (sourceDef) !== 'undefined') {
                 tooltip_text[1] = sourceDef.description;
             } else {

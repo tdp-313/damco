@@ -1,7 +1,6 @@
 import { getRow_DDSText } from "../syntax/dds_text.js";
 
 import { getRow_Text } from "../syntax/rpg_indent_text.js";
-import { sourceRefDef } from "../../ref/other.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
 import * as monaco from 'monaco-editor';
 
@@ -91,8 +90,8 @@ export const regDefinition = () => {
             if (typeof (refDef) !== 'undefined') {
                 ranges.push(refDef.location);
             } else {
-                await sourceRefDefStart(model, sourceRefDef);
-                let sourceDef = await sourceRefDef.get(wordStr);
+                model.otherData.sourceRefDef = await sourceRefDefStart(model);
+                let sourceDef = await model.otherData.sourceRefDef.get(wordStr);
                 if (typeof (sourceDef) !== 'undefined') {
                     ranges.push(sourceDef.location);
                 }
