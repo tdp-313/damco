@@ -12,7 +12,7 @@ self.onmessage = async (event) => {
         otherData.refListFile = await createRefList(otherData.textLine, otherData.refListFile);
     } else if (otherData.lang === 'dds') {
         if (otherData.langType === "dsp") {
-            otherData.refListFile.dsp.set(otherData.uri_parse.member, { name: otherData.uri_parse.member, use: new UseIO_Layout(false), isFound: false, data: {} , uri_path: {}});
+            otherData.refListFile.dsp.set(otherData.uri_parse.member, { name: otherData.uri_parse.member, use: new UseIO_Layout(false), isFound: false, data: {}, uri_path: {} });
         } else if (otherData.langType === "dds") {
             otherData.refListFile.dds.set(otherData.uri_parse.member, { name: otherData.uri_parse.member, use: new UseIO_Layout(false), isFound: false, data: {}, uri_path: {} });
         } else {
@@ -41,22 +41,20 @@ self.onmessage = async (event) => {
     let dds_FileHandle = [];
     for (let r = 0; r < libraryHandle.length; r++) {
         for await (const handle of libraryHandle[r].handle.values()) {
-            for (let i = 0; i < otherData.searchLibName.length; i++) {
-                if (otherData.refListFile.dds.size > 0) {
-                    if (handle.name.indexOf(dds_fileName) !== -1) {
-                        libFileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "dds" });
-                        dds_FileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "dds" });
-                    }
+            if (otherData.refListFile.dds.size > 0) {
+                if (handle.name.indexOf(dds_fileName) !== -1) {
+                    libFileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "dds" });
+                    dds_FileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "dds" });
                 }
-                if (otherData.refListFile.dsp.size > 0) {
-                    if (handle.name.indexOf(dsp_fileName) !== -1) {
-                        libFileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "dsp" });
-                    }
+            }
+            if (otherData.refListFile.dsp.size > 0) {
+                if (handle.name.indexOf(dsp_fileName) !== -1) {
+                    libFileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "dsp" });
                 }
-                if (otherData.refListFile.pgm.size > 0) {
-                    if (handle.name.indexOf(cl_fileName) !== -1 || handle.name.indexOf(rpg_fileName) !== -1 || handle.name.indexOf(rpgle_fileName) !== -1) {
-                        libFileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "pgm" });
-                    }
+            }
+            if (otherData.refListFile.pgm.size > 0) {
+                if (handle.name.indexOf(cl_fileName) !== -1 || handle.name.indexOf(rpg_fileName) !== -1 || handle.name.indexOf(rpgle_fileName) !== -1) {
+                    libFileHandle.push({ handle, root: libraryHandle[r].root, lib: libraryHandle[r].lib, file: handle.name, type: "pgm" });
                 }
             }
         }
@@ -167,12 +165,12 @@ const createRefList = async (textLine) => {
                 if (dsp.has(file)) {
                     using.io = new Set([...using.io, ...dsp.get(file).use.io]);
                 }
-                dsp.set(file, { name: file, use: using, isFound: false, data: {} , uri_path: {}});
+                dsp.set(file, { name: file, use: using, isFound: false, data: {}, uri_path: {} });
             } else if (type === "DISK") {
                 if (dds.has(file)) {
                     using.io = new Set([...using.io, ...dds.get(file).use.io]);
                 }
-                dds.set(file, { name: file, use: using, isFound: false, data: {} , uri_path: {}});
+                dds.set(file, { name: file, use: using, isFound: false, data: {}, uri_path: {} });
             } else if (type === "PRINTER") {
                 if (dds.has(file)) {
                     using.io = new Set([...using.io, ...dds.get(file).use.io]);

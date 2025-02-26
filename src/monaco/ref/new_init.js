@@ -21,7 +21,7 @@ export const newRefDefStart = async (model) => {
             ];
             break;
         case (monaco_handleName_RefMaster):
-            SearchRootHandle = [{ name: monaco_handleName, handle: linkStatus[monaco_handleName].handle }];
+            SearchRootHandle = [{ name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }];
             break;
         default:
             console.error("error", model.otherData.uri_parse.root);
