@@ -1,12 +1,12 @@
 import { Setting } from "../setting.js";
 import { monacoLang } from "./lang/lang_root.js";
-import { fileReadStart } from "./file/read.js";
-import { extraControlClick } from "./sidebar/open.js";
 import { themeDiffApply, themeApply } from "./theme/theme.js";
 import { setModeChange } from "./header/header_button.js";
 import { rulerChange } from "./lang/ruler.js";
+import { headerFileListCreate, diff_headerFileListCreate } from "./webworker/filesystem_main.js";
 import * as monaco from 'monaco-editor';
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import { initPermissonCheck } from "../setting.js";
 
 //
 import darkTherme from "./theme/dark_1.json"
@@ -15,7 +15,7 @@ import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
 import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
-
+export const readEditorStatus = { normal: false, diff: false };
 
 self.MonacoEnvironment = {
     getWorker(_, label) {
@@ -41,7 +41,7 @@ export let diffEditor = null;
 export const monacoStart = async () => {
     monacoLang();
     monaco.editor.defineTheme('myTheme', darkTherme);
-    
+
     const editorOptionGeneral = {
         language: 'vb',
         mouseWheelZoom: true,
@@ -67,20 +67,25 @@ export const monacoStart = async () => {
         automaticLayout: true,
     });
     rulerChange(document.getElementById('control-extraRuler').checked);
-    if (Setting.getInitRead) {
-        fileReadStart(false, "init");
-    }
     diffEditor.updateOptions(editorOptionGeneral);
 
-    
     let nowUrl = new URL(window.location.href);
     let initOpenEditor = nowUrl.searchParams.get("init");
-    if (initOpenEditor === 'code' || initOpenEditor === 'diff') {
-        setModeChange(initOpenEditor);
-    } else {
-        setModeChange('code');
+    if (Setting.initRead) {
+        initPermissonCheck();
     }
-    
+    switch (initOpenEditor) {
+        case 'diff':
+            setModeChange('diff');
+            diff_headerFileListCreate();
+            readEditorStatus.diff = true;
+            break;
+        default:
+            setModeChange('code');
+            headerFileListCreate();
+            readEditorStatus.normal = true;
+            break;
+    }
 
     let isInsert = true;
     const insertChange = document.getElementById('control-extraInsertText');

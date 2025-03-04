@@ -157,7 +157,9 @@ export const tabs_add = async (model, new_data) => {
         temp += '<span class="tab-libnameText">' + path.substring(1, path.lastIndexOf('/')) + '</span>';
         temp += '<span class="tab-versionInfo">' + versionText + '</span>';
         temp += '</span>'
-        temp += '<img class="refSize control-iconButton" style="width: 1.5rem;filter:' + filter + '" src=' + x_svg + '>';
+        if (id !== '*') {
+            temp += '<img class="refSize control-iconButton" style="width: 1.5rem;filter:' + filter + '" src=' + x_svg + '>';
+        }
         temp += '<span class="tab-item" style="display: none;">' + id + '</span>';
         temp += '</label>';
         li.innerHTML = temp;

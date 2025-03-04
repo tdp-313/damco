@@ -5,8 +5,3 @@ export class UseIO_Layout {
         this.device = "";
     }
 }
-
-//export const normalRefDef = new Map();
-//export const otherFileFlagReference = new Map()
-//export const sourceRefDef = new Map();
-//export const P_FILE = new Map();

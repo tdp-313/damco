@@ -21,7 +21,6 @@ export const initReloadButton = () => {
         }
         window.alert('If there is something wrong with the version update, reload with Shift + F5');
         window.location.reload();
-        //fileReadStart(true);
     });
 
     modeChangeSync.addEventListener('click', async (event) => {

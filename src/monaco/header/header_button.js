@@ -1,7 +1,4 @@
-import { linkStatus } from "../file/directory.js";
-import { fileReadStart } from "../file/read.js";
 import { Setting } from "../../setting.js";
-import { fileHandleChange } from "../file/fileHandle.js";
 import { initReloadButton } from "./updateButton.js";
 import { searchOpen } from "./searchOpen.js";
 import { otherTabsOpenInit } from "./otherTabsOpen.js";
@@ -13,6 +10,9 @@ import { dynamicChange } from "../file/dynamicChange.js";
 
 import link_off_svg from "../../icon/link-off.svg"
 import link_on_svg from "../../icon/link.svg"
+import { readEditorStatus } from "../monaco_root.js";
+import { diff_headerFileListCreate, headerFileListCreate } from "../webworker/filesystem_main.js";
+import { nowReadFilePath } from "../webworker/filesystem_main.js";
 
 export let isFileSelectSync = true;
 
@@ -48,30 +48,41 @@ export const readFileButtonCreate = () => {
     });
     const dynamicHandle_Normal = document.getElementById('control-dynamic-normal');
 
-    dynamicHandle_Normal.addEventListener("click", (e) => dynamicChange("Normal", dynamicHandle_Normal.checked));
+    dynamicHandle_Normal.addEventListener("click", (e) => dynamicChange("normal", dynamicHandle_Normal.checked));
 
-    const dynamicHandle_Left = document.getElementById('control-dynamic-Left');
-    const dynamicHandle_Right = document.getElementById('control-dynamic-Right');
-    dynamicHandle_Left.addEventListener("click", (e) => fileHandleChange("Left", dynamicHandle_Left.checked));
-    dynamicHandle_Right.addEventListener("click", (e) => fileHandleChange("Right", dynamicHandle_Right.checked));
+    const dynamicHandle_Left = document.getElementById('control-dynamic-left');
+    const dynamicHandle_Right = document.getElementById('control-dynamic-right');
+    dynamicHandle_Left.addEventListener("click", (e) => dynamicChange("left", dynamicHandle_Left.checked));
+    dynamicHandle_Right.addEventListener("click", (e) => dynamicChange("right", dynamicHandle_Right.checked));
 
     const modeChangeCode = document.getElementById('control-EditorModeChange-code');
     modeChangeCode.addEventListener('click', (e) => {
         setModeChange('code');
+        if (!readEditorStatus.normal) {
+            headerFileListCreate({});
+            readEditorStatus.normal = true;
+        }
     });
 
     const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
     modeChangeDiff.addEventListener('click', (e) => {
         setModeChange('diff');
+        if (!readEditorStatus.diff) {
+            diff_headerFileListCreate();
+            readEditorStatus.diff = true;
+        }
     });
 }
 
-export const reload_Process = () => {
-    if (Object.keys(linkStatus).length === 0) {
-        fileReadStart(false, "init")
+export const reload_Process = async () => {
+    const modeChangeCode = document.getElementById('control-EditorModeChange-code');
+    const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
+    if (modeChangeCode.checked) {
+        await headerFileListCreate(nowReadFilePath('normal'));
     }
-    else {
-        fileReadStart(false)
+    if (modeChangeDiff.checked) {
+        let parm = { left: nowReadFilePath('left'), right: nowReadFilePath('right') };
+        await diff_headerFileListCreate(parm)
     }
 }
 

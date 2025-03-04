@@ -10,15 +10,21 @@ import { dds_DefinitionList } from "./dds_newRefDef.js";
 import { createUseFileList } from "../sidebar/sidebar.js";
 
 export const newRefDefStart = async (model) => {
-
     //RootHandleを取得
     let SearchRootHandle = [];
     switch (model.otherData.uri_parse.root) {
         case (monaco_handleName):
-            SearchRootHandle = [
-                { name: monaco_handleName, handle: linkStatus[monaco_handleName].handle },
-                { name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }
-            ];
+            if (typeof linkStatus[monaco_handleName_RefMaster] === "undefined") {
+                SearchRootHandle = [
+                    { name: monaco_handleName, handle: linkStatus[monaco_handleName].handle }
+                ];
+                console.warn("RefMaster not found");
+            } else {
+                SearchRootHandle = [
+                    { name: monaco_handleName, handle: linkStatus[monaco_handleName].handle },
+                    { name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }
+                ];
+            }
             break;
         case (monaco_handleName_RefMaster):
             SearchRootHandle = [{ name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }];

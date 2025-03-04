@@ -11,7 +11,7 @@ self.onmessage = async (event) => {
         }
     }
     if (libHandle === null) {
-        self.postMessage({ type: "nodata", body: null });
+        self.postMessage({ type: "nodata", body: null , target: event.data.target});
         return;
     }
 
@@ -24,7 +24,7 @@ self.onmessage = async (event) => {
         }
     }
     if (folderHandle === null) {
-        self.postMessage({ type: "nodata", body: null });
+        self.postMessage({ type: "nodata", body: null , target: event.data.target});
         return;
     }
 
@@ -42,7 +42,7 @@ self.onmessage = async (event) => {
         }
     }
     if (fileArray.length === 0) {
-        self.postMessage({ type: "nodata", body: null });
+        self.postMessage({ type: "nodata", body: null , target: event.data.target});
         return;
     }
 
@@ -58,5 +58,5 @@ self.onmessage = async (event) => {
         fileMap.set(key_name, element);
     });
 
-    self.postMessage({ type: "history", body: fileMap });
+    self.postMessage({ type: "history", body: fileMap, target: event.data.target });
 };

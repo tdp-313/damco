@@ -1,4 +1,6 @@
 import { get, set } from 'idb-keyval';
+import { monaco_handleName, monaco_handleName_RefMaster, monaco_handleName_his, monaco_handleName_RefMaster_his } from "./root.js";
+import { Directory_Handle_RegisterV2 } from "./monaco/file/directory.js";
 
 const SETTING_IDB = "monaco-setting";
 
@@ -11,8 +13,16 @@ export const SettingLoad = async () => {
     }
 }
 
+export const initPermissonCheck = async () => {
+    await Directory_Handle_RegisterV2(monaco_handleName, false, 'read');
+    await Directory_Handle_RegisterV2(monaco_handleName_his, false, 'read');
+
+    await Directory_Handle_RegisterV2(monaco_handleName_RefMaster, false, 'read');
+    await Directory_Handle_RegisterV2(monaco_handleName_RefMaster_his, false, 'read');
+}
+
 class localSetting {
-    constructor(data) {
+    constructor (data) {
         this.theme = typeof (data.theme) === 'undefined' ? 0 : data.theme;
         this.diffTheme = typeof (data.diffTheme) === 'undefined' ? true : data.diffTheme;
         this.libraryList = typeof (data.libraryList) === 'undefined' ? {} : data.libraryList;
@@ -55,7 +65,7 @@ class localSetting {
     }
 
     getLibraryList(data) {
-        if (Array.isArray(this.libraryList[data])){
+        if (Array.isArray(this.libraryList[data])) {
             return this.libraryList[data];
         } else {
             return [];

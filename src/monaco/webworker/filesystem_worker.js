@@ -2,7 +2,7 @@ import { fileOpen } from './fileOpen.js';
 
 self.onmessage = async (event) => {
     if (event.data.type === 'fileOpen' || event.data.type === 'fileOpen_change') {
-        self.postMessage({ type: event.data.type, body: await fileOpen(event.data.body) });
+        self.postMessage({ type: event.data.type, body: await fileOpen(event.data.body), target: event.data.target });
         return;
     }
     const fileDictionary = event.data.body;
@@ -25,5 +25,5 @@ self.onmessage = async (event) => {
     fileArray.forEach(element => {
         fileMap.set(element.name, element.handle);
     });
-    self.postMessage({ type: event.data.type, body: fileMap });
+    self.postMessage({ type: event.data.type, target: event.data.target, body: fileMap });
 };

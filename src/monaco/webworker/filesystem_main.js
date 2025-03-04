@@ -6,6 +6,7 @@ import { createURI } from "../textmodel.js";
 import { fileTypeGet } from "../file/read.js";
 import { addIndent, addSpaces } from "../file/text_extend.js";
 import { modelChange } from "../textmodel.js";
+import { textModelEditorApply } from "../textmodel.js";
 
 import { tabs_add } from "../../tabs.js";
 
@@ -17,8 +18,11 @@ const history_worker = new Worker(new URL('./history_worker.js', import.meta.url
   type: 'module',
 })
 
-export const cacheNormal = { root: null, rootName: "", lib: null, folder: null, file: null, version: new Map() };
-window.cacheNormal = cacheNormal;
+export const cache_data = {
+  normal: { root: null, rootName: "", lib: null, folder: null, file: null, version: new Map() },
+  left: { root: null, rootName: "", lib: null, folder: null, file: null, version: new Map() },
+  right: { root: null, rootName: "", lib: null, folder: null, file: null, version: new Map() }
+}
 
 export class initOpenCache_Layout {
   constructor(data) {
@@ -26,55 +30,84 @@ export class initOpenCache_Layout {
     this.lib = typeof (data.lib) === "undefined" ? "" : data.lib;
     this.folder = typeof (data.folder) === "undefined" ? "" : data.folder;
     this.file = typeof (data.file) === "undefined" ? "" : data.file;
+
     if (this.root === monaco_handleName) {
-      this.history = monaco_handleName_his;
+      this.history_handleName = monaco_handleName_his;
     } else if (this.root === monaco_handleName_RefMaster) {
-      this.history = monaco_handleName_RefMaster_his;
+      this.history_handleName = monaco_handleName_RefMaster_his;
     }
   }
 }
 
 let initOpenCache = null;
+let diffInitOpenCache = { left: {}, right: {} };
 
 export const headerFileListCreate = async (initOpen = {}) => {
   //root handle permission check
   initOpenCache = new initOpenCache_Layout(initOpen);
   await Directory_Handle_RegisterV2(initOpenCache.root, false, 'read');
-  cacheNormal.root = linkStatus[initOpenCache.root].handle;
-  cacheNormal.rootName = initOpenCache.root;
-  sendDirectoryHandleToWorker(linkStatus[initOpenCache.root].handle, 'root-lib');
+  cache_data.normal.root = linkStatus[initOpenCache.root].handle;
+  cache_data.normal.rootName = initOpenCache.root;
+  sendDirectoryHandleToWorker(linkStatus[initOpenCache.root].handle, 'root-lib', 'normal');
+}
+
+export const diff_headerFileListCreate = async (initOpen = { left: {}, right: {} }) => {
+  if (typeof (initOpen.left) !== 'undefined') {
+    diffInitOpenCache.left = new initOpenCache_Layout(initOpen.left);
+    await Directory_Handle_RegisterV2(diffInitOpenCache.left.root, false, 'read');
+    cache_data.left.root = linkStatus[diffInitOpenCache.left.root].handle;
+    cache_data.left.rootName = diffInitOpenCache.left.root;
+    sendDirectoryHandleToWorker(linkStatus[diffInitOpenCache.left.root].handle, 'root-lib', 'left');
+  }
+  if (typeof (initOpen.right) !== 'undefined') {
+    diffInitOpenCache.right = new initOpenCache_Layout(initOpen.right);
+    await Directory_Handle_RegisterV2(diffInitOpenCache.right.root, false, 'read');
+    cache_data.right.root = linkStatus[diffInitOpenCache.right.root].handle;
+    cache_data.right.rootName = diffInitOpenCache.right.root;
+    sendDirectoryHandleToWorker(linkStatus[diffInitOpenCache.right.root].handle, 'root-lib', 'right');
+  }
 }
 
 filesystem_worker.addEventListener(
   "message",
   async (e) => {
+    let target = e.data.target;
     switch (e.data.type) {
       case 'root-lib':
-        const Lib = document.getElementById('control-Library-normal');
-        cacheNormal.lib = e.data.body;
-        await populatePulldown(Lib, cacheNormal.lib, Lib.value);
-        sendDirectoryHandleToWorker(await cacheNormal.lib.get(Lib.value), 'lib-folder');
+        const Lib = document.getElementById('control-Library-' + target);
+        cache_data[target].lib = e.data.body;
+        await populatePulldown(Lib, cache_data[target].lib, Lib.value);
+        sendDirectoryHandleToWorker(await cache_data[target].lib.get(Lib.value), 'lib-folder', target);
         break;
       case 'lib-folder':
-        const Folder = document.getElementById('control-Folder-normal');
-        cacheNormal.folder = e.data.body;
-        await populatePulldown(Folder, cacheNormal.folder, Folder.value);
-        sendDirectoryHandleToWorker(await cacheNormal.folder.get(Folder.value), 'folder-file', "file");
+        const Folder = document.getElementById('control-Folder-' + target);
+        cache_data[target].folder = e.data.body;
+        await populatePulldown(Folder, cache_data[target].folder, Folder.value);
+        sendDirectoryHandleToWorker(await cache_data[target].folder.get(Folder.value), 'folder-file', target, "file");
         break;
       case 'folder-file':
-        const File = document.getElementById('control-File-normal');
-        cacheNormal.file = e.data.body;
-        await populatePulldown(File, cacheNormal.file, File.value, true);
-        sendDirectoryHandleToWorker(await cacheNormal.file.get(File.value), 'fileOpen');
+        const File = document.getElementById('control-File-' + target);
+        cache_data[target].file = e.data.body;
+        await populatePulldown(File, cache_data[target].file, File.value, true);
+        sendDirectoryHandleToWorker(await cache_data[target].file.get(File.value), 'fileOpen', target);
         break
       case 'fileOpen':
       case 'fileOpen_change':
         let textRaw = e.data.body;
+        var selectElement = document.getElementById('control-File-' + target);
+
+        // optionsの中から指定した値を持つoptionを探し、選択状態にします
+        for (var i = 0; i < selectElement.options.length; i++) {
+          if (selectElement.options[i].value == e.data.body.handle.name.replace(/\.[^/.]+$/, "")) {
+            selectElement.selectedIndex = i;
+            break;
+          }
+        }
         let nowReadHandle = {
-          root: cacheNormal.rootName,
-          lib: document.getElementById('control-Library-normal').value,
-          folder: document.getElementById('control-Folder-normal').value,
-          file: document.getElementById('control-File-normal').value,
+          root: cache_data[target].rootName,
+          lib: document.getElementById('control-Library-' + target).value,
+          folder: document.getElementById('control-Folder-' + target).value,
+          file: document.getElementById('control-File-' + target).value,
           lang: "",
           formattedText: "",
           extTimestamp: textRaw.ext + "__" + textRaw.timestamp
@@ -87,37 +120,51 @@ filesystem_worker.addEventListener(
           nowReadHandle.formattedText = addSpaces(textRaw.text);
         }
         let model = await modelChange(nowReadHandle.formattedText, nowReadHandle.lang, uri);
-        await tabs_add(model, false);
-
+        if (target === 'normal') {
+          await tabs_add(model, false);
+        } else {
+          if (target === 'left') {
+            textModelEditorApply(model, null);
+          } else {
+            textModelEditorApply(null, model);
+          }
+        }
+        
         if (e.data.type === 'fileOpen_change') {
           break;
         }
         //History
-        cacheNormal.version.clear();
-        cacheNormal.version.set(nowReadHandle.extTimestamp, { name: nowReadHandle.file, version: nowReadHandle.ext, timestamp: textRaw.timestamp, handle: await cacheNormal.file.get(document.getElementById('control-File-normal').value) });;
-
-
-        await Directory_Handle_RegisterV2(initOpenCache.history, false, 'read');
-        sendHistoryToWorker(linkStatus[initOpenCache.history].handle, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file);
+        cache_data[target].version.clear();
+        cache_data[target].version.set(nowReadHandle.extTimestamp, { name: nowReadHandle.file, version: nowReadHandle.ext, timestamp: textRaw.timestamp, handle: await cache_data[target].file.get(document.getElementById('control-File-' + target).value) });;
+        const version = document.getElementById('control-Version-' + target);
+        version.innerHTML = "";
+        let history_handleName = "";
+        if (target === 'normal') {
+          history_handleName = initOpenCache.history_handleName;
+        } else {
+          history_handleName = diffInitOpenCache[target].history_handleName;
+        }
+        await Directory_Handle_RegisterV2(history_handleName, false, 'read');
+        sendHistoryToWorker(linkStatus[history_handleName].handle, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, target);
         break;
       default:
         break;
     }
-  },
-  false
+  }
 );
 
 history_worker.addEventListener(
   "message",
   async (e) => {
-    const Version = document.getElementById('control-Version-normal');
+    let target = e.data.target;
+    const Version = document.getElementById('control-Version-' + target);
     if (e.data.type !== 'nodata') {
       const data = e.data.body;
       for (const [key, value] of data.entries()) {
-        cacheNormal.version.set(key, value);
+        cache_data[target].version.set(key, value);
       }
     }
-    await populatePulldown(Version, cacheNormal.version, Version.value, false);
+    await populatePulldown(Version, cache_data[target].version, Version.value, false);
   },
   false
 );
@@ -138,10 +185,20 @@ history_worker.addEventListener(
   false
 );
 
-export const sendDirectoryHandleToWorker = (directoryHandle, type, kind = 'directory') => {
-  filesystem_worker.postMessage({ type: type, body: directoryHandle, kind });
+export const sendDirectoryHandleToWorker = (directoryHandle, type, target, kind = 'directory') => {
+  filesystem_worker.postMessage({ type: type, body: directoryHandle, target, kind });
 }
 
-export const sendHistoryToWorker = (root, lib, folder, file) => {
-  history_worker.postMessage({ body: { root, lib, folder, file } });
+export const sendHistoryToWorker = (root, lib, folder, file, target) => {
+  history_worker.postMessage({ body: { root, lib, folder, file }, target });
+}
+
+export const nowReadFilePath = (target) => {
+  return {
+    root: cache_data[target].rootName,
+    lib: document.getElementById('control-Library-' + target).value,
+    folder: document.getElementById('control-Folder-' + target).value,
+    file: document.getElementById('control-File-' + target).value,
+    version: document.getElementById('control-Version-' + target).value
+  }
 }

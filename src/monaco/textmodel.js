@@ -1,6 +1,5 @@
 import { normalEditor, diffEditor } from "./monaco_root.js";
 import * as monaco from 'monaco-editor';
-import { refleshTextModel } from "./reflesh.js";
 import { newRefDefStart } from "./ref/new_init.js";
 import { fileTypeGet2 } from "./file/fileType.js";
 
@@ -62,15 +61,30 @@ export const modelChange = async (text, lang, uri) => {
     return model;
 }
 
-export const textModelEditorApply = async (model1, model2) => {
-    refleshTextModel();
+export const textModelEditorApply = async (model1 = null, model2 = null) => {
     //diffEditor
-    diffEditor.setModel({
-        original: model1,
-        modified: model2,
-    });
+    if (model1 !== null && model2 !== null) {
+        diffEditor.setModel({
+            original: model1,
+            modified: model2,
+        });
+    } else {
+        if (model1 !== null) {
+            let prevModel = await diffEditor.getModifiedEditor().getModel();
+            diffEditor.setModel({
+                original: model1,
+                modified: prevModel !== null ? prevModel : model1
+            });
+        }
+        if (model2 !== null) {
+            let prevModel = await diffEditor.getOriginalEditor().getModel();
+            diffEditor.setModel({
+                original: prevModel !== null ? prevModel : model2,
+                modified: model2
+            });
+        }
+    }
 
-    normalEditor.updateOptions(rpgEditorOption());
     diffEditor.updateOptions(rpgEditorOption());
 }
 
@@ -93,5 +107,6 @@ export const getNormalEditor_Model_URI = async (uri_parm) => {
 
 export const setNormalEditor_Model = async (model) => {
     normalEditor.setModel(model);
+    normalEditor.updateOptions(rpgEditorOption());
     newRefDefStart(model);
 }

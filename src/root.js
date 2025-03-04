@@ -3,7 +3,6 @@ import { monacoStart } from "./monaco/monaco_root.js";
 import { rightSidebarRead } from "./monaco/sidebar/sidebar_events.js";
 import { readFileButtonCreate } from "./monaco/header/header_button.js";
 import { tabs_eventStart } from "./tabs.js";
-import { headerFileListCreate } from "./monaco/webworker/filesystem_main.js";
 
 export const monaco_handleName = "monaco";
 export const monaco_handleName_his = "monaco-his";
@@ -17,5 +16,4 @@ window.onload = async () => {
     await rightSidebarRead();
     readFileButtonCreate();
     await tabs_eventStart();
-    headerFileListCreate();
 }
