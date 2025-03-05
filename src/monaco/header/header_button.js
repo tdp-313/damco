@@ -47,13 +47,12 @@ export const readFileButtonCreate = () => {
         }
     });
     const dynamicHandle_Normal = document.getElementById('control-dynamic-normal');
-
-    dynamicHandle_Normal.addEventListener("click", (e) => dynamicChange("normal", dynamicHandle_Normal.checked));
-
     const dynamicHandle_Left = document.getElementById('control-dynamic-left');
     const dynamicHandle_Right = document.getElementById('control-dynamic-right');
-    dynamicHandle_Left.addEventListener("click", (e) => dynamicChange("left", dynamicHandle_Left.checked));
-    dynamicHandle_Right.addEventListener("click", (e) => dynamicChange("right", dynamicHandle_Right.checked));
+
+    dynamicHandle_Normal.addEventListener("click", () => dynamicChange("normal", dynamicHandle_Normal.checked));
+    dynamicHandle_Left.addEventListener("click", () => dynamicChange("left", dynamicHandle_Left.checked));
+    dynamicHandle_Right.addEventListener("click", () => dynamicChange("right", dynamicHandle_Right.checked));
 
     const modeChangeCode = document.getElementById('control-EditorModeChange-code');
     modeChangeCode.addEventListener('click', (e) => {
@@ -78,9 +77,15 @@ export const reload_Process = async () => {
     const modeChangeCode = document.getElementById('control-EditorModeChange-code');
     const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
     if (modeChangeCode.checked) {
+        let model = await normalEditor.getModel();
+        model.otherData.createSkip = false;
         await headerFileListCreate(nowReadFilePath('normal'));
     }
     if (modeChangeDiff.checked) {
+        let leftModel = await diffEditor.getOriginalEditor().getModel();
+        leftModel.otherData.createSkip = false;
+        let rightModel = await diffEditor.getModifiedEditor().getModel();
+        rightModel.otherData.createSkip = false;
         let parm = { left: nowReadFilePath('left'), right: nowReadFilePath('right') };
         await diff_headerFileListCreate(parm)
     }

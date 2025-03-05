@@ -34,6 +34,7 @@ export const Directory_Handle_RegisterV2 = async (name, isNew = false, rw_mode =
             return 'NG';
         }
     }
+    
     linkStatus[name].ishandle = true;
     // FileSystemDirectoryHandle オブジェクトを Indexed Database に保存
     await set(name, linkStatus[name].handle);

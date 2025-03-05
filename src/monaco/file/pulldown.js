@@ -14,14 +14,12 @@ export const pullDownEvent = () => {
             }
             if (target[2] === 'left' || target[2] === 'right') {
                 if (isFileSelectSync) {
-                    let oppose = target[2] === 'left' ? 'right' : 'left';
-                    //
-                    pullDownEventMain(target[1], oppose, target[2]);
-                    if (target[1] === 'Folder') {
-                        var selectElement = document.getElementById('control-Folder-' + oppose);
-
+                    if (target[1] === 'Folder' || target[1] === 'File') {
+                        let oppose = target[2] === 'left' ? 'right' : 'left';
+                        pullDownEventMain(target[1], oppose, target[2]);
+                        let selectElement = document.getElementById('control-Folder-' + oppose);
                         // optionsの中から指定した値を持つoptionを探し、選択状態にします
-                        for (var i = 0; i < selectElement.options.length; i++) {
+                        for (let i = 0; i < selectElement.options.length; i++) {
                             if (selectElement.options[i].value === document.getElementById('control-Folder-' + target[2]).value) {
                                 selectElement.selectedIndex = i;
                                 break;

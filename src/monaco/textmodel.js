@@ -18,6 +18,7 @@ class originalData_Layout {
         this.refListFile = { dds: new Map(), dsp: new Map(), pgm: new Map() };
         this.searchLibName = [];
         this.isComplete = false;
+        this.createSkip = false;
         this.refDefRootHandle = [];
         this.textLine = text.split('\n');
         this.lang = lang;

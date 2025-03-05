@@ -1,4 +1,5 @@
 import { linkStatus } from "../file/directory.js";
+import { Setting } from "../../setting.js";
 import { monaco_handleName, monaco_handleName_RefMaster, monaco_handleName_his, monaco_handleName_RefMaster_his } from "../../root.js";
 import { Directory_Handle_RegisterV2 } from "../file/directory.js";
 import { populatePulldown } from "../file/newPulldown.js";
@@ -114,9 +115,18 @@ filesystem_worker.addEventListener(
         }
         nowReadHandle.lang = fileTypeGet(nowReadHandle.folder, true);
         let uri = await createURI(nowReadHandle.root, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, nowReadHandle.extTimestamp, nowReadHandle.lang);
-        if (nowReadHandle.lang.indexOf("indent") !== -1) {
+
+        let indent = true;
+        if (target === 'left' || target === 'right') {
+          indent = Setting.diffIndent
+        }
+
+        if (nowReadHandle.lang.indexOf("indent") !== -1 && indent) {
           nowReadHandle.formattedText = await addIndent(textRaw.text);
         } else {
+          if (nowReadHandle.lang === 'rpg-indent') {
+            nowReadHandle.lang = 'rpg';
+          }
           nowReadHandle.formattedText = addSpaces(textRaw.text);
         }
         let model = await modelChange(nowReadHandle.formattedText, nowReadHandle.lang, uri);
@@ -129,7 +139,6 @@ filesystem_worker.addEventListener(
             textModelEditorApply(null, model);
           }
         }
-        
         if (e.data.type === 'fileOpen_change') {
           break;
         }

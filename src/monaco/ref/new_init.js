@@ -11,6 +11,12 @@ import { createUseFileList } from "../sidebar/sidebar.js";
 
 export const newRefDefStart = async (model) => {
     //RootHandleを取得
+    if (model.otherData.createSkip) {
+        await createUseFileList(model);
+        console.log('SKIP')
+        return null;
+    }
+
     let SearchRootHandle = [];
     switch (model.otherData.uri_parse.root) {
         case (monaco_handleName):
@@ -84,12 +90,11 @@ export const newRefDefStart = async (model) => {
             }
         }
         model.otherData.normalRefDef = refDef;
+        model.otherData.createSkip = true;
         await createUseFileList(model);
         newRefDefWorker.terminate();
     }
     newRefDefWorker.onerror = (e) => {
         console.error(e);
     }
-
-
 }
