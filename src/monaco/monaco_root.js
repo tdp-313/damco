@@ -71,19 +71,22 @@ export const monacoStart = async () => {
 
     let nowUrl = new URL(window.location.href);
     let initOpenEditor = nowUrl.searchParams.get("init");
-    if (Setting.initRead) {
-        initPermissonCheck();
-    }
     switch (initOpenEditor) {
         case 'diff':
             setModeChange('diff');
-            diff_headerFileListCreate();
-            readEditorStatus.diff = true;
+            if (Setting.initRead) { 
+                initPermissonCheck();
+                diff_headerFileListCreate();
+                readEditorStatus.diff = true;
+            }
             break;
         default:
             setModeChange('code');
-            headerFileListCreate();
-            readEditorStatus.normal = true;
+            if (Setting.initRead) {
+                initPermissonCheck();
+                headerFileListCreate();
+                readEditorStatus.normal = true;
+            }
             break;
     }
 

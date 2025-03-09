@@ -8,12 +8,14 @@ import { fileTypeGet2 } from "../file/fileType.js";
 import { addIndent, addSpaces } from "../file/text_extend.js";
 import { dds_DefinitionList } from "./dds_newRefDef.js";
 import { createUseFileList } from "../sidebar/sidebar.js";
+import { searchStatusChange } from "../header/header_button.js";
 
 export const newRefDefStart = async (model) => {
     //RootHandleを取得
+    searchStatusChange('pending');
     if (model.otherData.createSkip) {
         await createUseFileList(model);
-        console.log('SKIP')
+        searchStatusChange('complete');
         return null;
     }
 
@@ -36,6 +38,7 @@ export const newRefDefStart = async (model) => {
             SearchRootHandle = [{ name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }];
             break;
         default:
+            searchStatusChange('off');
             console.error("error", model.otherData.uri_parse.root);
             return;
     }
@@ -93,8 +96,10 @@ export const newRefDefStart = async (model) => {
         model.otherData.createSkip = true;
         await createUseFileList(model);
         newRefDefWorker.terminate();
+        searchStatusChange('complete');
     }
     newRefDefWorker.onerror = (e) => {
+        searchStatusChange('off');
         console.error(e);
     }
 }

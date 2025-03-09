@@ -2,6 +2,7 @@ import { normalEditor, diffEditor } from "./monaco_root.js";
 import * as monaco from 'monaco-editor';
 import { newRefDefStart } from "./ref/new_init.js";
 import { fileTypeGet2 } from "./file/fileType.js";
+import { Setting } from "../setting.js";
 
 class originalData_Layout {
     constructor(uri, text, lang) {
@@ -19,6 +20,7 @@ class originalData_Layout {
         this.searchLibName = [];
         this.isComplete = false;
         this.createSkip = false;
+        this.isReplaceText = false;
         this.refDefRootHandle = [];
         this.textLine = text.split('\n');
         this.lang = lang;
@@ -51,8 +53,9 @@ export const modelChange = async (text, lang, uri) => {
     let model = monaco.editor.getModel(uri);
 
     if (model) {
-        if (text !== 'N/A') {
+        if (text !== 'N/A' && model.otherData.isReplaceText) {
             model.setValue(text);
+            model.otherData.isReplaceText = false;
         }
         monaco.editor.setModelLanguage(model, lang);
     } else {
@@ -69,6 +72,8 @@ export const textModelEditorApply = async (model1 = null, model2 = null) => {
             original: model1,
             modified: model2,
         });
+        newRefDefStart(model1);
+        newRefDefStart(model2);
     } else {
         if (model1 !== null) {
             let prevModel = await diffEditor.getModifiedEditor().getModel();
@@ -76,6 +81,7 @@ export const textModelEditorApply = async (model1 = null, model2 = null) => {
                 original: model1,
                 modified: prevModel !== null ? prevModel : model1
             });
+            newRefDefStart(model1);
         }
         if (model2 !== null) {
             let prevModel = await diffEditor.getOriginalEditor().getModel();
@@ -83,6 +89,7 @@ export const textModelEditorApply = async (model1 = null, model2 = null) => {
                 original: prevModel !== null ? prevModel : model2,
                 modified: model2
             });
+            newRefDefStart(model2);
         }
     }
 

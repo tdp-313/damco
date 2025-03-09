@@ -77,7 +77,6 @@
             </div>
 
             <div id="header-right-root" style="width: 100%; position: relative;">
-                <!--div class="header-normalEditor" style="width: 100%;"-->
                 <div style="width: 100%; position: absolute;">
                     <div id="control-subArea">
                         <div class="alignLine"></div>
@@ -105,7 +104,9 @@
                         <input type="checkbox" class="displayHide" id="control-initRead"></input>
                         <label for="control-initRead" class="control-iconButton"><img class="refSize"
                                 src="./icon/terminal-2.svg"></label>
-
+                        <div></div>
+                        <div class="alignLine"></div>
+                        <img class="refSize" src="./icon/search-off.svg" id="control-search-status" style="display: flex;justify-content: center;width: 100%;">
                     </div>
                 </div>
                 <div class="header-diffEditor" style="width: 100%; position: relative;">
@@ -173,11 +174,14 @@
                 <input type="radio" class="displayHide" id="rs-mode-file" name="rs-mode" value="file" checked></input>
                 <label for="rs-mode-file" class="control-iconButton"><img class="refSize"
                         src="./icon/database-search.svg">File</label>
+                <input type="radio" class="displayHide" id="rs-mode-pgm" name="rs-mode" value="pgm"></input>
+                <label for="rs-mode-pgm" class="control-iconButton"><img class="refSize"
+                        src="./icon/hash.svg">PGM</label>
                 <input type="radio" class="displayHide" id="rs-mode-def" name="rs-mode" value="def"></input>
-                <label for="rs-mode-def" class="control-iconButton"><img class="refSize"
-                        src="./icon/code-asterix.svg">Definition</label>
+                <label for="rs-mode-def" class="control-iconButton" style="width: 6rem; min-width: 0;"><img
+                        class="refSize" src="./icon/code-asterix.svg"></label>
                 <input type="radio" class="displayHide" id="rs-mode-setting" name="rs-mode" value="setting"></input>
-                <label for="rs-mode-setting" class="control-iconButton" style="width: 4rem;min-width: 0;"><img
+                <label for="rs-mode-setting" class="control-iconButton" style="width: 6rem; min-width: 0;"><img
                         class="refSize" src="./icon/setting.svg"></label>
             </div>
             <div class="verticalLine"></div>

@@ -22,7 +22,7 @@ export const initPermissonCheck = async () => {
 }
 
 class localSetting {
-    constructor (data) {
+    constructor(data) {
         this.theme = typeof (data.theme) === 'undefined' ? 0 : data.theme;
         this.diffTheme = typeof (data.diffTheme) === 'undefined' ? true : data.diffTheme;
         this.libraryList = typeof (data.libraryList) === 'undefined' ? {} : data.libraryList;
@@ -37,6 +37,9 @@ class localSetting {
         initRead_diffIndent.checked = this.diffIndent;
         const diffViewChange = document.getElementById('control-diffViewChange');
         diffViewChange.checked = this.diffTheme;
+
+        this.lastView = typeof (data.lastView) === 'undefined' ? { normal: {}, left: {}, right: {} } : data.lastView;
+
     }
 
     get getAll() {
@@ -62,6 +65,10 @@ class localSetting {
 
     get getInitRead() {
         return this.initRead;
+    }
+    
+    get getLastView() {
+        return this.lastView;
     }
 
     getLibraryList(data) {
@@ -103,6 +110,11 @@ class localSetting {
 
     set setWakeLock(isLock) {
         this.wakelock = isLock;
+        this.save();
+    }
+
+    saveLastView(target, data) {
+        this.lastView[target] = data;
         this.save();
     }
 

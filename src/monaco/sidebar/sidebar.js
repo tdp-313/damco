@@ -21,6 +21,12 @@ sidebar_mode_def.addEventListener('click', async (event) => {
     await createUseFileList(model);
 });
 
+const sidebar_mode_pgm = document.getElementById('rs-mode-pgm');
+sidebar_mode_pgm.addEventListener('click', async (event) => {
+    let model = await getNormalEditor_Model();
+    await createUseFileList(model);
+});
+
 const sidebar_mode_setting = document.getElementById('rs-mode-setting');
 sidebar_mode_setting.addEventListener('click', async (event) => {
     await createUseFileList(null);
@@ -31,7 +37,7 @@ export const createUseFileList = async (model) => {
     if (model !== null) {
         refDef = model.otherData.normalRefDef;
     }
-    
+
     let html = "";
     const sidebar_contents = document.getElementById('right-sideBar-contents');
     const selectedRadio = document.querySelector('input[name="rs-mode"]:checked');
@@ -80,6 +86,7 @@ export const createUseFileList = async (model) => {
             return (temp);
         }
     }
+
     if (mode === 'file') {
         let existFile = [];
         //Filter Element Create
@@ -107,30 +114,35 @@ export const createUseFileList = async (model) => {
 
         let filterContents = [];
         let maxFile = 0;
-        refDef.forEach((value, key) => {
-            // 第一引数にキーが、第二引数に値が渡される
-            if (value.sourceType === 'PGM') {
-                maxFile++;
-                existFile.push(key);
-                filterContents.push(get_template(key.replace(/'/g, ""), value.s_description, value.location.uri.path, get_langIcon(fileTypeGet2(value.location.uri.path.split('/')[2])), filter_style, value.use));
-            }
-        });
 
+        //DSP
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'file') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
-                if (langType === 'dsp') {
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                if (value.use.device === 'dsp') {
                     maxFile++;
                     existFile.push(key);
                     filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, value.use));
                 }
             }
         });
+        for (let value of model.otherData.refListFile.dsp) {
+            if (!existFile.includes(value[0])) {
+                maxFile++;
+                let notFoundFile = value[1];
+                if (isDisplayCheck(notFoundFile.use)) {
+                    notFoundFile.use.original = true;
+                    filterContents.push(get_template(notFoundFile.name, "Not Found", "", get_langIcon("dsp", notFoundFile.use.original, notFoundFile.use.device), filter_style, notFoundFile.use));
+                }
+            };
+        }
+
+        //DDS
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'file') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
                 if (langType !== 'dsp') {
                     maxFile++;
                     existFile.push(key);
@@ -156,11 +168,30 @@ export const createUseFileList = async (model) => {
             html += filterContents[i];
         }
     }
+
+    if (mode === 'pgm') {
+        let existFile = [];
+        refDef.forEach((value, key) => {
+            // 第一引数にキーが、第二引数に値が渡される
+            if (value.sourceType === 'PGM') {
+                existFile.push(key.replace(/'/g, ""));
+                html += get_template(key.replace(/'/g, ""), value.s_description, value.location.uri.path, get_langIcon(fileTypeGet2(value.location.uri.path.split('/')[2])), filter_style, value.use);
+            }
+        });
+        for (let value of model.otherData.refListFile.pgm) {
+            if (!existFile.includes(value[0])) {
+                let notFoundFile = value[1];
+                notFoundFile.use.original = true;
+                html += get_template(notFoundFile.name, "Not Found", "", get_langIcon("pgm", notFoundFile.use.original, notFoundFile.use.device), filter_style, notFoundFile.use);
+            };
+        }
+    }
+
     if (mode === 'def') {
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'definition') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
                 if (langType === 'dsp') {
                     html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
                 }
@@ -169,15 +200,13 @@ export const createUseFileList = async (model) => {
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'definition') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[1]);
+                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
                 if (langType !== 'dsp') {
                     html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
                 }
             }
         });
     }
-
-
 
     if (mode === 'setting') {
         html = "<h4>Library List Setting</h4>";
@@ -187,7 +216,7 @@ export const createUseFileList = async (model) => {
     }
     sidebar_contents.innerHTML = html;
     const librarySaveButton = document.getElementById('settingLibrarySaveButton');
-    if (mode === 'setting') { 
+    if (mode === 'setting') {
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
     }
 }

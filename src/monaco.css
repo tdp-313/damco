@@ -165,7 +165,7 @@ header .header-diffEditor {
 
 .alignLine {
     background-color: var(--font-color);
-    width: 0.15rem;
+    min-width: 0.15rem;
     height: 100%;
 
     margin: auto;
@@ -238,10 +238,9 @@ header input[type="radio"]:checked+label,
     display: grid;
     top: 0rem;
     width: 100%;
-    grid-template-columns: 0.5rem 2rem 2rem 2rem 0.5rem 2rem 2rem 2rem 0.5rem 2rem 1fr 2rem 0.5rem;
+    grid-template-columns: 0.5rem 2rem 2rem 2rem 0.5rem 2rem 2rem 2rem 1rem 0.5rem 2rem;
     z-index: 1;
     transition: 0.3s ease;
-    margin-left: 0.5rem;
 }
 
 #control-subArea.close {
@@ -305,7 +304,7 @@ header input[type="radio"]:checked+label,
     display: flex;
     justify-content: space-around;
     padding: 0 0.3rem;
-    width: 10rem;
+    width: 8.5rem;
     height: 1.5rem;
     border: 2px solid var(--font-color);
     overflow: hidden;

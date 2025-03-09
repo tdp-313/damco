@@ -114,7 +114,6 @@ filesystem_worker.addEventListener(
           extTimestamp: textRaw.ext + "__" + textRaw.timestamp
         }
         nowReadHandle.lang = fileTypeGet(nowReadHandle.folder, true);
-        let uri = await createURI(nowReadHandle.root, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, nowReadHandle.extTimestamp, nowReadHandle.lang);
 
         let indent = true;
         if (target === 'left' || target === 'right') {
@@ -129,6 +128,7 @@ filesystem_worker.addEventListener(
           }
           nowReadHandle.formattedText = addSpaces(textRaw.text);
         }
+        let uri = await createURI(nowReadHandle.root, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, nowReadHandle.extTimestamp, nowReadHandle.lang);
         let model = await modelChange(nowReadHandle.formattedText, nowReadHandle.lang, uri);
         if (target === 'normal') {
           await tabs_add(model, false);

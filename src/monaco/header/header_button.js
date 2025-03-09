@@ -10,6 +10,12 @@ import { dynamicChange } from "../file/dynamicChange.js";
 
 import link_off_svg from "../../icon/link-off.svg"
 import link_on_svg from "../../icon/link.svg"
+
+import search_pending from "../../icon/search-pending.svg"
+import search_complete from "../../icon/search-complete.svg"
+import search_off from "../../icon/search-off.svg"
+
+import { initPermissonCheck } from "../../setting.js";
 import { readEditorStatus } from "../monaco_root.js";
 import { diff_headerFileListCreate, headerFileListCreate } from "../webworker/filesystem_main.js";
 import { nowReadFilePath } from "../webworker/filesystem_main.js";
@@ -58,7 +64,8 @@ export const readFileButtonCreate = () => {
     modeChangeCode.addEventListener('click', (e) => {
         setModeChange('code');
         if (!readEditorStatus.normal) {
-            headerFileListCreate({});
+            initPermissonCheck();
+            headerFileListCreate();
             readEditorStatus.normal = true;
         }
     });
@@ -67,6 +74,7 @@ export const readFileButtonCreate = () => {
     modeChangeDiff.addEventListener('click', (e) => {
         setModeChange('diff');
         if (!readEditorStatus.diff) {
+            initPermissonCheck();
             diff_headerFileListCreate();
             readEditorStatus.diff = true;
         }
@@ -77,17 +85,34 @@ export const reload_Process = async () => {
     const modeChangeCode = document.getElementById('control-EditorModeChange-code');
     const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
     if (modeChangeCode.checked) {
-        let model = await normalEditor.getModel();
-        model.otherData.createSkip = false;
-        await headerFileListCreate(nowReadFilePath('normal'));
+        if (readEditorStatus.normal) {
+            let model = await normalEditor.getModel();
+            model.otherData.createSkip = false;
+            model.otherData.isReplaceText = true;
+            await headerFileListCreate(nowReadFilePath('normal'));
+        } else {
+            initPermissonCheck();
+            readEditorStatus.normal = true;
+            await headerFileListCreate();
+        }
+
     }
     if (modeChangeDiff.checked) {
-        let leftModel = await diffEditor.getOriginalEditor().getModel();
-        leftModel.otherData.createSkip = false;
-        let rightModel = await diffEditor.getModifiedEditor().getModel();
-        rightModel.otherData.createSkip = false;
-        let parm = { left: nowReadFilePath('left'), right: nowReadFilePath('right') };
-        await diff_headerFileListCreate(parm)
+        if (readEditorStatus.diff) {
+            let leftModel = await diffEditor.getOriginalEditor().getModel();
+            leftModel.otherData.createSkip = false;
+            leftModel.otherData.isReplaceText = true;
+            let rightModel = await diffEditor.getModifiedEditor().getModel();
+            rightModel.otherData.createSkip = false;
+            rightModel.otherData.isReplaceText = true;
+            let parm = { left: nowReadFilePath('left'), right: nowReadFilePath('right') };
+            await diff_headerFileListCreate(parm)
+        } else {
+            initPermissonCheck();
+            readEditorStatus.diff = true;
+            await diff_headerFileListCreate();
+        }
+
     }
 }
 
@@ -119,5 +144,17 @@ export const setModeChange = (mode) => {
         diffEditor.layout();
         extraControlClick(true);
         document.getElementById('control-EditorModeChange-diff').checked = true;
+    }
+}
+
+const search_status = document.getElementById('control-search-status');
+
+export const searchStatusChange = (mode) => {
+    if (mode === 'off') {
+        search_status.src = search_off;
+    } else if (mode === 'complete') {
+        search_status.src = search_complete;
+    } else if (mode === 'pending') {
+        search_status.src = search_pending;
     }
 }
