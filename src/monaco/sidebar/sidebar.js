@@ -120,7 +120,7 @@ export const createUseFileList = async (model) => {
             // 第一引数にキーが、第二引数に値が渡される
             if (value.sourceType === 'file') {
                 let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
-                if (value.use.device === 'dsp') {
+                if (langType === 'dsp') {
                     maxFile++;
                     existFile.push(key);
                     filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, value.use));
