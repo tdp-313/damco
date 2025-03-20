@@ -19,7 +19,7 @@ import { initPermissonCheck } from "../../setting.js";
 import { readEditorStatus } from "../monaco_root.js";
 import { diff_headerFileListCreate, headerFileListCreate } from "../webworker/filesystem_main.js";
 import { nowReadFilePath } from "../webworker/filesystem_main.js";
-
+import { rulerChange } from "../lang/ruler.js";
 export let isFileSelectSync = true;
 
 export const readFileButtonCreate = () => {
@@ -37,6 +37,7 @@ export const readFileButtonCreate = () => {
     diffIndentButton.addEventListener('click', async (event) => {
         Setting.setdiffIndent = diffIndentButton.checked;
         reload_Process();
+        rulerChange();
     });
 
     const fileSelectSync = document.getElementById('control-FileSelectSync');
@@ -112,7 +113,6 @@ export const reload_Process = async () => {
             readEditorStatus.diff = true;
             await diff_headerFileListCreate();
         }
-
     }
 }
 

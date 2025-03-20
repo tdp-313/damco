@@ -3,6 +3,7 @@ import { monacoLang } from "./lang/lang_root.js";
 import { themeDiffApply, themeApply } from "./theme/theme.js";
 import { setModeChange } from "./header/header_button.js";
 import { rulerChange } from "./lang/ruler.js";
+import { initDynamicChange } from "./file/dynamicChange.js";
 import { headerFileListCreate, diff_headerFileListCreate } from "./webworker/filesystem_main.js";
 import * as monaco from 'monaco-editor';
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -71,12 +72,16 @@ export const monacoStart = async () => {
 
     let nowUrl = new URL(window.location.href);
     let initOpenEditor = nowUrl.searchParams.get("init");
+    let prevFilePath = nowUrl.searchParams.get("prevView");
     switch (initOpenEditor) {
         case 'diff':
             setModeChange('diff');
-            if (Setting.initRead) { 
+            if (Setting.initRead) {
                 initPermissonCheck();
-                diff_headerFileListCreate();
+                let nowRead = prevFilePath === null ? { left: {}, right: {} } : JSON.parse(prevFilePath);
+                initDynamicChange('left', nowRead.left);
+                initDynamicChange('right', nowRead.right);
+                diff_headerFileListCreate(nowRead);
                 readEditorStatus.diff = true;
             }
             break;
@@ -84,7 +89,9 @@ export const monacoStart = async () => {
             setModeChange('code');
             if (Setting.initRead) {
                 initPermissonCheck();
-                headerFileListCreate();
+                let nowRead = prevFilePath === null ? {} : JSON.parse(prevFilePath);
+                initDynamicChange('normal', nowRead);
+                headerFileListCreate(nowRead);
                 readEditorStatus.normal = true;
             }
             break;

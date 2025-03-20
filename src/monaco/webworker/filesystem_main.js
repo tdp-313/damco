@@ -40,32 +40,31 @@ export class initOpenCache_Layout {
   }
 }
 
-let initOpenCache = null;
-let diffInitOpenCache = { left: {}, right: {} };
+let initOpenCache = { normal: {}, left: {}, right: {} };
 
 export const headerFileListCreate = async (initOpen = {}) => {
   //root handle permission check
-  initOpenCache = new initOpenCache_Layout(initOpen);
-  await Directory_Handle_RegisterV2(initOpenCache.root, false, 'read');
-  cache_data.normal.root = linkStatus[initOpenCache.root].handle;
-  cache_data.normal.rootName = initOpenCache.root;
-  sendDirectoryHandleToWorker(linkStatus[initOpenCache.root].handle, 'root-lib', 'normal');
+  initOpenCache.normal = new initOpenCache_Layout(initOpen);
+  await Directory_Handle_RegisterV2(initOpenCache.normal.root, false, 'read');
+  cache_data.normal.root = linkStatus[initOpenCache.normal.root].handle;
+  cache_data.normal.rootName = initOpenCache.normal.root;
+  sendDirectoryHandleToWorker(linkStatus[initOpenCache.normal.root].handle, 'root-lib', 'normal');
 }
 
 export const diff_headerFileListCreate = async (initOpen = { left: {}, right: {} }) => {
   if (typeof (initOpen.left) !== 'undefined') {
-    diffInitOpenCache.left = new initOpenCache_Layout(initOpen.left);
-    await Directory_Handle_RegisterV2(diffInitOpenCache.left.root, false, 'read');
-    cache_data.left.root = linkStatus[diffInitOpenCache.left.root].handle;
-    cache_data.left.rootName = diffInitOpenCache.left.root;
-    sendDirectoryHandleToWorker(linkStatus[diffInitOpenCache.left.root].handle, 'root-lib', 'left');
+    initOpenCache.left = new initOpenCache_Layout(initOpen.left);
+    await Directory_Handle_RegisterV2(initOpenCache.left.root, false, 'read');
+    cache_data.left.root = linkStatus[initOpenCache.left.root].handle;
+    cache_data.left.rootName = initOpenCache.left.root;
+    sendDirectoryHandleToWorker(linkStatus[initOpenCache.left.root].handle, 'root-lib', 'left');
   }
   if (typeof (initOpen.right) !== 'undefined') {
-    diffInitOpenCache.right = new initOpenCache_Layout(initOpen.right);
-    await Directory_Handle_RegisterV2(diffInitOpenCache.right.root, false, 'read');
-    cache_data.right.root = linkStatus[diffInitOpenCache.right.root].handle;
-    cache_data.right.rootName = diffInitOpenCache.right.root;
-    sendDirectoryHandleToWorker(linkStatus[diffInitOpenCache.right.root].handle, 'root-lib', 'right');
+    initOpenCache.right = new initOpenCache_Layout(initOpen.right);
+    await Directory_Handle_RegisterV2(initOpenCache.right.root, false, 'read');
+    cache_data.right.root = linkStatus[initOpenCache.right.root].handle;
+    cache_data.right.rootName = initOpenCache.right.root;
+    sendDirectoryHandleToWorker(linkStatus[initOpenCache.right.root].handle, 'root-lib', 'right');
   }
 }
 
@@ -77,19 +76,22 @@ filesystem_worker.addEventListener(
       case 'root-lib':
         const Lib = document.getElementById('control-Library-' + target);
         cache_data[target].lib = e.data.body;
-        await populatePulldown(Lib, cache_data[target].lib, Lib.value);
+        let searchLib = Lib.value === "" ? initOpenCache[target].lib : Lib.value;
+        await populatePulldown(Lib, cache_data[target].lib, searchLib);
         sendDirectoryHandleToWorker(await cache_data[target].lib.get(Lib.value), 'lib-folder', target);
         break;
       case 'lib-folder':
         const Folder = document.getElementById('control-Folder-' + target);
         cache_data[target].folder = e.data.body;
-        await populatePulldown(Folder, cache_data[target].folder, Folder.value);
+        let searchFolder = Folder.value === "" ? initOpenCache[target].folder : Folder.value;
+        await populatePulldown(Folder, cache_data[target].folder, searchFolder);
         sendDirectoryHandleToWorker(await cache_data[target].folder.get(Folder.value), 'folder-file', target, "file");
         break;
       case 'folder-file':
         const File = document.getElementById('control-File-' + target);
         cache_data[target].file = e.data.body;
-        await populatePulldown(File, cache_data[target].file, File.value, true);
+        let searchFile = File.value === "" ? initOpenCache[target].file : File.value;
+        await populatePulldown(File, cache_data[target].file, searchFile, true);
         sendDirectoryHandleToWorker(await cache_data[target].file.get(File.value), 'fileOpen', target);
         break
       case 'fileOpen':
@@ -147,12 +149,7 @@ filesystem_worker.addEventListener(
         cache_data[target].version.set(nowReadHandle.extTimestamp, { name: nowReadHandle.file, version: nowReadHandle.ext, timestamp: textRaw.timestamp, handle: await cache_data[target].file.get(document.getElementById('control-File-' + target).value) });;
         const version = document.getElementById('control-Version-' + target);
         version.innerHTML = "";
-        let history_handleName = "";
-        if (target === 'normal') {
-          history_handleName = initOpenCache.history_handleName;
-        } else {
-          history_handleName = diffInitOpenCache[target].history_handleName;
-        }
+        let history_handleName = initOpenCache[target].history_handleName;
         await Directory_Handle_RegisterV2(history_handleName, false, 'read');
         sendHistoryToWorker(linkStatus[history_handleName].handle, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, target);
         break;

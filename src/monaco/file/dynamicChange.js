@@ -1,5 +1,5 @@
 import { cache_data } from "../webworker/filesystem_main"
-import { monaco_handleName, monaco_handleName_RefMaster } from "../../root"
+import { monaco_handleName, monaco_handleName_RefMaster, monaco_handleName_RefMaster_his } from "../../root"
 import { headerFileListCreate, diff_headerFileListCreate } from "../webworker/filesystem_main"
 
 export const dynamicChange = async (target, isRef) => {
@@ -27,5 +27,14 @@ export const dynamicChange = async (target, isRef) => {
             nowRead.root = monaco_handleName;
             diff_headerFileListCreate(parm);
         }
+    }
+}
+
+export const initDynamicChange = (target, cache_data) => {
+    if (typeof (cache_data.root) === 'undefined') {
+        return;
+    }
+    if (cache_data.root === monaco_handleName_RefMaster || cache_data.root === monaco_handleName_RefMaster_his) {
+        document.getElementById('control-dynamic-' + target).checked = true;
     }
 }

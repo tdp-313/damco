@@ -1,5 +1,6 @@
 import { Setting } from "../../setting.js";
 import { diffEditor } from "../monaco_root.js";
+import { otherTabOpenEvent } from "../header/otherTabsOpen.js";
 import * as monaco from 'monaco-editor';
 import darkTheme from "./dark_1.json"
 import whiteTheme from "./white.json"
@@ -68,6 +69,11 @@ export const themeApply = async (themeState) => {
 
 const diffViewChange = document.getElementById('control-diffViewChange');
 diffViewChange.addEventListener('click', (event) => { themeDiffApply(event.target.checked) });
+diffViewChange.parentNode.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+  otherTabOpenEvent();
+})
+
 export const themeDiffApply = (themeState) => {
   diffEditor.updateOptions({ renderSideBySide: themeState });
   Setting.setDiffTheme = themeState;

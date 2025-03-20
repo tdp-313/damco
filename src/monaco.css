@@ -238,7 +238,7 @@ header input[type="radio"]:checked+label,
     display: grid;
     top: 0rem;
     width: 100%;
-    grid-template-columns: 0.5rem 2rem 2rem 2rem 0.5rem 2rem 2rem 2rem 1rem 0.5rem 2rem;
+    grid-template-columns: 0.5rem 2rem 2rem 2rem 0.5rem 2rem 2rem 2rem 1rem 0.5rem 2rem 0.5rem 2rem;
     z-index: 1;
     transition: 0.3s ease;
 }

@@ -15,14 +15,14 @@ export const regFolding = () => {
                 let lineText = model.getLineContent(lineNumber);
                 // 折りたたみ範囲の開始行を判定
                 let plus = lineText.substring(27, 45).indexOf("{");
-                if (plus !== -1 && lineText.substring(5, 7) === "C ") {
+                if (plus !== -1 && lineText.substring(6, 7) !== "*" && lineText.substring(5, 6) === "C") {
                     // 折りたたみ範囲が開始された
                     let startLineNumber = -1;
                     let endLineNumber = -1;
                     startLineNumber = lineNumber;
                     for (let endLineRow = startLineNumber + 1; endLineRow <= lineCount; endLineRow++) {
                         let endlineText = model.getLineContent(endLineRow);
-                        if (endlineText.substring(5, 7) === "C ") {
+                        if (endlineText.substring(6, 7) !== "*" && lineText.substring(5, 6) === "C") {
                             if (endlineText.substring(27, 45).substr(plus, 1) === "}") {
                                 // 折りたたみ範囲が終了した
                                 endLineNumber = endLineRow - 1;
