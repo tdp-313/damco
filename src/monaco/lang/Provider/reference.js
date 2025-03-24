@@ -78,7 +78,9 @@ export const regReference = () => {
             //
             let refDef = await model.otherData.normalRefDef.get(wordStr);
             if (typeof (refDef) !== 'undefined') {
-                ranges.push(refDef.location);
+                for (let i = 0; i < refDef.length; i++) {
+                    ranges.push(refDef[i].location);
+                }
             }
             if (FlagSearchStr !== "") {
                 let flagRef = await model.otherData.otherFileFlagReference.get(FlagSearchStr);

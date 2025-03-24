@@ -93,7 +93,12 @@ const hoverTextCreate = async (text, wordStr, lang, model) => {
         tooltip_text[0] = '**' + wordStr + '**';
         let refDef = await model.otherData.normalRefDef.get(wordStr);
         if (typeof (refDef) !== 'undefined') {
-            tooltip_text[1] = refDef.description;
+            for (let i = 0; i < refDef.length; i++) {
+                if (refDef[i].description !== "") {
+                    tooltip_text[1] = refDef[i].description;
+                    break;
+                }
+            }
         } else {
             let sourceDef = await model.otherData.sourceRefDef.get(wordStr);
             if (typeof (sourceDef) !== 'undefined') {

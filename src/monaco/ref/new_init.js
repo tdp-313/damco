@@ -18,6 +18,12 @@ export const newRefDefStart = async (model) => {
         searchStatusChange('complete');
         return null;
     }
+    //Reference Reset
+    model.otherData.normalRefDef = new Map();
+    model.otherData.sourceRefDef = new Map();
+    model.otherData.otherFileFlagReference = new Map();
+    model.otherData.refListFile = { dds: new Map(), dsp: new Map(), pgm: new Map() };
+    model.otherData.searchLibName = [];
 
     let SearchRootHandle = [];
     switch (model.otherData.uri_parse.root) {

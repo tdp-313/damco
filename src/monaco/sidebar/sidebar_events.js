@@ -19,13 +19,27 @@ export const rightSidebarRead = async () => {
     }
     let click_node = e.target.parentNode;
     let filename = click_node.getElementsByClassName('sidebar-filename')[0].innerText;
+    let lfm = click_node.getElementsByClassName('sidebar-lfm')[0].innerText;
+    let member = lfm.split("/")[3];
     let nowModel = await getNormalEditor_Model();
-    let selectMap = await nowModel.otherData.normalRefDef.get(filename);
-    if (typeof (selectMap) === 'undefined') {
-      selectMap = await nowModel.otherData.normalRefDef.get("'" + filename + "'");
+    let isRead = false;
+    let model = null;
+    
+    let search_key = ["'" + filename + "'", filename];
+    for (let i = 0; i < search_key.length; i++) {
+      let mapValue = await nowModel.otherData.normalRefDef.get(search_key[i]);
+      if (typeof (mapValue) !== 'undefined') {
+        for (let p = 0; p < mapValue.length; p++){
+          if(mapValue[p].location.uri.path.split('/')[3] === member){
+            model = await getNormalEditor_Model_URI(mapValue[p].location.uri);
+            isRead = true;
+            break;
+          }
+        }
+        break;
+      }
     }
-    if (typeof (selectMap) !== 'undefined') {
-      let model = await getNormalEditor_Model_URI(selectMap.location.uri);
+    if (isRead) {
       await tabs_add(model, true);
     }
   });

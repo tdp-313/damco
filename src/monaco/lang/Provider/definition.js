@@ -88,7 +88,9 @@ export const regDefinition = () => {
             }
             let refDef = await model.otherData.normalRefDef.get(wordStr);
             if (typeof (refDef) !== 'undefined') {
-                ranges.push(refDef.location);
+                for (let i = 0; i < refDef.length; i++) {
+                    ranges.push(refDef[i].location);
+                }
             } else {
                 model.otherData.sourceRefDef = await sourceRefDefStart(model);
                 let sourceDef = await model.otherData.sourceRefDef.get(wordStr);

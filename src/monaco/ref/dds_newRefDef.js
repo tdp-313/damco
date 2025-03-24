@@ -101,7 +101,14 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                             break;
                         }
                     }
-                    map.set(rangeContinue_value, { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle });
+                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle };
+                    if (map.has(rangeContinue_value)) {
+                        let before = map.get(rangeContinue_value);
+                        before.push(mapValue)
+                        map.set(rangeContinue_value, before);
+                    } else {
+                        map.set(rangeContinue_value, [mapValue]);
+                    }
                     rangeContinue = i;
                     rangeContinue_value = value;
                     description = await createDescription(row, i, model, lineCount);
@@ -124,7 +131,14 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                             break;
                         }
                     }
-                    map.set(rangeContinue_value, { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle });
+                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle };
+                    if (map.has(rangeContinue_value)) {
+                        let before = map.get(rangeContinue_value);
+                        before.push(mapValue)
+                        map.set(rangeContinue_value, before);
+                    } else {
+                        map.set(rangeContinue_value, [mapValue])
+                    }
                     rangeContinue = -1;
                 }
             } else {
@@ -153,7 +167,14 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
         }
 
         if (rangeContinue > 0 && lineCount === i) {
-            map.set(rangeContinue_value, { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle });
+            let mapValue = { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle };
+            if (map.has(rangeContinue_value)) {
+                let before = map.get(rangeContinue_value);
+                before.push(mapValue)
+                map.set(rangeContinue_value, before);
+            } else {
+                map.set(rangeContinue_value, [mapValue]);
+            }
         }
     }
     let fileDescription = "FIleObject";
@@ -170,9 +191,19 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
     let clone = structuredClone(use);
     if (map.has(refName)) {
         let before = map.get(refName);
-        clone.io = new Set([...clone.io, ...before.use.io]);
+        clone.io = new Set([...clone.io, ...before[0].use.io]);
     }
-    map.set(refName, { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + fileDescription, s_description: fileDescription, sourceType: "file", handle: handle, use: clone });
+    let fileValue = { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + fileDescription, s_description: fileDescription, sourceType: "file", handle: handle, use: clone };
+    if (map.has(refName)) {
+        let before = map.get(refName);
+        for (let i = 0; i < before.length; i++){
+            before[i].use.io = clone.io;
+        }
+        before.push(fileValue);
+        map.set(refName, before);
+    } else {
+        map.set(refName, [fileValue]);
+    }
 
     return [map, otherFileFlagReference];
 }

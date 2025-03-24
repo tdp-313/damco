@@ -51,7 +51,7 @@ export const createUseFileList = async (model) => {
             temp += '<img  class="refSize control-iconButton" style="filter: ' + filter + ';" src="' + langIcon + '">';
             temp += '<span class="sidebar-filename">' + fileName + '</span>';
             temp += '<span style="overflow: overlay; text-wrap: nowrap;">' + desc + '</span>';
-            temp += '<span style="font-size: 0.8rem; padding-left: 2rem;">' + library + '</span>';
+            temp += '<span class="sidebar-lfm" style="font-size: 0.8rem; padding-left: 2rem;">' + library + '</span>';
             temp += '</div>';
             return (temp);
         } else {
@@ -81,7 +81,7 @@ export const createUseFileList = async (model) => {
             temp += '<span class="sidebar-filename">' + fileName + '</span>';
             temp += '<span style="overflow: overlay; text-wrap: nowrap;">' + desc + '</span>';
             temp += '<span style="font-size: 0.8rem; justly-contents: center;">' + useStr + '</span>';
-            temp += '<span style="font-size: 0.8rem;">' + library + '</span>';
+            temp += '<span class="sidebar-lfm" style="font-size: 0.8rem;">' + library + '</span>';
             temp += '</div>';
             return (temp);
         }
@@ -118,14 +118,16 @@ export const createUseFileList = async (model) => {
         //DSP
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
-            if (value.sourceType === 'file') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
-                if (langType === 'dsp') {
-                    maxFile++;
-                    existFile.push(key);
-                    filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, value.use));
+            value.forEach((value) => {
+                if (value.sourceType === 'file') {
+                    let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                    if (langType === 'dsp') {
+                        maxFile++;
+                        existFile.push(key);
+                        filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, value.use));
+                    }
                 }
-            }
+            })
         });
         for (let value of model.otherData.refListFile.dsp) {
             if (!existFile.includes(value[0])) {
@@ -141,16 +143,18 @@ export const createUseFileList = async (model) => {
         //DDS
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
-            if (value.sourceType === 'file') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
-                if (langType !== 'dsp') {
-                    maxFile++;
-                    existFile.push(key);
-                    if (isDisplayCheck(value.use)) {
-                        filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType, value.use.original, value.use.device), filter_style, value.use));
+            value.forEach((value) => {
+                if (value.sourceType === 'file') {
+                    let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                    if (langType !== 'dsp') {
+                        maxFile++;
+                        existFile.push(key);
+                        if (isDisplayCheck(value.use)) {
+                            filterContents.push(get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType, value.use.original, value.use.device), filter_style, value.use));
+                        }
                     }
                 }
-            }
+            });
         });
         for (let value of model.otherData.refListFile.dds) {
             if (!existFile.includes(value[0])) {
@@ -172,11 +176,13 @@ export const createUseFileList = async (model) => {
     if (mode === 'pgm') {
         let existFile = [];
         refDef.forEach((value, key) => {
-            // 第一引数にキーが、第二引数に値が渡される
-            if (value.sourceType === 'PGM') {
-                existFile.push(key.replace(/'/g, ""));
-                html += get_template(key.replace(/'/g, ""), value.s_description, value.location.uri.path, get_langIcon(fileTypeGet2(value.location.uri.path.split('/')[2])), filter_style, value.use);
-            }
+            value.forEach((value) => {
+                // 第一引数にキーが、第二引数に値が渡される
+                if (value.sourceType === 'PGM') {
+                    existFile.push(key.replace(/'/g, ""));
+                    html += get_template(key.replace(/'/g, ""), value.s_description, value.location.uri.path, get_langIcon(fileTypeGet2(value.location.uri.path.split('/')[2])), filter_style, value.use);
+                }
+            });
         });
         for (let value of model.otherData.refListFile.pgm) {
             if (!existFile.includes(value[0])) {
@@ -189,22 +195,26 @@ export const createUseFileList = async (model) => {
 
     if (mode === 'def') {
         refDef.forEach((value, key) => {
-            // 第一引数にキーが、第二引数に値が渡される
-            if (value.sourceType === 'definition') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
-                if (langType === 'dsp') {
-                    html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
+            value.forEach((value) => {
+                // 第一引数にキーが、第二引数に値が渡される
+                if (value.sourceType === 'definition') {
+                    let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                    if (langType === 'dsp') {
+                        html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
+                    }
                 }
-            }
+            });
         });
         refDef.forEach((value, key) => {
             // 第一引数にキーが、第二引数に値が渡される
-            if (value.sourceType === 'definition') {
-                let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
-                if (langType !== 'dsp') {
-                    html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
+            value.forEach((value) => {
+                if (value.sourceType === 'definition') {
+                    let langType = fileTypeGet2(value.location.uri.path.split('/')[2]);
+                    if (langType !== 'dsp') {
+                        html += get_template(key, value.s_description, value.location.uri.path, get_langIcon(langType), filter_style, new UseIO_Layout(true));
+                    }
                 }
-            }
+            });
         });
     }
 

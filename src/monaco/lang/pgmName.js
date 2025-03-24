@@ -26,6 +26,6 @@ export const pgm_nameGet = async (model, map, refName, handle, use) => {
             break;
         }
     }
-    map.set("'" + refName + "'", { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + fileDescription, s_description: fileDescription, sourceType: "PGM", handle: handle, use: use });
+    map.set("'" + refName + "'", [{ location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + fileDescription, s_description: fileDescription, sourceType: "PGM", handle: handle, use: use }]);
     return map;
 }
