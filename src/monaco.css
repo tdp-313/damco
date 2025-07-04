@@ -25,9 +25,7 @@ body {
     height: calc(100% - 2rem);
     display: flex;
 }
-
-#header-left-root,
-#header-right-root {
+#header-left-root, #header-right-root {
     display: flex;
     justify-content: center;
     height: var(--headerHeight);
@@ -35,7 +33,6 @@ body {
     background-color: var(--backgroundColor);
     border-bottom: 0.1rem solid var(--font-color);
 }
-
 header {
     height: var(--headerHeight);
     display: grid;
@@ -51,11 +48,9 @@ header {
     justify-items: center;
 }
 
-header input,
-header label,
-header select {
+header input ,header label ,header select{
     -webkit-app-region: no-drag;
-}
+} 
 
 @keyframes spin {
     0% {
@@ -121,14 +116,13 @@ header .header-diffEditor {
     display: none;
 }
 
-.header-top-root {
+.header-top-root{
     display: grid;
     grid-template-columns: 50% 50%;
     position: relative;
     overflow: hidden;
     width: 100%;
 }
-
 .tab-libnameText {
     font-size: 0.6rem;
     overflow: hidden;
@@ -158,7 +152,6 @@ header .header-diffEditor {
     display: flex;
     justify-content: flex-end;
 }
-
 .triangle-left {
     display: inline-block;
     border-style: solid;
@@ -337,7 +330,7 @@ header input[type="radio"]:checked+label,
 #sidebar-filter-root {
     display: flex;
     flex-direction: row;
-    grid-template-columns: 0, 3rem;
+    grid-template-columns: 0,3rem;
     grid-template-rows: 1rem;
 }
 
@@ -353,76 +346,9 @@ header input[type="radio"]:checked+label,
     margin: 0.2rem 0.3rem;
     align-items: center;
 }
-
 #sidebar-filter-count {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: end;
-}
-
-/*Toggle*/
-/* トグルスイッチのコンテナ */
-.toggle-switch-container {
-    position: relative;
-    /* ラベル内の要素を絶対位置で配置するため */
-    display: grid;
-    grid-template-columns: 4rem auto;
-    user-select: none;
-}
-
-/* 元のチェックボックスを非表示にする */
-.toggle-checkbox {
-    display: none;
-}
-
-/* スイッチの土台（ラベル）のスタイル */
-.toggle-label {
-    display: block;
-    width: 3rem;
-    /* スイッチの幅 */
-    height: 1.5rem;
-    /* スイッチの高さ */
-    background-color: #ccc;
-    /* オフの時の背景色 */
-    border-radius: 1rem;
-    /* 角を丸くする（高さの半分） */
-    cursor: pointer;
-    /* マウスカーソルをポインターにする */
-    position: relative;
-    /* つまみを配置する基準にする */
-    transition: background-color 0.3s ease;
-    /* 背景色の変化を滑らかにする */
-}
-
-/* スイッチのつまみ（スライダー）のスタイル */
-.toggle-label::before {
-    content: '';
-    position: absolute;
-    top: 0.2rem;
-    /* 土台の上からの位置 */
-    left: 0.2rem;
-    /* 土台の左からの位置 */
-    width: 1.1rem;
-    /* つまみの幅（高さ - 上下余白*2） */
-    height: 1.1rem;
-    /* つまみの高さ（高さ - 上下余白*2） */
-    background-color: white;
-    /* つまみの色 */
-    border-radius: 50%;
-    /* 円形にする */
-    transition: transform 0.3s ease;
-    /* つまみの動きを滑らかにする */
-}
-
-/* チェックボックスがオンの時のスイッチの土台のスタイル */
-.toggle-checkbox:checked+.toggle-label {
-    background-color: #4CAF50;
-    /* オン時の背景色（例: 緑） */
-}
-
-/* チェックボックスがオンの時のつまみの位置 */
-.toggle-checkbox:checked+.toggle-label::before {
-    transform: translateX(1.5rem);
-    /* 右に移動（スイッチの幅 - つまみの幅 - 左余白*2） */
 }

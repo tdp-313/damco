@@ -1,7 +1,6 @@
 import { get, set } from 'idb-keyval';
 import { monaco_handleName, monaco_handleName_RefMaster, monaco_handleName_his, monaco_handleName_RefMaster_his } from "./root.js";
 import { Directory_Handle_RegisterV2 } from "./monaco/file/directory.js";
-import { opfsWorkerRegister } from './monaco/opfs/opfs_main.js';
 
 const SETTING_IDB = "monaco-setting";
 
@@ -40,10 +39,7 @@ class localSetting {
         diffViewChange.checked = this.diffTheme;
 
         this.lastView = typeof (data.lastView) === 'undefined' ? { normal: {}, left: {}, right: {} } : data.lastView;
-        this.isUsingOPFS = typeof (data.isUsingOPFS) === 'undefined' ? false : data.isUsingOPFS;
-        this.lastOPFS_Update = typeof (data.lastOPFS_Update) === 'undefined' ? new Date(0) : new Date(data.lastOPFS_Update);
 
-        this.OPFS_run();
     }
 
     get getAll() {
@@ -70,7 +66,7 @@ class localSetting {
     get getInitRead() {
         return this.initRead;
     }
-
+    
     get getLastView() {
         return this.lastView;
     }
@@ -115,34 +111,6 @@ class localSetting {
     set setWakeLock(isLock) {
         this.wakelock = isLock;
         this.save();
-    }
-
-    set setIsUsingOPFS(isUsing) {
-        this.isUsingOPFS = isUsing;
-        this.save();
-        if (isUsing) {
-            this.OPFS_run();
-        } else {
-            this.lastOPFS_Update = new Date(0);
-            this.save();
-        }
-
-    }
-
-    set setLastOPFS_Update(time) {
-        this.lastOPFS_Update = time.toISOString();
-        this.save();
-    }
-
-    get getlastOPFS_Update() {
-        return new Date(this.lastOPFS_Update);
-    }
-
-    OPFS_run() {
-        let today = new Date();
-        if (this.isUsingOPFS && this.getlastOPFS_Update.toDateString() !== today.toDateString()) {
-            opfsWorkerRegister(monaco_handleName_RefMaster);
-        }
     }
 
     saveLastView(target, data) {

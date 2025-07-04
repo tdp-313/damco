@@ -5,7 +5,6 @@ import { UseIO_Layout } from "../ref/other.js";
 import { libraryListSave } from "../../setting.js";
 import { fileTypeGet2 } from "../file/fileType.js";
 import { getNormalEditor_Model } from "../textmodel.js";
-import { clearOPFS, opfs_message } from "../opfs/opfs_main.js";
 
 import databese_search_svg from "../../icon/database-search.svg"
 
@@ -220,33 +219,15 @@ export const createUseFileList = async (model) => {
     }
 
     if (mode === 'setting') {
-
         html = "<h4>Library List Setting</h4>";
         html += "<div></div>";
         html += '<textarea id="settingLibraryList"rows="15" cols="41">' + JSON.stringify(Setting.libraryList) + '</textarea>';
         html += "<button id='settingLibrarySaveButton'>Save</button>";
-        html += "<br>";
-        html += '<div style="margin: 0.2rem 0 ;">';
-        html += '<div class="toggle-switch-container">'
-        html += '<input type="checkbox" id="settingUsingOPFS" class="toggle-checkbox" ';
-        if (Setting.isUsingOPFS) {
-            html += 'checked';
-        }
-        html += '>'
-        html += '<label for="settingUsingOPFS" class="toggle-label"></label>'
-        html += '<label for="settingUsingOPFS">Using OPFS</label>'
-        html += "</div>";
-        html += "<br>";
-        for (let i = 0; i < opfs_message.length; i++) {
-            html += "<div>" + opfs_message[i].message + "</div>"
-        }
     }
     sidebar_contents.innerHTML = html;
     const librarySaveButton = document.getElementById('settingLibrarySaveButton');
-    const usingOPFSButton = document.getElementById('settingUsingOPFS');
     if (mode === 'setting') {
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
-        usingOPFSButton.addEventListener('click', (e) => { Setting.setIsUsingOPFS = e.target.checked });
     }
 }
 let filter = { Input: true, Update: true, Output: true, Ref: true };
