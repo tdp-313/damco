@@ -2,8 +2,11 @@
     --backgroundColor: #2d2d2d;
     --font-color: rgb(196, 229, 224);
     --headerHeight: 1.3rem;
+    --globalFontSize: 16px;
 }
-
+html{
+    font-size: var(--globalFontSize);
+}
 ::-webkit-scrollbar {
     display: none;
 }
@@ -33,6 +36,7 @@ body {
     background-color: var(--backgroundColor);
     border-bottom: 0.1rem solid var(--font-color);
 }
+
 header {
     height: var(--headerHeight);
     display: grid;
@@ -230,6 +234,7 @@ header input[type="radio"]:checked+label,
 
 .control-FolderFileArea select {
     width: 100%;
+    font-size: 0.8rem;
 }
 
 #control-subArea {
@@ -249,7 +254,7 @@ header input[type="radio"]:checked+label,
 
 #right-sideBar {
     width: max(25%, 20rem);
-    margin-left: 9px;
+    margin-left: 0.5rem;
     height: calc(100% - 3rem);
     position: absolute;
     transition: 0.3s;
@@ -306,7 +311,7 @@ header input[type="radio"]:checked+label,
     padding: 0 0.3rem;
     width: 8.5rem;
     height: 1.5rem;
-    border: 2px solid var(--font-color);
+    border: 0.15rem solid var(--font-color);
     overflow: hidden;
     word-wrap: normal;
 }
@@ -351,4 +356,15 @@ header input[type="radio"]:checked+label,
     display: flex;
     align-items: center;
     justify-content: end;
+}
+
+.settingOther{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 60% 40%;
+    margin-top: 0.5rem;
+}
+
+.settingOther input{
+    font-size: 1rem;
 }

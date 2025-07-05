@@ -68,6 +68,7 @@ export const monacoStart = async () => {
         automaticLayout: true,
     });
     rulerChange(document.getElementById('control-extraRuler').checked);
+    editorFontSizeChange(Setting.editorFontSize);
     diffEditor.updateOptions(editorOptionGeneral);
 
     let nowUrl = new URL(window.location.href);
@@ -210,5 +211,9 @@ export const monacoStart = async () => {
         label: "再インデント処理",
         run: () => { reIndentProcess() }
     });
+}
 
+export const editorFontSizeChange = (size) => {
+    normalEditor.updateOptions({ fontSize: Number(size) });
+    diffEditor.updateOptions({ fontSize: Number(size) });
 }

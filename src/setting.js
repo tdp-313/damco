@@ -1,7 +1,7 @@
 import { get, set } from 'idb-keyval';
 import { monaco_handleName, monaco_handleName_RefMaster, monaco_handleName_his, monaco_handleName_RefMaster_his } from "./root.js";
 import { Directory_Handle_RegisterV2 } from "./monaco/file/directory.js";
-
+import { editorFontSizeChange } from './monaco/monaco_root.js';
 const SETTING_IDB = "monaco-setting";
 
 export const SettingLoad = async () => {
@@ -11,6 +11,11 @@ export const SettingLoad = async () => {
     } else {
         Setting = new localSetting({});
     }
+}
+
+export const uiSizeApply = (size) => {
+    const root = document.documentElement;
+    root.style.setProperty('--globalFontSize', size + 'px');
 }
 
 export const initPermissonCheck = async () => {
@@ -39,7 +44,9 @@ class localSetting {
         diffViewChange.checked = this.diffTheme;
 
         this.lastView = typeof (data.lastView) === 'undefined' ? { normal: {}, left: {}, right: {} } : data.lastView;
-
+        this.uiSize = typeof (data.uiSize) === 'undefined' ? 16 : data.uiSize;
+        this.editorFontSize = typeof (data.editorFontSize) === 'undefined' ? 16 : data.editorFontSize;
+        uiSizeApply(this.uiSize);
     }
 
     get getAll() {
@@ -66,7 +73,7 @@ class localSetting {
     get getInitRead() {
         return this.initRead;
     }
-    
+
     get getLastView() {
         return this.lastView;
     }
@@ -113,6 +120,17 @@ class localSetting {
         this.save();
     }
 
+    set setUiSize(uiSize) {
+        this.uiSize = Number(uiSize);
+        uiSizeApply(this.uiSize);
+        this.save();
+    }
+
+    set setEditorFontSize(editorFontSize) {
+        this.editorFontSize = Number(editorFontSize);
+        editorFontSizeChange(this.editorFontSize);
+        this.save();
+    }
     saveLastView(target, data) {
         this.lastView[target] = data;
         this.save();

@@ -223,11 +223,21 @@ export const createUseFileList = async (model) => {
         html += "<div></div>";
         html += '<textarea id="settingLibraryList"rows="15" cols="41">' + JSON.stringify(Setting.libraryList) + '</textarea>';
         html += "<button id='settingLibrarySaveButton'>Save</button>";
+        html += "<h4>Other Setting</h4>";
+        html += '<div class="settingOther";>';
+        html += '<label for="settingUISize">UI-Size</label><input type="number" id="settingUISize" max=48 min=4 step=0.1 value=' + Setting.uiSize + '></input>';
+        html += '<label for="settingFontSize">Editor-FontSize</label><input type="number" id="settingFontSize" max=32 min=5 step=0.1 value=' + Setting.editorFontSize + '></input>';
+        html += "</div>";
+
     }
     sidebar_contents.innerHTML = html;
     const librarySaveButton = document.getElementById('settingLibrarySaveButton');
+    const uiSizeChange = document.getElementById('settingUISize');
+    const editorFontSizeChange = document.getElementById('settingFontSize');
     if (mode === 'setting') {
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
+        uiSizeChange.addEventListener('change', (e) => { Setting.setUiSize = e.target.value });
+        editorFontSizeChange.addEventListener('change', (e) => { Setting.setEditorFontSize = e.target.value });
     }
 }
 let filter = { Input: true, Update: true, Output: true, Ref: true };
