@@ -4,7 +4,7 @@ import { linkStatus } from "../file/directory.js";
 import { readText_Model } from "../file/searchSrc.js";
 
 export const searchOpen = () => {
-    const exLinkFile = document.getElementById('control-extraLinkFile');
+    const exLinkFile = document.getElementById('control-search-status');
     exLinkFile.addEventListener('click', async () => {
 
         if (typeof (linkStatus[monaco_handleName_RefMaster]) === 'undefined') {

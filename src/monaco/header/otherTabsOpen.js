@@ -16,9 +16,9 @@ export const otherTabsOpenInit = () => {
         otherTabOpenEvent();
     });
 
-    const otherDiffTabOpen = document.getElementById('control-otherTabOpen');
+    const otherDiffTabOpen = document.getElementById('control-extraLinkFile');
     otherDiffTabOpen.addEventListener('click', async () => {
-        otherTabOpenEvent();
+        otherTabOpenEvent('clipboard');
     });
     otherDiffTabOpen.addEventListener('contextmenu', async (event) => {
         event.preventDefault();
@@ -42,7 +42,7 @@ export const otherTabOpenEvent = (mode = 'tabOpen') => {
     }
     if (mode === 'tabOpen') {
         window.open(url, Math.random(), "popup");
-    } else if(mode === 'clipboard') {
+    } else if (mode === 'clipboard') {
         navigator.clipboard.writeText(url.toString());
     }
 }
