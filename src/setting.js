@@ -43,6 +43,9 @@ class localSetting {
         const diffViewChange = document.getElementById('control-diffViewChange');
         diffViewChange.checked = this.diffTheme;
 
+        this.DivRegExpPattern = typeof (data.DivRegExpPattern) === 'undefined' ? "" : data.DivRegExpPattern;
+        this.SearchRefExpPattern = typeof (data.SearchRefExpPattern) === 'undefined' ? "" : data.SearchRefExpPattern;
+
         this.lastView = typeof (data.lastView) === 'undefined' ? { normal: {}, left: {}, right: {} } : data.lastView;
         this.uiSize = typeof (data.uiSize) === 'undefined' ? 16 : data.uiSize;
         this.editorFontSize = typeof (data.editorFontSize) === 'undefined' ? 16 : data.editorFontSize;
@@ -131,6 +134,13 @@ class localSetting {
         editorFontSizeChange(this.editorFontSize);
         this.save();
     }
+
+    saveRegExp(div, search) {
+        this.DivRegExpPattern = div;
+        this.SearchRefExpPattern = search;
+        this.save();
+    }
+
     saveLastView(target, data) {
         this.lastView[target] = data;
         this.save();
@@ -150,6 +160,14 @@ export const libraryListSave = () => {
         inputText = "{}";
     }
     isJSON(inputText);
+}
+
+export const regExpSave = () => {
+    const settingDivRegExpPattern = document.getElementById('settingDivRegExpPattern');
+    let divRegExp = settingDivRegExpPattern.value;
+    const settingSearchRegExpPattern = document.getElementById('settingSearchRegExpPattern');
+    let searchRegExp = settingSearchRegExpPattern.value;
+    Setting.saveRegExp(divRegExp, searchRegExp);
 }
 
 const isJSON = (str) => {

@@ -88,7 +88,7 @@ export const newRefDefStart = async (model) => {
         let ddsList = ['dds', 'dsp'];
         for (let i = 0; i < ddsList.length; i++) {
             for (const [key, value] of refListFile[ddsList[i]].entries()) {
-                if (value.isFound) {
+                if (value.isFound||value.isRegExpFound) {
                     let uri = await createURI(value.uri_path.root, value.uri_path.lib, value.uri_path.file, value.uri_path.member, value.data.timestamp, value.uri_path.lang);
                     let lang = fileTypeGet2(value.uri_path.file, true);
                     let model = await modelChange(addSpaces(value.data.text), lang, uri);

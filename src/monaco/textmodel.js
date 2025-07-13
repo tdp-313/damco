@@ -25,6 +25,7 @@ class originalData_Layout {
         this.textLine = text.split('\n');
         this.lang = lang;
         this.langType = fileTypeGet2(this.uri_parse.file);
+        this.regExp = { div: Setting.DivRegExpPattern, search: Setting.SearchRefExpPattern }
     }
 }
 

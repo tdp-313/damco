@@ -2,7 +2,7 @@ import { themeCSS_FilterStyle } from "../theme/theme.js";
 import { Setting } from "../../setting.js";
 import { get_langIcon } from "../../tabs.js";
 import { UseIO_Layout } from "../ref/other.js";
-import { libraryListSave } from "../../setting.js";
+import { libraryListSave, regExpSave } from "../../setting.js";
 import { fileTypeGet2 } from "../file/fileType.js";
 import { getNormalEditor_Model } from "../textmodel.js";
 
@@ -220,9 +220,13 @@ export const createUseFileList = async (model) => {
 
     if (mode === 'setting') {
         html = "<h4>Library List Setting</h4>";
-        html += "<div></div>";
+        html += "<div>Library List</div>";
         html += '<textarea id="settingLibraryList"rows="15" cols="41">' + JSON.stringify(Setting.libraryList) + '</textarea>';
         html += "<button id='settingLibrarySaveButton'>Save</button>";
+        html += "<div>RegExp</div>";
+        html += '<textarea id="settingDivRegExpPattern"rows="1" cols="41">' + Setting.DivRegExpPattern + '</textarea>';
+        html += '<textarea id="settingSearchRegExpPattern"rows="1" cols="41">' + Setting.SearchRefExpPattern + '</textarea>';
+        html += "<button id='settingRegExpSaveButton'>Save</button>";
         html += "<h4>Other Setting</h4>";
         html += '<div class="settingOther";>';
         html += '<label for="settingUISize">UI-Size</label><input type="number" id="settingUISize" max=48 min=4 step=0.1 value=' + Setting.uiSize + '></input>';
@@ -232,10 +236,12 @@ export const createUseFileList = async (model) => {
     }
     sidebar_contents.innerHTML = html;
     const librarySaveButton = document.getElementById('settingLibrarySaveButton');
+    const regExpSaveButton = document.getElementById('settingRegExpSaveButton');
     const uiSizeChange = document.getElementById('settingUISize');
     const editorFontSizeChange = document.getElementById('settingFontSize');
     if (mode === 'setting') {
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
+        regExpSaveButton.addEventListener('click', () => { regExpSave() });
         uiSizeChange.addEventListener('change', (e) => { Setting.setUiSize = e.target.value });
         editorFontSizeChange.addEventListener('change', (e) => { Setting.setEditorFontSize = e.target.value });
     }

@@ -193,10 +193,10 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
         let before = map.get(refName);
         clone.io = new Set([...clone.io, ...before[0].use.io]);
     }
-    let fileValue = { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + fileDescription, s_description: fileDescription, sourceType: "file", handle: handle, use: clone };
+    let fileValue = { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: handle.name.replace(/\.[^/.]+$/, "") + ' : ' + fileDescription, s_description: fileDescription, sourceType: "file", handle: handle, use: clone };
     if (map.has(refName)) {
         let before = map.get(refName);
-        for (let i = 0; i < before.length; i++){
+        for (let i = 0; i < before.length; i++) {
             before[i].use.io = clone.io;
         }
         before.push(fileValue);
