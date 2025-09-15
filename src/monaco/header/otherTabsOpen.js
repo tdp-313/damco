@@ -4,6 +4,7 @@ import { Setting } from "../../setting.js";
 import wakeLockOff from "../../icon/bedtime_on.svg"
 import wakeLockOn from "../../icon/bedtime_off.svg"
 import { nowReadFilePath } from "../webworker/filesystem_main.js";
+import { sourceExportClipboard } from "../ref/exportSource.js";
 
 export const otherTabsOpenInit = () => {
     const otherTabOpen = document.getElementById('control-otherTab');
@@ -18,11 +19,60 @@ export const otherTabsOpenInit = () => {
 
     const otherDiffTabOpen = document.getElementById('control-extraLinkFile');
     otherDiffTabOpen.addEventListener('click', async () => {
-        otherTabOpenEvent('clipboard');
+        let model = await getNormalEditor_Model();
+        sourceExportClipboard(model)
+        if (!Setting.getSourceOutput) {
+            const popup = document.createElement('div');
+            popup.textContent = 'Copied Link!';
+            popup.style.cssText = `
+            position: absolute;
+            background-color: #797979ff;
+            color: #fff;
+            padding: 0.2rem 0.3rem;
+            border-radius: 0.3rem;
+            font-size: 0.8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            z-index: 1000;
+            top: 1.5rem;
+        `;
+            event.target.parentNode.style.position = 'relative';
+            event.target.parentNode.appendChild(popup);
+
+            setTimeout(() => {
+                popup.remove();
+            }, 1000);
+
+        }
     });
+
     otherDiffTabOpen.addEventListener('contextmenu', async (event) => {
         event.preventDefault();
         otherTabOpenEvent('clipboard');
+
+        const popup = document.createElement('div');
+        popup.textContent = 'Copied Link!';
+        popup.style.cssText = `
+            position: absolute;
+            background-color: #797979ff;
+            color: #fff;
+            padding: 0.2rem 0.3rem;
+            border-radius: 0.3rem;
+            font-size: 0.8rem;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            z-index: 1000;
+            top: 1.5rem;
+        `;
+        event.target.parentNode.style.position = 'relative';
+        event.target.parentNode.appendChild(popup);
+
+        setTimeout(() => {
+            popup.remove();
+        }, 1000);
+
     });
 }
 

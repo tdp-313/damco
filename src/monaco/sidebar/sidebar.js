@@ -231,18 +231,28 @@ export const createUseFileList = async (model) => {
         html += '<div class="settingOther";>';
         html += '<label for="settingUISize">UI-Size</label><input type="number" id="settingUISize" max=48 min=4 step=0.1 value=' + Setting.uiSize + '></input>';
         html += '<label for="settingFontSize">Editor-FontSize</label><input type="number" id="settingFontSize" max=32 min=5 step=0.1 value=' + Setting.editorFontSize + '></input>';
+        html += '<span>-</span><span></span>';
+        html += '<label for="settingIsFileOutput">File Output</label><input type="checkbox" id="settingIsFileOutput" ';
+        html += Setting.isSourceOutputFile ? 'checked />' : "/>";
         html += "</div>";
-
+        html += '<div>Prompt</div>'
+        html += ' ';
+        html += '<textarea id="settingPrompt"rows="15" cols="41" placeholder="%{name} %{main} %{wstn} %{disk} %{pgm}">' + Setting.getPrompt + '</textarea>';
+        html += "<button id='settingPromptSaveButton'>Save</button>";
     }
     sidebar_contents.innerHTML = html;
     const librarySaveButton = document.getElementById('settingLibrarySaveButton');
     const regExpSaveButton = document.getElementById('settingRegExpSaveButton');
+    const promptSaveButton = document.getElementById('settingPromptSaveButton');
     const uiSizeChange = document.getElementById('settingUISize');
+    const isFileOutputChange = document.getElementById('settingIsFileOutput');
     const editorFontSizeChange = document.getElementById('settingFontSize');
     if (mode === 'setting') {
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
         regExpSaveButton.addEventListener('click', () => { regExpSave() });
+        promptSaveButton.addEventListener('click', () => { Setting.setPrompt = document.getElementById('settingPrompt').value });
         uiSizeChange.addEventListener('change', (e) => { Setting.setUiSize = e.target.value });
+        isFileOutputChange.addEventListener('change', (e) => { Setting.setSourceOutput = e.target.checked });
         editorFontSizeChange.addEventListener('change', (e) => { Setting.setEditorFontSize = e.target.value });
     }
 }

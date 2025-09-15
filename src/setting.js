@@ -50,6 +50,8 @@ class localSetting {
         this.uiSize = typeof (data.uiSize) === 'undefined' ? 16 : data.uiSize;
         this.editorFontSize = typeof (data.editorFontSize) === 'undefined' ? 16 : data.editorFontSize;
         uiSizeApply(this.uiSize);
+        this.prompt = typeof (data.prompt) === 'undefined' ? "" : data.prompt;
+        this.isSourceOutputFile = typeof (data.isSourceOutputFile) === 'undefined' ? false : data.isSourceOutputFile;
     }
 
     get getAll() {
@@ -93,6 +95,14 @@ class localSetting {
         return this.wakelock;
     }
 
+    get getSourceOutput() {
+        return this.isSourceOutputFile;
+    }
+
+    get getPrompt() {
+        return this.prompt
+    }
+
     set setTheme(theme) {
         this.theme = theme;
         this.save();
@@ -126,6 +136,16 @@ class localSetting {
     set setUiSize(uiSize) {
         this.uiSize = Number(uiSize);
         uiSizeApply(this.uiSize);
+        this.save();
+    }
+
+    set setSourceOutput(bool) {
+        this.isSourceOutputFile = bool;
+        this.save();
+    }
+
+    set setPrompt(prompt) {
+        this.prompt = prompt
         this.save();
     }
 
