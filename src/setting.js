@@ -33,6 +33,9 @@ class localSetting {
         this.libraryList = typeof (data.libraryList) === 'undefined' ? {} : data.libraryList;
         this.initRead = typeof (data.initRead) === 'undefined' ? true : data.initRead;
         this.diffIndent = typeof (data.diffIndent) === 'undefined' ? true : data.diffIndent;
+        this.inLayhint = typeof (data.inLayhint) === 'undefined' ? false : data.inLayhint;
+        const extraRulerChange = document.getElementById('control-extraRuler');
+        extraRulerChange.checked = this.inLayhint;
 
         this.wakelock = typeof (data.wakelock) === 'undefined' ? true : data.wakelock;
         const initRead_DOM = document.getElementById('control-initRead');
@@ -103,6 +106,10 @@ class localSetting {
         return this.prompt
     }
 
+    get getInLayhint() {
+        return this.inLayhint;
+    }
+
     set setTheme(theme) {
         this.theme = theme;
         this.save();
@@ -152,6 +159,11 @@ class localSetting {
     set setEditorFontSize(editorFontSize) {
         this.editorFontSize = Number(editorFontSize);
         editorFontSizeChange(this.editorFontSize);
+        this.save();
+    }
+
+    set setInLayhint(isDisp) {
+        this.inLayhint = isDisp;
         this.save();
     }
 

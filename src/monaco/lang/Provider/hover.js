@@ -62,8 +62,8 @@ export const regHover = () => {
     });
 }
 
-const hoverTextCreate = async (text, wordStr, lang, model) => {
-    let tooltip_text = ["", "", ""];
+export const hoverTextCreate = async (text, wordStr, lang, model) => {
+    let tooltip_text = ["", "", "", ""];
     let target = 'tip_' + text.type;
     let tipSrc = lang === "dds" ? tip_dds[target] : tip_rpg[target];
     if (tipSrc.type === "fixed") {
@@ -96,6 +96,7 @@ const hoverTextCreate = async (text, wordStr, lang, model) => {
             for (let i = 0; i < refDef.length; i++) {
                 if (refDef[i].description !== "") {
                     tooltip_text[1] = refDef[i].description;
+                    tooltip_text[3] = refDef[i];
                     break;
                 }
             }
@@ -103,6 +104,7 @@ const hoverTextCreate = async (text, wordStr, lang, model) => {
             let sourceDef = await model.otherData.sourceRefDef.get(wordStr);
             if (typeof (sourceDef) !== 'undefined') {
                 tooltip_text[1] = sourceDef.description;
+                tooltip_text[3] = sourceDef;
             } else {
                 tooltip_text[1] = tipSrc.description;
             }

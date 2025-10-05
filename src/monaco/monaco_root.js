@@ -67,7 +67,7 @@ export const monacoStart = async () => {
         autoSurround: 'brackets',
         automaticLayout: true,
     });
-    rulerChange(document.getElementById('control-extraRuler').checked);
+    rulerChange(true, Setting.getInLayhint);
     editorFontSizeChange(Setting.editorFontSize);
     diffEditor.updateOptions(editorOptionGeneral);
 
