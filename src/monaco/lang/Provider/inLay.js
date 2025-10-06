@@ -87,6 +87,10 @@ const createInLaytData = async (model, lineText, col, row) => {
 
 
 const formatInlayHintLabel = (text, cutLength) => {
+    if (typeof (text) !== 'string') {
+        return " ".repeat(cutLength);
+    }
+    
     if (text.length <= cutLength) {
         return text + " ".repeat(cutLength - text.length);
     } else {
