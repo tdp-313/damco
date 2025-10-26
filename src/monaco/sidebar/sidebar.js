@@ -5,7 +5,8 @@ import { UseIO_Layout } from "../ref/other.js";
 import { libraryListSave, regExpSave } from "../../setting.js";
 import { fileTypeGet2 } from "../file/fileType.js";
 import { getNormalEditor_Model } from "../textmodel.js";
-
+import { createView } from "../webworker/textSearch_main.js";
+    
 import databese_search_svg from "../../icon/database-search.svg"
 
 const sidebar_mode_file = document.getElementById('rs-mode-file');
@@ -194,6 +195,36 @@ export const createUseFileList = async (model) => {
     }
 
     if (mode === 'def') {
+        const folderElem = document.getElementById("control-Folder-normal");
+        html += '<div id="sidebar-search-root"  style="margin-top:0.5rem;display:grid;grid-template-columns:50% 50%">';
+
+        if (folderElem !== null) {
+
+            html += '<select id="Search-Folder-normal" multiple style="width: 7rem;">';
+            for (let i = 0; i < folderElem.options.length; i++) {
+                let option = folderElem.options[i];
+                if (folderElem.selectedIndex === i) {
+                    html += '<option value="' + option.value + '" selected>' + option.text + '</option>';
+                } else {
+                    html += '<option value="' + option.value + '">' + option.text + '</option>';
+                }
+
+            }
+            html += '</select>';
+        }
+        html += '<div><span id="sidebar-searchFound"></span><span id="sidebar-searchProcess">-</span>/<span id="sidebar-searchCount">-</span></div>';
+        html += '</div>';
+        html += '<div style="margin-top:0.5rem">Search (Regular Expression)</div>'
+        html += '<span style="display:grid;grid-template-columns:1fr 5rem">'
+        html += '<input type="text" placeholder="search text (File or FieldName)" id="sidebar-searchInput-1" style="width:100%"></input>'
+        html += '<span></span>'
+        html += '<input type="text" placeholder="search text (And Field Name)" id="sidebar-searchInput-2" style="width:100%"></input>'
+        html += '<button id="sidebar-searchButton" style="margin: 0 0.5rem;">Search</button>'
+        html += '</span>'
+        html += '<div class="verticalLine"></div>'
+        html += '<div id="searchContents"></div>';
+
+        /*
         refDef.forEach((value, key) => {
             value.forEach((value) => {
                 // 第一引数にキーが、第二引数に値が渡される
@@ -215,7 +246,8 @@ export const createUseFileList = async (model) => {
                     }
                 }
             });
-        });
+        });*/
+
     }
 
     if (mode === 'setting') {
@@ -254,6 +286,8 @@ export const createUseFileList = async (model) => {
         uiSizeChange.addEventListener('change', (e) => { Setting.setUiSize = e.target.value });
         isFileOutputChange.addEventListener('change', (e) => { Setting.setSourceOutput = e.target.checked });
         editorFontSizeChange.addEventListener('change', (e) => { Setting.setEditorFontSize = e.target.value });
+    } else if (mode === 'def') {
+        createView();
     }
 }
 let filter = { Input: true, Update: true, Output: true, Ref: true };

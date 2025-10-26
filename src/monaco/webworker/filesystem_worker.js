@@ -1,9 +1,14 @@
 import { fileOpen } from './fileOpen.js';
 
 self.onmessage = async (event) => {
+    let uri = typeof (event.data.uri) === 'undefined' ? null : event.data.uri;
+    let searchQuery = typeof (event.data.searchQuery) === 'undefined' ? null : event.data.searchQuery;
     if (event.data.type === 'fileOpen' || event.data.type === 'fileOpen_change') {
-        self.postMessage({ type: event.data.type, body: await fileOpen(event.data.body), target: event.data.target });
+        self.postMessage({ type: event.data.type, body: await fileOpen(event.data.body), target: event.data.target, uri });
         return;
+    } else if (event.data.type === 'fileSearch') {
+        self.postMessage({ type: event.data.type, body: await fileSearch(event.data.body, searchQuery), target: event.data.target, uri });
+        return
     }
     const fileDictionary = event.data.body;
 
@@ -25,5 +30,25 @@ self.onmessage = async (event) => {
     fileArray.forEach(element => {
         fileMap.set(element.name, element.handle);
     });
-    self.postMessage({ type: event.data.type, target: event.data.target, body: fileMap });
+    self.postMessage({ type: event.data.type, target: event.data.target, body: fileMap, uri });
 };
+
+const fileSearch = async (fileHandle, searchQuery) => {
+    let text = await fileOpen(fileHandle);
+    // If all search queries are empty, return null
+    if (searchQuery.every(query => query === "")) {
+        return null;
+    }
+
+
+    let match = true;
+    for (let i = 0; i < searchQuery.length; i++) {
+        if (searchQuery[i] === "") continue; // Skip empty search queries
+        let reg = new RegExp(searchQuery[i]);
+        if (!reg.test(text.text)) {
+            match = false;
+            break;
+        }
+    }
+    return match ? text : null;
+}
