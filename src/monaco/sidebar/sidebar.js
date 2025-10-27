@@ -2,13 +2,15 @@ import { themeCSS_FilterStyle } from "../theme/theme.js";
 import { Setting } from "../../setting.js";
 import { get_langIcon } from "../../tabs.js";
 import { UseIO_Layout } from "../ref/other.js";
+import { SearchStart } from "../webworker/textSearch_main.js";
 import { libraryListSave, regExpSave } from "../../setting.js";
 import { fileTypeGet2 } from "../file/fileType.js";
 import { getNormalEditor_Model } from "../textmodel.js";
-import { createView } from "../webworker/textSearch_main.js";
-    
-import databese_search_svg from "../../icon/database-search.svg"
+import { createView, SearchExportClipboard } from "../webworker/textSearch_main.js";
 
+import databese_search_svg from "../../icon/database-search.svg"
+import pencil_svg from "../../icon/pencil.svg"
+export let initSearchReg = ['', '']
 const sidebar_mode_file = document.getElementById('rs-mode-file');
 
 sidebar_mode_file.addEventListener('click', async (event) => {
@@ -215,10 +217,10 @@ export const createUseFileList = async (model) => {
         html += '<div><span id="sidebar-searchFound"></span><span id="sidebar-searchProcess">-</span>/<span id="sidebar-searchCount">-</span></div>';
         html += '</div>';
         html += '<div style="margin-top:0.5rem">Search (Regular Expression)</div>'
-        html += '<span style="display:grid;grid-template-columns:1fr 5rem">'
-        html += '<input type="text" placeholder="search text (File or FieldName)" id="sidebar-searchInput-1" style="width:100%"></input>'
-        html += '<span></span>'
-        html += '<input type="text" placeholder="search text (And Field Name)" id="sidebar-searchInput-2" style="width:100%"></input>'
+        html += '<span style="display:grid;grid-template-columns:1fr 5rem;grid-template-rows:1.5rem 1.5rem">'
+        html += '<input type="text" placeholder="search text (File or FieldName)" id="sidebar-searchInput-1" style="width:100%" value="' + initSearchReg[0] + '"></input>'
+        html += '<span><img id="sidebar-resultCopy" class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="' + pencil_svg + '"></span>'
+        html += '<input type="text" placeholder="search text (And Field Name)" id="sidebar-searchInput-2" style="width:100%" value="' + initSearchReg[1] + '"></input>'
         html += '<button id="sidebar-searchButton" style="margin: 0 0.5rem;">Search</button>'
         html += '</span>'
         html += '<div class="verticalLine"></div>'
@@ -286,7 +288,24 @@ export const createUseFileList = async (model) => {
         uiSizeChange.addEventListener('change', (e) => { Setting.setUiSize = e.target.value });
         isFileOutputChange.addEventListener('change', (e) => { Setting.setSourceOutput = e.target.checked });
         editorFontSizeChange.addEventListener('change', (e) => { Setting.setEditorFontSize = e.target.value });
+
     } else if (mode === 'def') {
+        const text_form1 = document.getElementById("sidebar-searchInput-1");
+        text_form1.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                SearchStart();
+            }
+            return false;
+        });
+        const text_form2 = document.getElementById("sidebar-searchInput-2");
+        text_form2.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                SearchStart();
+            }
+            return false;
+        });
+        const resultCopy = document.getElementById("sidebar-resultCopy");
+        resultCopy.addEventListener('click', () => { SearchExportClipboard() });
         createView();
     }
 }

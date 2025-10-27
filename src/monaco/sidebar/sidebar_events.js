@@ -5,7 +5,7 @@ import { getNormalEditor_Model_URI, getNormalEditor_Model } from "../textmodel.j
 import { filterSettingUpdate } from "./sidebar.js";
 import { SearchStart } from "../webworker/textSearch_main.js";
 import { SearchPGM } from "../webworker/textSearch_main.js";
-
+import { initSearchReg } from "./sidebar.js";
 export const rightSidebarRead = async () => {
   const r_sidebar_contents = document.getElementById('right-sideBar-contents');
   r_sidebar_contents.addEventListener('click', async (e) => {
@@ -25,7 +25,12 @@ export const rightSidebarRead = async () => {
         if (typeof (model) !== 'undefined') {
           await tabs_add(model, true);
         }
-      }return null;
+      } else if (e.target.id === 'sidebar-searchInput-1') {
+        initSearchReg[0] = e.target.value;
+      }else if (e.target.id === 'sidebar-searchInput-2') {
+        initSearchReg[1] = e.target.value;
+      }
+      return null;
     }
     if (e.target.id === 'right-sideBar-contents' || selectedRadio.value === "setting") {
       return null;

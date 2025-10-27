@@ -30,9 +30,22 @@ export const sidebarEventStart = () => {
             extraControl = true;
         }
     });
-} 
+}
 
+let lastStateMode = ""
 export const extraControlClick = (open, mode = "") => {
+    if (mode === 'prev') {
+        if (lastStateMode === 'open') {
+            mode = 'open';
+        } else {
+            mode = 'close';
+        }
+    }
+
+    if (!open && mode !== 'init') {
+        lastStateMode = mode;
+    }
+
     const control_extraArea = document.getElementById('control-extraButton');
     let img = control_extraArea.querySelector("img");
     const control_extra = document.getElementById('control-subArea');
@@ -42,6 +55,7 @@ export const extraControlClick = (open, mode = "") => {
 
     if (mode !== "") {
         if (mode === "open") {
+            useFileList_Open = true;
             img.src = rightIcon;
             sidebar.classList.add("r-side-open");
             mainArea.classList.add("monaco-area-sidebar-open");

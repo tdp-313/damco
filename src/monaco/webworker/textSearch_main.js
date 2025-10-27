@@ -166,17 +166,17 @@ export const createView = async () => {
                 let langType = model.getLanguageId(); // Get language from the model
                 let icon = get_langIcon(langType);
                 let fileName = model.uri.path.split('/')[3]; // Use path as description for now
-                
+
                 let useStr = "-";
-                let desc = "";
+                let desc = document.getElementById("sidebar-searchInput-2").value === "" ? document.getElementById("sidebar-searchInput-1").value : document.getElementById("sidebar-searchInput-1").value + ", " + document.getElementById("sidebar-searchInput-2").value;
                 const border_class = 'input_border';
 
-                temp += '<div id="sidebar-contents-' + fileName + ' " class="sidebar-contents hoverButton ' + border_class + '">';
+                temp += '<div id="sidebar-contents-' + fileName + ' " class="sidebar-contents hoverButton ' + border_class + '"style="grid-template-rows:1.2rem 0">';
                 temp += '<img  class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="' + icon + '">';
                 temp += '<span class="sidebar-filename">' + fileName + '</span>';
                 temp += '<span style="overflow: overlay; text-wrap: nowrap;">' + desc + '</span>';
-                temp += '<span style="font-size: 0.8rem; justly-contents: center;">' + useStr + '</span>';
-                temp += '<span class="sidebar-lfm" style="font-size: 0.8rem;">' + model.uri.path + '</span>';
+                temp += '<span style="font-size: 0.8rem; justly-contents: center;display:none">' + useStr + '</span>';
+                temp += '<span class="sidebar-lfm" style="font-size: 0.8rem;display:none">' + model.uri.path + '</span>';
                 temp += '</div>';
 
             });
@@ -185,5 +185,15 @@ export const createView = async () => {
     } catch (error) {
 
     }
+}
+export const SearchExportClipboard = () => {
+    let exportText = "";
+    let desc = document.getElementById("sidebar-searchInput-2").value === "" ? document.getElementById("sidebar-searchInput-1").value : document.getElementById("sidebar-searchInput-1").value + "\t" + document.getElementById("sidebar-searchInput-2").value;
+    for (const key of SearchPGM.keys()) {
+        exportText += key + "\t" + desc + "\n";
+    }
+    navigator.clipboard.writeText(exportText);
+    window.alert("Copied to clipboard!");
 
+        
 }

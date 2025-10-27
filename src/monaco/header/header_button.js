@@ -115,7 +115,7 @@ export const reload_Process = async () => {
         }
     }
 }
-
+let codeViewInitState = true;
 export const setModeChange = (mode) => {
     let normalElem = document.querySelectorAll('.header-normalEditor');
     let diffElem = document.querySelectorAll('.header-diffEditor');
@@ -130,7 +130,13 @@ export const setModeChange = (mode) => {
             elem.style.display = 'none';
         });
         normalEditor.layout();
-        extraControlClick(false, "init");
+        extraControlClick(false, 'init');
+        if (codeViewInitState) {
+            codeViewInitState = false
+        } else {
+            extraControlClick(false, "prev");
+        }
+        
         document.getElementById('control-EditorModeChange-code').checked = true;
     } else {
         document.getElementById('monaco-code').style.display = 'none';
