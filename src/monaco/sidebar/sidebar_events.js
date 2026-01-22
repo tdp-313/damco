@@ -6,6 +6,8 @@ import { filterSettingUpdate } from "./sidebar.js";
 import { SearchStart } from "../webworker/textSearch_main.js";
 import { SearchPGM } from "../webworker/textSearch_main.js";
 import { initSearchReg } from "./sidebar.js";
+
+// グローバル検索ワード保存用（window オブジェクト経由）
 export const rightSidebarRead = async () => {
   const r_sidebar_contents = document.getElementById('right-sideBar-contents');
   r_sidebar_contents.addEventListener('click', async (e) => {
@@ -23,6 +25,13 @@ export const rightSidebarRead = async () => {
       } else if (e.target.parentNode.id.indexOf("sidebar-contents") !== -1) {
         let model = SearchPGM.get(e.target.parentNode.getElementsByClassName('sidebar-filename')[0].innerText);
         if (typeof (model) !== 'undefined') {
+          // 検索ワードを保存（ファイル選択時に検索UIに反映させる）
+          const input_1 = document.getElementById("sidebar-searchInput-1");
+          const input_2 = document.getElementById("sidebar-searchInput-2");
+          const searchWord = (input_1 && input_1.value ? input_1.value : input_2 && input_2.value ? " " + input_2.value : "");
+
+          window.pendingSearchWord = searchWord.trim();
+          
           await tabs_add(model, true);
         }
       } else if (e.target.id === 'sidebar-searchInput-1') {

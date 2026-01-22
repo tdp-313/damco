@@ -118,4 +118,35 @@ export const setNormalEditor_Model = async (model) => {
     normalEditor.setModel(model);
     normalEditor.updateOptions(rpgEditorOption());
     newRefDefStart(model);
+    
+    // ペンディング中の検索ワードがあれば検索UIを表示
+    if (window.pendingSearchWord && window.pendingSearchWord.length > 0) {
+        const searchWord = window.pendingSearchWord;
+        
+        // 検索UIを開く
+        normalEditor.trigger('keyboard', 'actions.find');
+        
+        // 少し遅延させて検索フィールドに入力
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        // 検索フィールド要素を取得して値を設定（MonacoEditorではtextareaを使用）
+        const findWidget = document.querySelector('.find-widget');
+        if (findWidget) {
+            const searchInputs = findWidget.querySelectorAll('textarea[aria-label="Find"]');
+            if (searchInputs.length > 0) {
+                const searchInput = searchInputs[0];
+                searchInput.value = searchWord;
+                
+                // ファイアイベントで検索を実行
+                searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+                searchInput.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                // エディタにフォーカスを戻す（アクセシビリティ警告回避）
+                normalEditor.focus();
+            }
+        }
+        
+        // 使用済みの検索ワードをクリア
+        window.pendingSearchWord = null;
+    }
 }

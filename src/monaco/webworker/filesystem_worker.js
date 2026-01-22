@@ -40,11 +40,27 @@ const fileSearch = async (fileHandle, searchQuery) => {
         return null;
     }
 
-
     let match = true;
     for (let i = 0; i < searchQuery.length; i++) {
         if (searchQuery[i] === "") continue; // Skip empty search queries
-        let reg = new RegExp(searchQuery[i]);
+        
+        let query = searchQuery[i];
+        let reg;
+        
+        // Check if the query contains '%' characters for wildcard matching
+        if (query.includes('%')) {
+            // Convert SQL-like wildcards to regex
+            // '%' matches any number of characters, '_' matches single character
+            let regPattern = query
+                .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars
+                .replace(/%/g, '.*') // Replace % with .*
+                .replace(/_/g, '.'); // Replace _ with .
+            reg = new RegExp(regPattern);
+        } else {
+            // Standard regex pattern
+            reg = new RegExp(query);
+        }
+        
         if (!reg.test(text.text)) {
             match = false;
             break;

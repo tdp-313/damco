@@ -10,7 +10,21 @@ import { createView, SearchExportClipboard } from "../webworker/textSearch_main.
 
 import databese_search_svg from "../../icon/database-search.svg"
 import pencil_svg from "../../icon/pencil.svg"
-export let initSearchReg = ['', '']
+
+// Initialize search values from sessionStorage
+const getInitialSearchValues = () => {
+    const saved = sessionStorage.getItem('searchRegValues');
+    return saved ? JSON.parse(saved) : ['', ''];
+};
+
+export let initSearchReg = getInitialSearchValues();
+
+// Save search values to sessionStorage
+export const saveSearchValuesToSession = (values) => {
+    sessionStorage.setItem('searchRegValues', JSON.stringify(values));
+    initSearchReg = values;
+};
+
 const sidebar_mode_file = document.getElementById('rs-mode-file');
 
 sidebar_mode_file.addEventListener('click', async (event) => {
@@ -291,19 +305,28 @@ export const createUseFileList = async (model) => {
 
     } else if (mode === 'def') {
         const text_form1 = document.getElementById("sidebar-searchInput-1");
+        const text_form2 = document.getElementById("sidebar-searchInput-2");
+        
         text_form1.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 SearchStart();
             }
             return false;
         });
-        const text_form2 = document.getElementById("sidebar-searchInput-2");
+        text_form1.addEventListener("input", (e) => {
+            saveSearchValuesToSession([e.target.value, text_form2.value]);
+        });
+        
         text_form2.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 SearchStart();
             }
             return false;
         });
+        text_form2.addEventListener("input", (e) => {
+            saveSearchValuesToSession([text_form1.value, e.target.value]);
+        });
+        
         const resultCopy = document.getElementById("sidebar-resultCopy");
         resultCopy.addEventListener('click', () => { SearchExportClipboard() });
         createView();
