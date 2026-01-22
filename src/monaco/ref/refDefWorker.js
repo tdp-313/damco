@@ -2,6 +2,25 @@ import { UseIO_Layout } from "./other.js";
 import { dds_fileName, dsp_fileName, cl_fileName, rpg_fileName, rpgle_fileName } from "../file/fileType.js";
 import { fileOpen } from "../webworker/fileOpen.js";
 
+function matchSearchName(targetName, searchName) {
+    if (searchName.startsWith('%') && searchName.endsWith('%') && searchName.length > 2) {
+        // 部分一致: %文字%
+        const pattern = searchName.slice(1, -1);
+        return targetName.includes(pattern);
+    } else if (searchName.startsWith('%')) {
+        // 後方一致: %文字
+        const pattern = searchName.slice(1);
+        return targetName.endsWith(pattern);
+    } else if (searchName.endsWith('%')) {
+        // 前方一致: 文字%
+        const pattern = searchName.slice(0, -1);
+        return targetName.startsWith(pattern);
+    } else {
+        // 完全一致
+        return targetName === searchName;
+    }
+}
+
 self.onmessage = async (event) => {
     let otherData = event.data;
     let divRegExp = otherData.regExp.div;
@@ -34,7 +53,7 @@ self.onmessage = async (event) => {
         }
         for await (const handle of otherData.refDefRootHandle[r].handle.values()) {
             for (let i = 0; i < otherData.searchLibName.length; i++) {
-                if (handle.name.indexOf(otherData.searchLibName[i]) !== -1) {
+                if (matchSearchName(handle.name, otherData.searchLibName[i])) {
                     libraryHandle.push({ handle, root: otherData.refDefRootHandle[r].name, lib: handle.name });
                 }
             }

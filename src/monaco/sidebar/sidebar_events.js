@@ -45,7 +45,6 @@ export const rightSidebarRead = async () => {
     let model = null;
 
     let search_key = ["'" + filename + "'", filename];
-    console.log(search_key);
     for (let i = 0; i < search_key.length; i++) {
       let mapValue = await nowModel.otherData.normalRefDef.get(search_key[i]);
       if (typeof (mapValue) !== 'undefined') {

@@ -49,7 +49,7 @@ export const newRefDefStart = async (model) => {
             return;
     }
     model.otherData.refDefRootHandle = SearchRootHandle;
-    let searchLibName = [model.otherData.uri_parse.lib.substring(0, 3)];
+    let searchLibName = [model.otherData.uri_parse.lib, "%" + model.otherData.uri_parse.lib.substring(0, 3) + "%"];
 
     let settingLibList = Setting.getLibraryList(searchLibName[0]);
 
@@ -57,7 +57,6 @@ export const newRefDefStart = async (model) => {
         searchLibName = structuredClone(settingLibList);
     }
     model.otherData.searchLibName = searchLibName;
-
     const newRefDefWorker = new Worker(new URL('./refDefWorker.js', import.meta.url), {
         type: 'module',
     });
@@ -88,7 +87,7 @@ export const newRefDefStart = async (model) => {
         let ddsList = ['dds', 'dsp'];
         for (let i = 0; i < ddsList.length; i++) {
             for (const [key, value] of refListFile[ddsList[i]].entries()) {
-                if (value.isFound||value.isRegExpFound) {
+                if (value.isFound || value.isRegExpFound) {
                     let uri = await createURI(value.uri_path.root, value.uri_path.lib, value.uri_path.file, value.uri_path.member, value.data.timestamp, value.uri_path.lang);
                     let lang = fileTypeGet2(value.uri_path.file, true);
                     let model = await modelChange(addSpaces(value.data.text), lang, uri);
