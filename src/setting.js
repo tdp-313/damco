@@ -2,6 +2,7 @@ import { get, set } from 'idb-keyval';
 import { monaco_handleName, monaco_handleName_RefMaster, monaco_handleName_his, monaco_handleName_RefMaster_his } from "./root.js";
 import { Directory_Handle_RegisterV2 } from "./monaco/file/directory.js";
 import { editorFontSizeChange } from './monaco/monaco_root.js';
+
 const SETTING_IDB = "monaco-setting";
 
 export const SettingLoad = async () => {
@@ -55,6 +56,7 @@ class localSetting {
         uiSizeApply(this.uiSize);
         this.prompt = typeof (data.prompt) === 'undefined' ? "" : data.prompt;
         this.isSourceOutputFile = typeof (data.isSourceOutputFile) === 'undefined' ? false : data.isSourceOutputFile;
+        this.isForceSJIS = typeof (data.isForceSJIS) === 'undefined' ? false : data.isForceSJIS;
     }
 
     get getAll() {
@@ -151,6 +153,11 @@ class localSetting {
         this.save();
     }
 
+    set setForceSJIS(bool) {
+        this.isForceSJIS = bool;
+        this.save();
+    }
+    
     set setPrompt(prompt) {
         this.prompt = prompt
         this.save();

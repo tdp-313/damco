@@ -1,4 +1,58 @@
-export const fileOpen = async (fileHandle) => {
+const hasHighBitBytes = (bytes) => {
+    for (const byte of bytes) {
+        if (byte >= 0x80) {
+            return true;
+        }
+    }
+    return false;
+};
+
+const isLikelyShiftJisBytes = (arrayBuffer) => {
+    const bytes = new Uint8Array(arrayBuffer);
+    if (bytes.length < 4 || !hasHighBitBytes(bytes)) {
+        return false;
+    }
+
+    let sjisPairCount = 0;
+    let checkedPairCount = 0;
+
+    for (let i = 0; i < bytes.length - 1; i += 2) {
+        const firstByte = bytes[i];
+        const secondByte = bytes[i + 1];
+
+        const isLeadByte =
+            (firstByte >= 0x81 && firstByte <= 0x9f) ||
+            (firstByte >= 0xe0 && firstByte <= 0xfc);
+
+        const isTrailByte =
+            (secondByte >= 0x40 && secondByte <= 0x7e) ||
+            (secondByte >= 0x80 && secondByte <= 0xfc);
+
+        if (isLeadByte && isTrailByte) {
+            sjisPairCount += 1;
+        }
+        checkedPairCount += 1;
+    }
+
+    return sjisPairCount >= 3 && (sjisPairCount / checkedPairCount) >= 0.15;
+};
+
+const getJapaneseTextScore = (text) => {
+    if (!text) {
+        return 0;
+    }
+
+    const japaneseChars = (text.match(/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/g) || []).length;
+    let score = japaneseChars * 2;
+
+    if (text.includes('�')) {
+        score -= 4;
+    }
+
+    return score;
+};
+
+export const fileOpen = async (fileHandle, isForceSJIS = false) => {
     let file_obj = fileHandle;
 
     let file = await file_obj.getFile();
@@ -15,21 +69,42 @@ export const fileOpen = async (fileHandle) => {
     }
     let lastModifiedTime = await file.lastModifiedDate.toLocaleString();
 
-    let rtn = { timestamp: lastModifiedTime, text: "", textArray: [], encode: 'utf-8', ext: ext, handle: fileHandle };
+    let encodeStyle = 'utf-8';
+    if (isForceSJIS) {
+        encodeStyle = 'Shift-JIS';
+    }
+
+    let rtn = { timestamp: lastModifiedTime, text: "", textArray: [], encode: encodeStyle, ext: ext, handle: fileHandle };
 
     const response = await fetch(URL.createObjectURL(file));
     const arrayBuffer = await response.arrayBuffer();
-    const decoderUTF = new TextDecoder('utf-8');
+
+    const decoderUTF = new TextDecoder(encodeStyle);
     const textUTF = decoderUTF.decode(arrayBuffer);
     let text = textUTF;
-    if (textUTF.includes('�')) {
-        const decoderJIS = new TextDecoder('Shift-JIS');
-        const textJIS = decoderJIS.decode(arrayBuffer);
-        if (!textJIS.includes('�')) {
-            text = textJIS;
-            rtn.encode = 'Shift-JIS';
+    let selectedEncode = encodeStyle;
+
+    if (!isForceSJIS) {
+        const hasReplacementChar = textUTF.includes('�');
+        const seemsLikeShiftJis = hasReplacementChar || isLikelyShiftJisBytes(arrayBuffer);
+
+        if (seemsLikeShiftJis) {
+            const decoderJIS = new TextDecoder('Shift-JIS');
+            const textJIS = decoderJIS.decode(arrayBuffer);
+            const utf8Score = getJapaneseTextScore(textUTF);
+            const shiftJisScore = getJapaneseTextScore(textJIS);
+
+            const shouldUseShiftJis =
+                !textJIS.includes('�') &&
+                (shiftJisScore > utf8Score || (shiftJisScore > 0 && utf8Score === 0));
+
+            if (shouldUseShiftJis) {
+                text = textJIS;
+                selectedEncode = 'Shift-JIS';
+            }
         }
     }
+    rtn.encode = selectedEncode;
     if (text === '') {
         return rtn;
     }

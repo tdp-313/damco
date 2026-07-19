@@ -2,6 +2,12 @@ import { UseIO_Layout } from "./other.js";
 import { dds_fileName, dsp_fileName, cl_fileName, rpg_fileName, rpgle_fileName } from "../file/fileType.js";
 import { fileOpen } from "../webworker/fileOpen.js";
 
+const SETTING_IDB = "monaco-setting";
+import { get } from 'idb-keyval';
+
+let IsForceSJIS = false;
+let isFirstload = true;
+
 function matchSearchName(targetName, searchName) {
     if (searchName.startsWith('%') && searchName.endsWith('%') && searchName.length > 2) {
         // 部分一致: %文字%
@@ -22,6 +28,16 @@ function matchSearchName(targetName, searchName) {
 }
 
 self.onmessage = async (event) => {
+    if (isFirstload) {
+        isFirstload = false;
+        IsForceSJIS = await get(SETTING_IDB).then((data) => {
+            if (data && data.isForceSJIS) {
+                return data.isForceSJIS;
+            } else {
+                return false;
+            }
+        });
+    }
     let otherData = event.data;
     let divRegExp = otherData.regExp.div;
     let searchRegExp = otherData.regExp.search;
@@ -93,7 +109,7 @@ self.onmessage = async (event) => {
             if (otherData.refListFile[libFileHandle[r].type].has(fileNameWithoutExtension)) {
                 let value = otherData.refListFile[libFileHandle[r].type].get(fileNameWithoutExtension);
                 if (!value.isFound) {//完全一致
-                    let text = await fileOpen(handle);
+                    let text = await fileOpen(handle, IsForceSJIS);
                     value.data = text;
                     value.uri_path = { root: libFileHandle[r].root, lib: libFileHandle[r].lib, file: libFileHandle[r].file, member: fileNameWithoutExtension };
                     value.isFound = true;
@@ -107,7 +123,7 @@ self.onmessage = async (event) => {
                         let strA = splitString(key, divRegExp);
                         let regexString = searchRegExp;
                         if (typeof (strA) === 'object') {
-                            for (let i = 0; i < strA.length; i++){
+                            for (let i = 0; i < strA.length; i++) {
                                 regexString = regexString.replace("${strA[" + i + "]}", strA[i]);
                             }
                         }
@@ -167,7 +183,7 @@ self.onmessage = async (event) => {
             if (otherData.refListFile[dds_FileHandle[r].type].has(fileNameWithoutExtension)) {
                 let value = otherData.refListFile[dds_FileHandle[r].type].get(fileNameWithoutExtension);
                 if (!value.isFound) {
-                    let text = await fileOpen(handle);
+                    let text = await fileOpen(handle, IsForceSJIS);
                     value.data = text;
                     value.uri_path = { root: dds_FileHandle[r].root, lib: dds_FileHandle[r].lib, file: dds_FileHandle[r].file, member: fileNameWithoutExtension };
                     value.isFound = true;
@@ -184,7 +200,7 @@ self.onmessage = async (event) => {
 };
 
 
-function splitString(inputString,divRegExp) {
+function splitString(inputString, divRegExp) {
     let result = [];
     const pattern1 = new RegExp(divRegExp)
     const match = inputString.match(pattern1);

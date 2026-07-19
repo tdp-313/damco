@@ -1,10 +1,28 @@
 import { fileOpen } from './fileOpen.js';
 
+const SETTING_IDB = "monaco-setting";
+import { get } from 'idb-keyval';
+
+let IsForceSJIS = false;
+let isFirstload = true;
+
+
+
 self.onmessage = async (event) => {
+    if (isFirstload) {
+        isFirstload = false;
+        IsForceSJIS = await get(SETTING_IDB).then((data) => {
+            if (data && data.isForceSJIS) {
+                return data.isForceSJIS;
+            } else {
+                return false;
+            }
+        });
+    }
     let uri = typeof (event.data.uri) === 'undefined' ? null : event.data.uri;
     let searchQuery = typeof (event.data.searchQuery) === 'undefined' ? null : event.data.searchQuery;
     if (event.data.type === 'fileOpen' || event.data.type === 'fileOpen_change') {
-        self.postMessage({ type: event.data.type, body: await fileOpen(event.data.body), target: event.data.target, uri });
+        self.postMessage({ type: event.data.type, body: await fileOpen(event.data.body, IsForceSJIS), target: event.data.target, uri });
         return;
     } else if (event.data.type === 'fileSearch') {
         self.postMessage({ type: event.data.type, body: await fileSearch(event.data.body, searchQuery), target: event.data.target, uri });
@@ -34,7 +52,7 @@ self.onmessage = async (event) => {
 };
 
 const fileSearch = async (fileHandle, searchQuery) => {
-    let text = await fileOpen(fileHandle);
+    let text = await fileOpen(fileHandle, IsForceSJIS);
     // If all search queries are empty, return null
     if (searchQuery.every(query => query === "")) {
         return null;
@@ -43,10 +61,10 @@ const fileSearch = async (fileHandle, searchQuery) => {
     let match = true;
     for (let i = 0; i < searchQuery.length; i++) {
         if (searchQuery[i] === "") continue; // Skip empty search queries
-        
+
         let query = searchQuery[i];
         let reg;
-        
+
         // Check if the query contains '%' characters for wildcard matching
         if (query.includes('%')) {
             // Convert SQL-like wildcards to regex
@@ -60,7 +78,7 @@ const fileSearch = async (fileHandle, searchQuery) => {
             // Standard regex pattern
             reg = new RegExp(query);
         }
-        
+
         if (!reg.test(text.text)) {
             match = false;
             break;

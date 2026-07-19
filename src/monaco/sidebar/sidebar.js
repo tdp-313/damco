@@ -282,6 +282,8 @@ export const createUseFileList = async (model) => {
         html += '<span>-</span><span></span>';
         html += '<label for="settingIsFileOutput">File Output</label><input type="checkbox" id="settingIsFileOutput" ';
         html += Setting.isSourceOutputFile ? 'checked />' : "/>";
+        html += '<label for="settingIsForceSJIS">ForceSJIS</label><input type="checkbox" id="settingIsForceSJIS" ';
+        html += Setting.isForceSJIS ? 'checked />' : "/>";
         html += "</div>";
         html += '<div>Prompt</div>'
         html += ' ';
@@ -295,6 +297,7 @@ export const createUseFileList = async (model) => {
     const uiSizeChange = document.getElementById('settingUISize');
     const isFileOutputChange = document.getElementById('settingIsFileOutput');
     const editorFontSizeChange = document.getElementById('settingFontSize');
+    const isForceSJISChange = document.getElementById('settingIsForceSJIS');
     if (mode === 'setting') {
         librarySaveButton.addEventListener('click', () => { libraryListSave() });
         regExpSaveButton.addEventListener('click', () => { regExpSave() });
@@ -302,6 +305,7 @@ export const createUseFileList = async (model) => {
         uiSizeChange.addEventListener('change', (e) => { Setting.setUiSize = e.target.value });
         isFileOutputChange.addEventListener('change', (e) => { Setting.setSourceOutput = e.target.checked });
         editorFontSizeChange.addEventListener('change', (e) => { Setting.setEditorFontSize = e.target.value });
+        isForceSJISChange.addEventListener('change', (e) => { Setting.setForceSJIS = e.target.checked });
 
     } else if (mode === 'def') {
         const text_form1 = document.getElementById("sidebar-searchInput-1");
