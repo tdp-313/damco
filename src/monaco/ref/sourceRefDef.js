@@ -1,12 +1,14 @@
 import * as monaco from 'monaco-editor';
+import { getModelDbcsMode, toColumnLine } from '../lang/column.js';
 
 export const sourceRefDefStart = async (refModel) => {
     let refDef = new Map();
     var lineCount = await refModel.getLineCount();
+    const dbcsMode = getModelDbcsMode(refModel);
     let mode = "";
     for (let i = 1; i <= lineCount; i++) {
-        // 行のテキストを取得
-        let row = refModel.getLineContent(i);
+        // 行のテキストを取得(全角を含む行は桁位置どおりに読めるよう変換)
+        let row = toColumnLine(refModel.getLineContent(i), dbcsMode);
         if (row.substring(5, 6) === "C" && row.substring(6, 7) !== "*") {
             let op_1 = row.substring(17, 27).trim();
             let op_m = row.substring(45, 50).trim();

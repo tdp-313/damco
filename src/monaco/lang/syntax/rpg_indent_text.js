@@ -1,3 +1,19 @@
+import { toColumnLine, stripFill, jsToIbmColumn, ibmToJsColumn } from "../column.js";
+
+// Monaco の column(JS 文字位置)で呼ぶ版。全角を含む行でも桁で欄を判定し、結果を JS 位置に戻す
+export const getRow_TextJs = (row, jsColumn, mode) => {
+    const col = toColumnLine(row, mode);
+    if (col === row) {
+        return getRow_Text(row, jsColumn);
+    }
+    const r = getRow_Text(col, jsToIbmColumn(row, jsColumn, mode));
+    return Object.assign({}, r, {
+        text: stripFill(r.text),
+        startColumn: r.startColumn > 0 ? ibmToJsColumn(row, r.startColumn, mode) : r.startColumn,
+        endColumn: r.endColumn > 0 ? ibmToJsColumn(row, r.endColumn, mode) : r.endColumn,
+    });
+};
+
 export const getRow_Text = (row, columns) => {
     if (columns <= 0) {
         return { text: "", startColumn: 0, endColumn: 0 };

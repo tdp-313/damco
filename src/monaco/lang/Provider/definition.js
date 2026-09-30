@@ -1,13 +1,21 @@
 import { getRow_DDSText } from "../syntax/dds_text.js";
 
-import { getRow_Text } from "../syntax/rpg_indent_text.js";
+import { getRow_TextJs } from "../syntax/rpg_indent_text.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
+import { getModelDbcsMode, toColumnLine } from "../column.js";
+import { rpgleDefinition } from "./rpgle.js";
 import * as monaco from 'monaco-editor';
 
 export const regDefinition = () => {
     monaco.languages.registerDefinitionProvider('rpg-indent', {
         provideDefinition: async function (model, position) {
             return await defGetModule(model, position);
+        }
+    });
+
+    monaco.languages.registerDefinitionProvider('rpgle', {
+        provideDefinition: async function (model, position) {
+            return rpgleDefinition(model, position);
         }
     });
 
@@ -30,8 +38,9 @@ export const regDefinition = () => {
 }
 
 export const defGetModule = async (model, position) => {
+    const mode = getModelDbcsMode(model);
     let row = model.getLineContent(position.lineNumber);
-    let text = getRow_Text(row, position.column);
+    let text = getRow_TextJs(row, position.column, mode);
     let wordStr = text.text.trim();
     if (wordStr === "") {
         return null;
@@ -40,7 +49,7 @@ export const defGetModule = async (model, position) => {
     let rename_bk = [];
     let lineCount = model.getLineCount();
     for (let i = 1; i <= lineCount; i++) {
-        let row = model.getLineContent(i);
+        let row = toColumnLine(model.getLineContent(i), mode);
         if (row.substring(6, 7) !== "*" && row.substring(5, 6) === "C") {
             let op_1 = row.substring(17, 27).trim();
             let op_m = row.substring(45, 50).trim();
@@ -58,7 +67,7 @@ export const defGetModule = async (model, position) => {
                 if (wordStr === op_1) {
                     let found = false;
                     for (let p = i + 1; p <= lineCount; p++) {
-                        let row_extend = model.getLineContent(p);
+                        let row_extend = toColumnLine(model.getLineContent(p), mode);
                         let op_m_extend = row_extend.substring(45, 50).trim();
                         if (op_m_extend !== 'PARM' && op_m_extend !== 'KFLD') {
                             ranges.push({ range: new monaco.Range(i, 5, p - 1, 77), uri: model.uri });
@@ -98,7 +107,7 @@ export const defGetModule = async (model, position) => {
             let field_2 = row.substring(59, 67).trim();
             if (wordStr === field_2) {
                 for (let ri = i; ri > 0; ri--) {
-                    row = model.getLineContent(ri);
+                    row = toColumnLine(model.getLineContent(ri), mode);
                     if (row.substring(6, 7) !== "*" && row.substring(5, 6) === "F" && row.substring(52, 53) !== "K") {
                         wordStr = row.substring(6, 14).trim();
                         rename_bk.push({ range: new monaco.Range(ri, 7, ri, 16), uri: model.uri });

@@ -1,5 +1,6 @@
 import { Operetor_OpenArray, Operetor_CloseArray, Operetor_ElseArray } from "../lang/syntax/syntax_grobal.js";
 import { Subroutine_OpenArray, Subroutine_CloseArray } from "../lang/syntax/syntax_grobal.js";
+import { detectDbcsMode, toColumnLine, stripFill } from "../lang/column.js";
 
 
 const detectNewline = (str) => {
@@ -43,10 +44,13 @@ export const addSpaces = (str, limit = 80) => {
 }
 
 export const revIndent = (textArray) => {
+    // 全角を含む行も桁位置で切り貼りできるよう、桁どおりの行に変換してから処理する
+    const mode = detectDbcsMode(textArray);
     let rtn = "";
     for (let i = 0; i < textArray.length; i++) {
-        if (textArray[i].substring(6, 7) !== "*" && textArray[i].substring(5, 6) === "C") {
-            rtn = rtn + textArray[i].substring(0, 27) + textArray[i].substring(45, textArray[i].length) + "\n";
+        const line = toColumnLine(textArray[i], mode);
+        if (line.substring(6, 7) !== "*" && line.substring(5, 6) === "C") {
+            rtn = rtn + stripFill(line.substring(0, 27) + line.substring(45, line.length)) + "\n";
         } else {
             rtn = rtn + textArray[i] + "\n";
         }
@@ -56,7 +60,10 @@ export const revIndent = (textArray) => {
 
 
 export const addIndent = (text) => {
-    const lines = text.split("\n");
+    // 全角を含む行も桁位置で切り貼りできるよう、桁どおりの行に変換してから処理し、最後に戻す
+    const rawLines = text.split("\n");
+    const dbcsMode = detectDbcsMode(rawLines);
+    const lines = rawLines.map((line) => toColumnLine(line, dbcsMode));
     const maxLength = 80;
     const regPattern_Open = new RegExp(`(${Operetor_OpenArray.concat(Subroutine_OpenArray).join("|")})`);
     const regPattern_Close = new RegExp(`(${Operetor_CloseArray.concat(Subroutine_CloseArray).join("|")})`);
@@ -186,5 +193,5 @@ export const addIndent = (text) => {
 
         }
     }
-    return lines.join("\n");
+    return lines.map(stripFill).join("\n");
 }

@@ -11,12 +11,25 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+
+# テスト(非公開。ローカルのみで管理)
+coverage
+test/
+vitest.config.js
+
+# Python(test/sample-root/generate.py)
+__pycache__/
+*.py[cod]
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
+desktop.ini
 *.suo
 *.ntvs*
 *.njsproj

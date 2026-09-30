@@ -1,6 +1,7 @@
 import { UseIO_Layout } from "./other.js";
 import { dds_fileName, dsp_fileName, cl_fileName, rpg_fileName, rpgle_fileName } from "../file/fileType.js";
 import { fileOpen } from "../webworker/fileOpen.js";
+import { createRefList, createRefList_rpgle } from "./refList.js";
 
 const SETTING_IDB = "monaco-setting";
 import { get } from 'idb-keyval';
@@ -45,7 +46,9 @@ self.onmessage = async (event) => {
     otherData.refListFile.dsp.clear();
     otherData.refListFile.pgm.clear();
     if (otherData.lang === 'rpg-indent') {
-        otherData.refListFile = await createRefList(otherData.textLine, otherData.refListFile);
+        otherData.refListFile = createRefList(otherData.textLine);
+    } else if (otherData.lang === 'rpgle') {
+        otherData.refListFile = createRefList_rpgle(otherData.textLine);
     } else if (otherData.lang === 'dds') {
         if (otherData.langType === "dsp") {
             otherData.refListFile.dsp.set(otherData.uri_parse.member, { name: otherData.uri_parse.member, use: new UseIO_Layout(false), isFound: false, data: {}, uri_path: {}, isRegExpFound: false });
@@ -219,58 +222,3 @@ function splitString(inputString, divRegExp) {
     return result;
 }
 
-const createRefList = async (textLine) => {
-    let dds = new Map();
-    let dsp = new Map();
-    let pgm = new Map();
-
-    for (let i = 0; i < textLine.length; i++) {
-        let lineText = textLine[i];
-        if (lineText.substring(5, 6) === "F" && lineText.substring(6, 7) !== "*") {
-            let type = lineText.substring(39, 46).trim();
-            let file = lineText.substring(6, 14).trim();
-            let use = lineText.substring(14, 15).trim();
-            let add = lineText.substring(65, 66).trim();
-            let using = new UseIO_Layout(true);
-            using.device = type;
-            if (add === "A") {
-                using.io.add('O');
-            }
-            if (use === "I") {
-                using.io.add('I');
-            } else if (use === "U") {
-                using.io.add('U');
-            } else if (use === "O") {
-                using.io.add('O');
-            }
-            if (type === "WORKSTN") {
-                if (dsp.has(file)) {
-                    using.io = new Set([...using.io, ...dsp.get(file).use.io]);
-                }
-                dsp.set(file, { name: file, use: using, isFound: false, data: {}, uri_path: {}, isRegExpFound: false });
-            } else if (type === "DISK") {
-                if (dds.has(file)) {
-                    using.io = new Set([...using.io, ...dds.get(file).use.io]);
-                }
-                dds.set(file, { name: file, use: using, isFound: false, data: {}, uri_path: {}, isRegExpFound: false });
-            } else if (type === "PRINTER") {
-                if (dds.has(file)) {
-                    using.io = new Set([...using.io, ...dds.get(file).use.io]);
-                }
-                dds.set(file, { name: file, use: using, isFound: false, data: {}, uri_path: {}, isRegExpFound: false });
-            }
-        } else if (lineText.substring(5, 6) === "C" && lineText.substring(6, 7) !== "*") {
-            let op_m = lineText.substring(45, 50).trim();
-            let op_2 = lineText.substring(50, 60).trim();
-            let op_2_ex = op_2.replace(/'/g, "");
-            if (op_m === "CALL") {
-                let using = new UseIO_Layout(true);
-                using.device = "PGM";
-                using.io = new Set(["-", "-"]);
-                pgm.set(op_2_ex, { name: op_2_ex, use: using, isFound: false, data: {}, uri_path: {}, isRegExpFound: false });
-            }
-        }
-    }
-
-    return { dds: dds, dsp: dsp, pgm: pgm };
-}

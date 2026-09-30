@@ -6,6 +6,8 @@ export const fileTypeGet = (fileName, Indent = true) => {
             } else {
                 return 'rpg';
             }
+        case "QRPGLESRC":
+            return 'rpgle';
         case "QDDSSRC":
             return 'dds';
         case "QCLSRC":

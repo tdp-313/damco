@@ -1,11 +1,18 @@
-import { getRow_Text } from "../syntax/rpg_indent_text.js";
+import { getRow_TextJs } from "../syntax/rpg_indent_text.js";
 import { getRow_DDSText } from "../syntax/dds_text.js";
 import { tip_dds } from "../syntax/dds_text.js";
 import { tip_rpg } from "../syntax/rpg_indent_text.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
+import { getModelDbcsMode } from "../column.js";
+import { rpgleHover } from "./rpgle.js";
 import * as monaco from 'monaco-editor';
 
 export const regHover = () => {
+    monaco.languages.registerHoverProvider('rpgle', {
+        provideHover: async function (model, position) {
+            return rpgleHover(model, position);
+        }
+    });
     monaco.languages.registerHoverProvider('rpg-indent', {
         provideHover: async function (model, position) {
             // 変数名の取得
@@ -14,7 +21,7 @@ export const regHover = () => {
                 return null;
             };
             let row = model.getLineContent(position.lineNumber);
-            let text = getRow_Text(row, position.column);
+            let text = getRow_TextJs(row, position.column, getModelDbcsMode(model));
             const wordStr = text.text.trim();
             if (wordStr.length === 0) {
                 return null;

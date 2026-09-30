@@ -2,13 +2,13 @@ import { rpg_token } from "./syntax/rpg.js";
 import { rpg_token2 } from "./syntax/rpg_indent.js";
 import { dds_token } from "./syntax/dds.js";
 import { cl_token } from "./syntax/cl.js";
+import { rpgle_token } from "./syntax/rpgle.js";
 
 import { regDefinition } from "./Provider/definition.js";
 import { regReference } from "./Provider/reference.js";
 import { regCodeLens } from "./Provider/codeLens.js";
 import { regFolding } from "./Provider/folding.js";
 import { regHover } from "./Provider/hover.js";
-import { regInlayHints } from "./Provider/inLay.js";
 import * as monaco from 'monaco-editor';
 
 export const monacoLang = async () => {
@@ -17,6 +17,14 @@ export const monacoLang = async () => {
     monaco.languages.register({ id: 'dds' });
     monaco.languages.register({ id: 'dsp' });
     monaco.languages.register({ id: 'cl' });
+    monaco.languages.register({ id: 'rpgle' });
+
+    monaco.languages.setLanguageConfiguration('rpgle', {
+        comments: { lineComment: '//' },
+        brackets: [['(', ')']],
+        // RPG の名前は # @ $ を含められる
+        wordPattern: /[A-Za-z_#@$%*][A-Za-z0-9_#@$]*/,
+    });
 
     monaco.languages.setLanguageConfiguration('dds', {
         // symbols used as brackets
@@ -66,6 +74,7 @@ export const monacoLang = async () => {
     monaco.languages.setMonarchTokensProvider('rpg-indent', rpg_token2());
     monaco.languages.setMonarchTokensProvider('dds', dds_token());
     monaco.languages.setMonarchTokensProvider('cl', cl_token());
+    monaco.languages.setMonarchTokensProvider('rpgle', rpgle_token());
 
     const flag_regex = /\*IN[0-9][0-9]/;
     
@@ -74,5 +83,4 @@ export const monacoLang = async () => {
     regFolding();
     regHover();
     regCodeLens();
-    regInlayHints();
 }

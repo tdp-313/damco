@@ -33,7 +33,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                     return start_row_desc;
                 }
                 let next_row = await model.getLineContent(i + 1);
-                let value = next_row.substring(18, 24).trim();
+                let value = next_row.substring(18, 28).trim();
                 if (next_row.substring(6, 7) === "*") {
                     console.log('COMMENT');
                     return start_row_desc;
@@ -68,7 +68,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
     let R_name = [];
     for (let i = 1; i <= lineCount; i++) {
         let row = model.getLineContent(i);
-        let value = row.substring(18, 24).trim();
+        let value = row.substring(18, 28).trim();
         let valType = row.substring(16, 17).trim();
         let sp_op = row.substring(44, 49).trim();
 
@@ -101,7 +101,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                             break;
                         }
                     }
-                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle };
+                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle, file: refName };
                     if (map.has(rangeContinue_value)) {
                         let before = map.get(rangeContinue_value);
                         before.push(mapValue)
@@ -131,7 +131,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                             break;
                         }
                     }
-                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle };
+                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle, file: refName };
                     if (map.has(rangeContinue_value)) {
                         let before = map.get(rangeContinue_value);
                         before.push(mapValue)
@@ -167,7 +167,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
         }
 
         if (rangeContinue > 0 && lineCount === i) {
-            let mapValue = { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle };
+            let mapValue = { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle, file: refName };
             if (map.has(rangeContinue_value)) {
                 let before = map.get(rangeContinue_value);
                 before.push(mapValue)
@@ -181,7 +181,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
     if (R_name.length > 0) {
         for (let i = 1; i <= lineCount; i++) {
             let row = model.getLineContent(i);
-            let value = row.substring(18, 24).trim();
+            let value = row.substring(18, 28).trim();
 
             if (row.substring(5, 6) === 'A' && row.substring(6, 7) !== '*' && value === R_name[0]) {
                 fileDescription = await createDescription(row, i, model, lineCount)

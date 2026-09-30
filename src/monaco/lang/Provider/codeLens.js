@@ -1,4 +1,5 @@
 import { normalEditor } from "../../monaco_root.js";
+import { getModelDbcsMode, toColumnLine, stripFill } from "../column.js";
 import * as monaco from 'monaco-editor';
 
 export const regCodeLens = () => {
@@ -7,13 +8,14 @@ export const regCodeLens = () => {
     monaco.languages.registerCodeLensProvider("rpg-indent", {
         provideCodeLenses: async function (model, token) {
             var lineCount = model.getLineCount();
+            const mode = getModelDbcsMode(model);
             let rtn = { lenses: [], dispose: () => { }, };
             for (let lineNumber = 1; lineNumber <= lineCount; lineNumber++) {
-                // 行のテキストを取得
-                let lineText = model.getLineContent(lineNumber);
+                // 行のテキストを取得(全角を含む行は桁位置どおりに読めるよう変換)
+                let lineText = toColumnLine(model.getLineContent(lineNumber), mode);
                 let op_m = lineText.substring(45, 50).trim();
-                let op_1 = lineText.substring(17, 27).trim();
-                let op_2 = lineText.substring(50, 60).trim();
+                let op_1 = stripFill(lineText.substring(17, 27)).trim();
+                let op_2 = stripFill(lineText.substring(50, 60)).trim();
                 if (op_m.indexOf("BEGSR") !== -1) {
                     rtn.lenses.push({
                         range: {

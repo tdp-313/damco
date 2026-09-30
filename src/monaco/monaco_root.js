@@ -2,7 +2,7 @@ import { Setting } from "../setting.js";
 import { monacoLang } from "./lang/lang_root.js";
 import { themeDiffApply, themeApply } from "./theme/theme.js";
 import { setModeChange } from "./header/header_button.js";
-import { rulerChange } from "./lang/ruler.js";
+import { rulerChange, initRpgleRuler } from "./lang/ruler.js";
 import { initDynamicChange } from "./file/dynamicChange.js";
 import { headerFileListCreate, diff_headerFileListCreate } from "./webworker/filesystem_main.js";
 import * as monaco from 'monaco-editor';
@@ -67,7 +67,8 @@ export const monacoStart = async () => {
         autoSurround: 'brackets',
         automaticLayout: true,
     });
-    rulerChange(true, Setting.getInLayhint);
+    rulerChange(Setting.getRuler);
+    initRpgleRuler(normalEditor);
     editorFontSizeChange(Setting.editorFontSize);
     diffEditor.updateOptions(editorOptionGeneral);
 

@@ -37,7 +37,7 @@ export const readFileButtonCreate = () => {
     diffIndentButton.addEventListener('click', async (event) => {
         Setting.setdiffIndent = diffIndentButton.checked;
         reload_Process();
-        rulerChange();
+        rulerChange(Setting.getRuler);
     });
 
     const fileSelectSync = document.getElementById('control-FileSelectSync');

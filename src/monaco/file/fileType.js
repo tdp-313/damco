@@ -9,6 +9,8 @@ export const fileTypeGet2 = (fileName, isLangGet = false) => {
         switch (fileName) {
             case rpg_fileName:
                 return 'rpg-indent';
+            case rpgle_fileName:
+                return 'rpgle';
             case dds_fileName:
                 return 'dds';
             case cl_fileName:
@@ -29,7 +31,7 @@ export const fileTypeGet2 = (fileName, isLangGet = false) => {
             case dds_fileName:
                 return 'dds';
             case rpgle_fileName:
-                return 'rpg';
+                return 'rpgle';
             default:
                 return 'dds';
         }
