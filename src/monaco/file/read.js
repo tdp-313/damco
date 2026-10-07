@@ -1,19 +1,18 @@
+import { sourceTypeOfFile } from "./fileType.js";
+
+// ソースファイル名から言語。名前の判定は参照先の検索と同じ規則(fileType.js)
 export const fileTypeGet = (fileName, Indent = true) => {
-    switch (fileName) {
-        case "QRPGSRC":
+    switch (sourceTypeOfFile(fileName)) {
+        case "rpg":
             if (Indent) {
                 return 'rpg-indent';
             } else {
                 return 'rpg';
             }
-        case "QRPGLESRC":
+        case "rpgle":
             return 'rpgle';
-        case "QDDSSRC":
-            return 'dds';
-        case "QCLSRC":
+        case "cl":
             return 'cl';
-        case "QDSPSRC":
-            return 'dds';
         default:
             return 'dds';
     }

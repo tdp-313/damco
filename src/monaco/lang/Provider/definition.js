@@ -35,9 +35,12 @@ export const ddsDefinition = async (model, position) => {
         return null;
     }
     let ranges = [];
+    // 定義は配列(そのフィールドを定義しているファイルごと)
     let refDef = await model.otherData.normalRefDef.get(wordStr);
-    if (typeof (refDef) !== 'undefined') {
-        ranges.push(refDef.location);
+    if (Array.isArray(refDef)) {
+        for (const def of refDef) {
+            ranges.push(def.location);
+        }
     }
     return ranges;
 }

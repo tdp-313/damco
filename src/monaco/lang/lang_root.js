@@ -9,6 +9,7 @@ import { regReference } from "./Provider/reference.js";
 import { regCodeLens } from "./Provider/codeLens.js";
 import { regFolding } from "./Provider/folding.js";
 import { regHover } from "./Provider/hover.js";
+import { regSemanticTokens } from "./semanticTokens.js";
 import * as monaco from 'monaco-editor';
 
 export const monacoLang = async () => {
@@ -83,4 +84,5 @@ export const monacoLang = async () => {
     regFolding();
     regHover();
     regCodeLens();
+    regSemanticTokens(monaco);
 }
