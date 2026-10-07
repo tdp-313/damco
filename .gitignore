@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# VS Code 拡張機能のパッケージ(extension で npm run package)
+*.vsix
 dist
 dist-ssr
 *.local
