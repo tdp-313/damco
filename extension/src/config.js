@@ -14,6 +14,7 @@ export const readConfig = (scope) => {
         forceShiftJIS: c.get('forceShiftJIS') === true,
         autoDetectEncoding: c.get('autoDetectEncoding') !== false,
         rpgleRulers: c.get('rulers.rpgle') !== false,
+        highlighting: c.get('highlighting') || 'auto',
     };
 };
 

@@ -20,7 +20,7 @@ Web 版と同じく、次の階層のフォルダを開いて使います。
 
 | 機能 | 内容 |
 |---|---|
-| 色分け | Web 版と同じ規則。テーマ「DAMCO Dark」「DAMCO Light」を選ぶと色も Web 版と同じになります |
+| 色分け | Web 版と同じ規則。テーマ「DAMCO Dark」「DAMCO Light」を選ぶと色も Web 版と同じになります。IBM i Languages の色分けにも切り替えられます(下記) |
 | ホバー | 命令コード・キーワード・組み込み関数の説明、DDS のフィールドの説明(TEXT / COLHDG) |
 | 定義へ移動(F12) | ソース内の定義、DDS のフィールド・ファイル、呼び出し先のプログラム |
 | 参照の検索(Shift+F12) | ソース内で名前を使っている場所 |
@@ -32,6 +32,20 @@ Web 版と同じく、次の階層のフォルダを開いて使います。
 | 文字コード | Web 版と同じ判定で、Shift_JIS のファイルは Shift_JIS で開き直します |
 
 RPG III は、元のファイルのままでもホバー・定義・参照が使えます(内部でインデント表示の位置に変換しています)。
+
+## 色分けの切り替え(DAMCO / IBM i Languages)
+
+設定 `damco.highlighting` で、色分けに使う拡張機能を選べます。
+
+| 値 | 動作 |
+|---|---|
+| `auto`(既定) | IBM i Languages(barrettotte.ibmi-languages)が入っていればそれを、なければ DAMCO を使う |
+| `damco` | DAMCO の色分け。言語は `RPG III (DAMCO)` などになります |
+| `ibmiLanguages` | IBM i Languages の色分け。ソースファイルのフォルダ名から `rpg` `rpgle` `cl` `dds.pf` `dds.dspf` を割り当てます |
+
+`ibmiLanguages` では、メンバーの拡張子が `.txt` などでもフォルダ名で色が付きます。また、Code for IBM i など `rpgle` などの言語を前提にした拡張機能と一緒に使えます。
+どちらの場合も、ホバー・定義・参照・使用ファイルの一覧は DAMCO が出します(ライブラリの階層の外にある `.rpgle` などには DAMCO は答えません)。
+RPG III のインデント表示は、常に DAMCO の色分けです。
 
 ## 設定
 
@@ -55,6 +69,7 @@ RPG III は、元のファイルのままでもホバー・定義・参照が使
 
 | 設定 | 既定値 | 内容 |
 |---|---|---|
+| `damco.highlighting` | `auto` | 色分けに使う拡張機能(上記) |
 | `damco.sourceFiles` | 上記の 5 つ | ソースファイル名と種類。`%` は前方・後方・部分一致。大文字・小文字は区別しない |
 | `damco.libraryList` | `{}` | ライブラリごとのライブラリリスト |
 | `damco.referenceRoots` | `[]` | 追加で探すルートフォルダ |

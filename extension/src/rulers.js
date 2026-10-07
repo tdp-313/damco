@@ -4,6 +4,7 @@
 // RPG III とインデント表示は桁が固定なので、package.json の configurationDefaults の editor.rulers を使う。
 import * as vscode from 'vscode';
 import { readConfig } from './config.js';
+import { isDamcoDocument, kindOfLanguage } from './languages.js';
 
 // Web 版 src/monaco/lang/ruler.js の RPGLE_RULERS と同じ(各欄の最終桁)
 const RPGLE_RULERS = {
@@ -37,7 +38,7 @@ export const registerRulers = (context) => {
             return;
         }
         const document = editor.document;
-        if (document.languageId !== 'damco-rpgle' || !readConfig(document.uri).rpgleRulers) {
+        if (kindOfLanguage(document.languageId) !== 'rpgle' || !isDamcoDocument(document) || !readConfig(document.uri).rpgleRulers) {
             editor.setDecorations(decoration, []);
             return;
         }

@@ -4,7 +4,7 @@ import { TextModel } from '../../shared/textModel.js';
 import { RpgIndentMap } from '../../shared/rpgIndent.js';
 import { computeReferences } from '../../shared/refSearch.js';
 import { readConfig, referenceRootUris } from './config.js';
-import { INDENT_LANGUAGE, SEARCH_SCHEMES, parseSourcePath, sourceTypeOf, sourceUriOf } from './languages.js';
+import { SEARCH_SCHEMES, kindOfLanguage, parseSourcePath, sourceTypeOf, sourceUriOf } from './languages.js';
 
 const emptyOtherData = () => ({
     normalRefDef: new Map(),
@@ -70,13 +70,13 @@ export class DocumentService {
         const lines = documentLines(document);
         const otherData = this.referenceEntry(document).otherData;
         let entry;
-        if (document.languageId === 'damco-rpg') {
+        const kind = kindOfLanguage(document.languageId);
+        if (kind === 'rpg') {
             const map = new RpgIndentMap(lines);
             entry = { model: new TextModel(document.uri, map.indentLines, { languageId: 'rpg-indent', version: document.version, otherData }), map };
         } else {
-            const languageId = document.languageId === INDENT_LANGUAGE ? 'rpg-indent' : document.languageId.replace(/^damco-/, '');
-            const modelLines = document.languageId === INDENT_LANGUAGE ? lines : lines.map(padLine);
-            entry = { model: new TextModel(document.uri, modelLines, { languageId, version: document.version, otherData }), map: null };
+            const modelLines = kind === 'rpg-indent' ? lines : lines.map(padLine);
+            entry = { model: new TextModel(document.uri, modelLines, { languageId: kind, version: document.version, otherData }), map: null };
         }
         entry.version = document.version;
         entry.languageId = document.languageId;

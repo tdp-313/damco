@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+- 設定 `damco.highlighting` を追加。色分けを DAMCO と IBM i Languages から選べるように(既定は auto: IBM i Languages があればそれを使う)
+- IBM i Languages の言語(rpg / rpgle / cl / dds.*)のソースでも、ホバー・定義・参照・使用ファイルの一覧が動くように
+- 言語はフォルダ名(damco.sourceFiles)だけで決めるように(固定のフォルダ名の割り当てを削除)
+
 ## 0.1.1
 
 - RPG III などの固定形式で、行末に空白がない行の色分けが欄の途中で切り替わっていたのを修正(Web 版と同じく 80 桁まで埋めて色分けする)

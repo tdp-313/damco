@@ -2,7 +2,7 @@
   "name": "damco",
   "displayName": "DAMCO",
   "description": "IBM i ソース(RPG III / RPGLE / DDS / CL)の色分け・ホバー・定義ジャンプ・使用ファイル一覧",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "tdp-313",
   "private": true,
   "repository": {
@@ -22,93 +22,222 @@
     "onLanguage:damco-rpg-indent",
     "onLanguage:damco-rpgle",
     "onLanguage:damco-dds",
-    "onLanguage:damco-cl"
+    "onLanguage:damco-cl",
+    "onLanguage:rpg",
+    "onLanguage:rpgle",
+    "onLanguage:cl",
+    "onLanguage:dds.pf",
+    "onLanguage:dds.lf",
+    "onLanguage:dds.dspf",
+    "onLanguage:dds.prtf"
   ],
   "contributes": {
     "languages": [
       {
         "id": "damco-rpg",
-        "aliases": ["RPG III (DAMCO)"],
-        "filenamePatterns": ["**/QRPGSRC/*"],
+        "aliases": [
+          "RPG III (DAMCO)"
+        ],
         "configuration": "./language/rpg.json"
       },
       {
         "id": "damco-rpg-indent",
-        "aliases": ["RPG III インデント表示 (DAMCO)"],
+        "aliases": [
+          "RPG III インデント表示 (DAMCO)"
+        ],
         "configuration": "./language/rpg.json"
       },
       {
         "id": "damco-rpgle",
-        "aliases": ["RPGLE (DAMCO)"],
-        "filenamePatterns": ["**/QRPGLESRC/*"],
+        "aliases": [
+          "RPGLE (DAMCO)"
+        ],
         "configuration": "./language/rpgle.json"
       },
       {
         "id": "damco-dds",
-        "aliases": ["DDS (DAMCO)"],
-        "filenamePatterns": ["**/QDDSSRC/*", "**/QDSPSRC/*"],
+        "aliases": [
+          "DDS (DAMCO)"
+        ],
         "configuration": "./language/dds.json"
       },
       {
         "id": "damco-cl",
-        "aliases": ["CL (DAMCO)"],
-        "filenamePatterns": ["**/QCLSRC/*"],
+        "aliases": [
+          "CL (DAMCO)"
+        ],
         "configuration": "./language/cl.json"
       }
     ],
     "semanticTokenTypes": [
-      { "id": "damcoComment", "description": "注記" },
-      { "id": "damcoString", "description": "文字定数" },
-      { "id": "damcoNumber", "description": "数値" },
-      { "id": "damcoKeyword", "description": "命令コード・キーワード" },
-      { "id": "damcoStorage", "description": "ファイル操作など" },
-      { "id": "damcoConstant", "description": "制御命令など" },
-      { "id": "damcoEntity", "description": "呼び出し・出力命令など" },
-      { "id": "damcoSupport", "description": "補助の欄" },
-      { "id": "damcoType", "description": "標識・データ型など" },
-      { "id": "damcoTag", "description": "仕様書タイプ" },
-      { "id": "damcoPredefined", "description": "特殊値・組み込み関数" },
-      { "id": "damcoRegexp", "description": "演算命令など" },
-      { "id": "damcoVariable", "description": "変数" },
-      { "id": "damcoInvalid", "description": "欄に合わない値" },
-      { "id": "damcoConstructor", "description": "制御レベル" },
-      { "id": "damcoMetatag", "description": "メタ" },
-      { "id": "damcoPreIOs", "description": "ファイル入出力命令" }
+      {
+        "id": "damcoComment",
+        "description": "注記"
+      },
+      {
+        "id": "damcoString",
+        "description": "文字定数"
+      },
+      {
+        "id": "damcoNumber",
+        "description": "数値"
+      },
+      {
+        "id": "damcoKeyword",
+        "description": "命令コード・キーワード"
+      },
+      {
+        "id": "damcoStorage",
+        "description": "ファイル操作など"
+      },
+      {
+        "id": "damcoConstant",
+        "description": "制御命令など"
+      },
+      {
+        "id": "damcoEntity",
+        "description": "呼び出し・出力命令など"
+      },
+      {
+        "id": "damcoSupport",
+        "description": "補助の欄"
+      },
+      {
+        "id": "damcoType",
+        "description": "標識・データ型など"
+      },
+      {
+        "id": "damcoTag",
+        "description": "仕様書タイプ"
+      },
+      {
+        "id": "damcoPredefined",
+        "description": "特殊値・組み込み関数"
+      },
+      {
+        "id": "damcoRegexp",
+        "description": "演算命令など"
+      },
+      {
+        "id": "damcoVariable",
+        "description": "変数"
+      },
+      {
+        "id": "damcoInvalid",
+        "description": "欄に合わない値"
+      },
+      {
+        "id": "damcoConstructor",
+        "description": "制御レベル"
+      },
+      {
+        "id": "damcoMetatag",
+        "description": "メタ"
+      },
+      {
+        "id": "damcoPreIOs",
+        "description": "ファイル入出力命令"
+      }
     ],
     "semanticTokenScopes": [
       {
         "scopes": {
-          "damcoComment": ["comment"],
-          "damcoString": ["string"],
-          "damcoNumber": ["constant.numeric"],
-          "damcoKeyword": ["keyword.control"],
-          "damcoStorage": ["storage.type"],
-          "damcoConstant": ["constant.language"],
-          "damcoEntity": ["entity.name.function"],
-          "damcoSupport": ["support.function"],
-          "damcoType": ["entity.name.type"],
-          "damcoTag": ["entity.name.tag"],
-          "damcoPredefined": ["support.constant"],
-          "damcoRegexp": ["string.regexp"],
-          "damcoVariable": ["variable"],
-          "damcoInvalid": ["invalid"],
-          "damcoConstructor": ["entity.name.class"],
-          "damcoMetatag": ["meta.preprocessor"],
-          "damcoPreIOs": ["entity.name.function"]
+          "damcoComment": [
+            "comment"
+          ],
+          "damcoString": [
+            "string"
+          ],
+          "damcoNumber": [
+            "constant.numeric"
+          ],
+          "damcoKeyword": [
+            "keyword.control"
+          ],
+          "damcoStorage": [
+            "storage.type"
+          ],
+          "damcoConstant": [
+            "constant.language"
+          ],
+          "damcoEntity": [
+            "entity.name.function"
+          ],
+          "damcoSupport": [
+            "support.function"
+          ],
+          "damcoType": [
+            "entity.name.type"
+          ],
+          "damcoTag": [
+            "entity.name.tag"
+          ],
+          "damcoPredefined": [
+            "support.constant"
+          ],
+          "damcoRegexp": [
+            "string.regexp"
+          ],
+          "damcoVariable": [
+            "variable"
+          ],
+          "damcoInvalid": [
+            "invalid"
+          ],
+          "damcoConstructor": [
+            "entity.name.class"
+          ],
+          "damcoMetatag": [
+            "meta.preprocessor"
+          ],
+          "damcoPreIOs": [
+            "entity.name.function"
+          ]
         }
       }
     ],
     "themes": [
-      { "label": "DAMCO Dark", "uiTheme": "vs-dark", "path": "./dist/themes/damco-dark.json" },
-      { "label": "DAMCO Light", "uiTheme": "vs", "path": "./dist/themes/damco-light.json" }
+      {
+        "label": "DAMCO Dark",
+        "uiTheme": "vs-dark",
+        "path": "./dist/themes/damco-dark.json"
+      },
+      {
+        "label": "DAMCO Light",
+        "uiTheme": "vs",
+        "path": "./dist/themes/damco-light.json"
+      }
     ],
     "configurationDefaults": {
       "[damco-rpg]": {
-        "editor.rulers": [5, 6, 17, 27, 32, 42, 48, 51, 53, 59],
+        "editor.rulers": [
+          5,
+          6,
+          17,
+          27,
+          32,
+          42,
+          48,
+          51,
+          53,
+          59
+        ],
         "editor.semanticHighlighting.enabled": true
       },
       "[damco-rpg-indent]": {
-        "editor.rulers": [5, 6, 17, 27, 45, 50, 60, 66, 69, 71, 77],
+        "editor.rulers": [
+          5,
+          6,
+          17,
+          27,
+          45,
+          50,
+          60,
+          66,
+          69,
+          71,
+          77
+        ],
         "editor.semanticHighlighting.enabled": true
       },
       "[damco-rpgle]": {
@@ -119,42 +248,119 @@
       },
       "[damco-cl]": {
         "editor.semanticHighlighting.enabled": true
+      },
+      "[rpg]": {
+        "editor.rulers": [
+          5,
+          6,
+          17,
+          27,
+          32,
+          42,
+          48,
+          51,
+          53,
+          59
+        ]
       }
     },
     "configuration": {
       "title": "DAMCO",
       "properties": {
+        "damco.highlighting": {
+          "type": "string",
+          "order": 0,
+          "enum": [
+            "auto",
+            "damco",
+            "ibmiLanguages"
+          ],
+          "enumDescriptions": [
+            "IBM i Languages(barrettotte.ibmi-languages)が入っていればそれを、なければ DAMCO の色分けを使う",
+            "DAMCO の色分け(Web 版と同じ規則。テーマ DAMCO Dark / Light で Web 版と同じ色)",
+            "IBM i Languages の色分け。ソースファイルのフォルダ名から IBM i Languages の言語(rpg / rpgle / cl / dds.pf / dds.dspf)を割り当てる"
+          ],
+          "markdownDescription": "色分けに使う拡張機能。`ibmiLanguages` にすると、Code for IBM i など `rpgle` などの言語 ID を前提にした拡張機能とも一緒に使えます。ホバー・定義・参照・使用ファイルの一覧はどちらでも DAMCO が出します。RPG III のインデント表示は常に DAMCO の色分けです。",
+          "default": "auto"
+        },
         "damco.sourceFiles": {
           "type": "object",
           "order": 1,
           "markdownDescription": "ソースファイル(フォルダ)の名前と種類の対応。種類ごとに名前を複数書けます。`%` のワイルドカードはライブラリリストと同じ(`QDDS%` = 前方一致、`%SRC` = 後方一致、`%DDS%` = 部分一致)。大文字・小文字は区別しません。書かなかった種類は既定値を使います。\n\n例: `{ \"rpgle\": [\"QRPGLESRC\", \"QSQLRPGLESRC\"] }`",
           "properties": {
-            "rpg": { "type": "array", "items": { "type": "string" }, "description": "RPG III" },
-            "rpgle": { "type": "array", "items": { "type": "string" }, "description": "RPGLE(ILE RPG)" },
-            "dds": { "type": "array", "items": { "type": "string" }, "description": "DDS(物理・論理・印刷装置ファイル)" },
-            "dsp": { "type": "array", "items": { "type": "string" }, "description": "DDS(表示装置ファイル)" },
-            "cl": { "type": "array", "items": { "type": "string" }, "description": "CL" }
+            "rpg": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "RPG III"
+            },
+            "rpgle": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "RPGLE(ILE RPG)"
+            },
+            "dds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "DDS(物理・論理・印刷装置ファイル)"
+            },
+            "dsp": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "DDS(表示装置ファイル)"
+            },
+            "cl": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "CL"
+            }
           },
           "additionalProperties": false,
           "default": {
-            "rpg": ["QRPGSRC"],
-            "rpgle": ["QRPGLESRC"],
-            "dds": ["QDDSSRC"],
-            "dsp": ["QDSPSRC"],
-            "cl": ["QCLSRC"]
+            "rpg": [
+              "QRPGSRC"
+            ],
+            "rpgle": [
+              "QRPGLESRC"
+            ],
+            "dds": [
+              "QDDSSRC"
+            ],
+            "dsp": [
+              "QDSPSRC"
+            ],
+            "cl": [
+              "QCLSRC"
+            ]
           }
         },
         "damco.libraryList": {
           "type": "object",
           "order": 2,
           "markdownDescription": "ライブラリごとのライブラリリスト(参照先を探すライブラリと、その順番)。書かなかったライブラリは「そのライブラリ」と「先頭 3 文字を含むライブラリ」を探します。`%` のワイルドカードを使えます。\n\n例: `{ \"DEVLIB\": [\"DEVLIB\", \"PRDLIB\", \"COM%\"] }`",
-          "additionalProperties": { "type": "array", "items": { "type": "string" } },
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "default": {}
         },
         "damco.referenceRoots": {
           "type": "array",
           "order": 3,
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "markdownDescription": "参照先を探す追加のルートフォルダ(Web 版の RefMaster)。ライブラリのフォルダが並んでいるフォルダを指定します。相対パスは最初のワークスペースフォルダから。開いているソースのルートは常に探します。",
           "default": []
         },
@@ -192,14 +398,27 @@
     },
     "viewsContainers": {
       "activitybar": [
-        { "id": "damco", "title": "DAMCO", "icon": "media/damco.svg" }
+        {
+          "id": "damco",
+          "title": "DAMCO",
+          "icon": "media/damco.svg"
+        }
       ]
     },
     "views": {
       "damco": [
-        { "id": "damco.files", "name": "使用ファイル" },
-        { "id": "damco.programs", "name": "呼び出しプログラム" },
-        { "id": "damco.search", "name": "ソース検索" }
+        {
+          "id": "damco.files",
+          "name": "使用ファイル"
+        },
+        {
+          "id": "damco.programs",
+          "name": "呼び出しプログラム"
+        },
+        {
+          "id": "damco.search",
+          "name": "ソース検索"
+        }
       ]
     },
     "viewsWelcome": [
@@ -213,30 +432,94 @@
       }
     ],
     "commands": [
-      { "command": "damco.openIndentView", "title": "インデント表示で開く", "category": "DAMCO", "icon": "$(list-tree)" },
-      { "command": "damco.openOriginal", "title": "元のファイルを開く", "category": "DAMCO", "icon": "$(go-to-file)" },
-      { "command": "damco.refresh", "title": "参照先を探し直す", "category": "DAMCO", "icon": "$(refresh)" },
-      { "command": "damco.searchSource", "title": "ソース検索", "category": "DAMCO", "icon": "$(search)" },
-      { "command": "damco.copySearchResults", "title": "検索結果をコピー", "category": "DAMCO", "icon": "$(copy)" },
-      { "command": "damco.filterFiles", "title": "使用ファイルの絞り込み", "category": "DAMCO", "icon": "$(filter)" }
+      {
+        "command": "damco.openIndentView",
+        "title": "インデント表示で開く",
+        "category": "DAMCO",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "damco.openOriginal",
+        "title": "元のファイルを開く",
+        "category": "DAMCO",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "damco.refresh",
+        "title": "参照先を探し直す",
+        "category": "DAMCO",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "damco.searchSource",
+        "title": "ソース検索",
+        "category": "DAMCO",
+        "icon": "$(search)"
+      },
+      {
+        "command": "damco.copySearchResults",
+        "title": "検索結果をコピー",
+        "category": "DAMCO",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "damco.filterFiles",
+        "title": "使用ファイルの絞り込み",
+        "category": "DAMCO",
+        "icon": "$(filter)"
+      }
     ],
     "menus": {
       "editor/title": [
-        { "command": "damco.openIndentView", "when": "resourceLangId == damco-rpg", "group": "navigation" },
-        { "command": "damco.openOriginal", "when": "resourceScheme == damco-indent", "group": "navigation" }
+        {
+          "command": "damco.openIndentView",
+          "when": "resourceLangId == damco-rpg || resourceLangId == rpg",
+          "group": "navigation"
+        },
+        {
+          "command": "damco.openOriginal",
+          "when": "resourceScheme == damco-indent",
+          "group": "navigation"
+        }
       ],
       "explorer/context": [
-        { "command": "damco.openIndentView", "when": "resourceLangId == damco-rpg", "group": "navigation" }
+        {
+          "command": "damco.openIndentView",
+          "when": "resourceLangId == damco-rpg || resourceLangId == rpg",
+          "group": "navigation"
+        }
       ],
       "view/title": [
-        { "command": "damco.filterFiles", "when": "view == damco.files", "group": "navigation" },
-        { "command": "damco.refresh", "when": "view == damco.files", "group": "navigation" },
-        { "command": "damco.searchSource", "when": "view == damco.search", "group": "navigation" },
-        { "command": "damco.copySearchResults", "when": "view == damco.search", "group": "navigation" }
+        {
+          "command": "damco.filterFiles",
+          "when": "view == damco.files",
+          "group": "navigation"
+        },
+        {
+          "command": "damco.refresh",
+          "when": "view == damco.files",
+          "group": "navigation"
+        },
+        {
+          "command": "damco.searchSource",
+          "when": "view == damco.search",
+          "group": "navigation"
+        },
+        {
+          "command": "damco.copySearchResults",
+          "when": "view == damco.search",
+          "group": "navigation"
+        }
       ],
       "commandPalette": [
-        { "command": "damco.openIndentView", "when": "editorLangId == damco-rpg" },
-        { "command": "damco.openOriginal", "when": "resourceScheme == damco-indent" }
+        {
+          "command": "damco.openIndentView",
+          "when": "editorLangId == damco-rpg || editorLangId == rpg"
+        },
+        {
+          "command": "damco.openOriginal",
+          "when": "resourceScheme == damco-indent"
+        }
       ]
     }
   },

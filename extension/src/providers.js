@@ -7,7 +7,7 @@ import { defGetModule, ddsDefinition } from '../../src/monaco/lang/Provider/defi
 import { rpgIndentReferences } from '../../src/monaco/lang/Provider/reference.js';
 import { rpgIndentFolding } from '../../src/monaco/lang/Provider/folding.js';
 import { rpgIndentCodeLenses } from '../../src/monaco/lang/Provider/codeLens.js';
-import { INDENT_LANGUAGE } from './languages.js';
+import { isDamcoDocument, languagesOfKind } from './languages.js';
 
 const MAX_COLUMN = 10000;
 
@@ -70,8 +70,11 @@ const toHover = (result, entry) => {
     return new vscode.Hover(contents, result.range ? toRange(result.range, entry, true) : undefined);
 };
 
-// 解析の例外でエディタの操作を止めない
+// 解析の例外でエディタの操作を止めない。DAMCO が扱わないドキュメントには答えない
 const safe = (output, name, fn) => async (...args) => {
+    if (!isDamcoDocument(args[0])) {
+        return null;
+    }
     try {
         return await fn(...args);
     } catch (error) {
@@ -81,8 +84,22 @@ const safe = (output, name, fn) => async (...args) => {
 };
 
 export const registerProviders = (context, service, output) => {
-    const rpgIndent = [{ language: 'damco-rpg' }, { language: INDENT_LANGUAGE }];
+    const selector = (...kinds) => kinds.flatMap(languagesOfKind).map((language) => ({ language }));
+    const rpgle = selector('rpgle');
+    const rpgIndent = selector('rpg', 'rpg-indent');
+    const dds = selector('dds');
     const register = (disposable) => context.subscriptions.push(disposable);
+    const sync = (name, fn) => (document) => {
+        if (!isDamcoDocument(document)) {
+            return [];
+        }
+        try {
+            return fn(document);
+        } catch (error) {
+            output.appendLine('[' + name + '] ' + error);
+            return [];
+        }
+    };
 
     const withModel = async (document, fn) => {
         const entry = await service.ready(document);
@@ -90,27 +107,21 @@ export const registerProviders = (context, service, output) => {
     };
 
     // RPGLE
-    register(vscode.languages.registerHoverProvider({ language: 'damco-rpgle' }, {
+    register(vscode.languages.registerHoverProvider(rpgle, {
         provideHover: safe(output, 'hover', (document, position) => withModel(document, (entry) =>
             toHover(rpgleHover(entry.model, toMonacoPosition(entry, position)), entry))),
     }));
-    register(vscode.languages.registerDefinitionProvider({ language: 'damco-rpgle' }, {
+    register(vscode.languages.registerDefinitionProvider(rpgle, {
         provideDefinition: safe(output, 'definition', (document, position) => withModel(document, (entry) =>
             toLocations(rpgleDefinition(entry.model, toMonacoPosition(entry, position)), entry, document))),
     }));
-    register(vscode.languages.registerReferenceProvider({ language: 'damco-rpgle' }, {
+    register(vscode.languages.registerReferenceProvider(rpgle, {
         provideReferences: safe(output, 'references', (document, position) => withModel(document, (entry) =>
             toLocations(rpgleReferences(entry.model, toMonacoPosition(entry, position)), entry, document))),
     }));
-    register(vscode.languages.registerFoldingRangeProvider({ language: 'damco-rpgle' }, {
-        provideFoldingRanges: (document) => {
-            try {
-                return rpgleFolding(service.get(document).model).map((r) => new vscode.FoldingRange(r.start - 1, r.end - 1));
-            } catch (error) {
-                output.appendLine('[folding] ' + error);
-                return [];
-            }
-        },
+    register(vscode.languages.registerFoldingRangeProvider(rpgle, {
+        provideFoldingRanges: sync('folding', (document) =>
+            rpgleFolding(service.get(document).model).map((r) => new vscode.FoldingRange(r.start - 1, r.end - 1))),
     }));
 
     // RPG III(元のファイルとインデント表示)
@@ -127,37 +138,26 @@ export const registerProviders = (context, service, output) => {
             toLocations(await rpgIndentReferences(entry.model, toMonacoPosition(entry, position)), entry, document))),
     }));
     register(vscode.languages.registerFoldingRangeProvider(rpgIndent, {
-        provideFoldingRanges: (document) => {
-            try {
-                return rpgIndentFolding(service.get(document).model)
-                    .filter((r) => r.end > r.start)
-                    .map((r) => new vscode.FoldingRange(r.start - 1, r.end - 1));
-            } catch (error) {
-                output.appendLine('[folding] ' + error);
-                return [];
-            }
-        },
+        provideFoldingRanges: sync('folding', (document) =>
+            rpgIndentFolding(service.get(document).model)
+                .filter((r) => r.end > r.start)
+                .map((r) => new vscode.FoldingRange(r.start - 1, r.end - 1))),
     }));
     register(vscode.languages.registerCodeLensProvider(rpgIndent, {
-        provideCodeLenses: (document) => {
-            try {
-                const entry = service.get(document);
-                return rpgIndentCodeLenses(entry.model)
-                    .filter((lens) => lens.range.startLineNumber <= document.lineCount)
-                    .map((lens) => new vscode.CodeLens(toRange(lens.range, entry, true), { title: lens.command.title, command: '' }));
-            } catch (error) {
-                output.appendLine('[codeLens] ' + error);
-                return [];
-            }
-        },
+        provideCodeLenses: sync('codeLens', (document) => {
+            const entry = service.get(document);
+            return rpgIndentCodeLenses(entry.model)
+                .filter((lens) => lens.range.startLineNumber <= document.lineCount)
+                .map((lens) => new vscode.CodeLens(toRange(lens.range, entry, true), { title: lens.command.title, command: '' }));
+        }),
     }));
 
     // DDS
-    register(vscode.languages.registerHoverProvider({ language: 'damco-dds' }, {
+    register(vscode.languages.registerHoverProvider(dds, {
         provideHover: safe(output, 'hover', (document, position) => withModel(document, async (entry) =>
             toHover(await ddsHover(entry.model, toMonacoPosition(entry, position)), entry))),
     }));
-    register(vscode.languages.registerDefinitionProvider({ language: 'damco-dds' }, {
+    register(vscode.languages.registerDefinitionProvider(dds, {
         provideDefinition: safe(output, 'definition', (document, position) => withModel(document, async (entry) =>
             toLocations(await ddsDefinition(entry.model, toMonacoPosition(entry, position)), entry, document))),
     }));
