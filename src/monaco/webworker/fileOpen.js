@@ -69,15 +69,28 @@ export const fileOpen = async (fileHandle, isForceSJIS = false) => {
     }
     let lastModifiedTime = await file.lastModifiedDate.toLocaleString();
 
+    let rtn = { timestamp: lastModifiedTime, text: "", textArray: [], encode: isForceSJIS ? 'Shift-JIS' : 'utf-8', ext: ext, handle: fileHandle };
+
+    const response = await fetch(URL.createObjectURL(file));
+    const arrayBuffer = await response.arrayBuffer();
+
+    const { text, encode } = decodeText(arrayBuffer, isForceSJIS);
+    rtn.encode = encode;
+    if (text === '') {
+        return rtn;
+    }
+    rtn.text = text;
+    let textArray = text.split(/\r\n|\r|\n/);
+    rtn.textArray = textArray;
+    return (rtn);
+}
+
+// UTF-8 と Shift_JIS を判定してデコードする(VS Code 拡張機能からも使う)
+export const decodeText = (arrayBuffer, isForceSJIS = false) => {
     let encodeStyle = 'utf-8';
     if (isForceSJIS) {
         encodeStyle = 'Shift-JIS';
     }
-
-    let rtn = { timestamp: lastModifiedTime, text: "", textArray: [], encode: encodeStyle, ext: ext, handle: fileHandle };
-
-    const response = await fetch(URL.createObjectURL(file));
-    const arrayBuffer = await response.arrayBuffer();
 
     const decoderUTF = new TextDecoder(encodeStyle);
     const textUTF = decoderUTF.decode(arrayBuffer);
@@ -104,12 +117,5 @@ export const fileOpen = async (fileHandle, isForceSJIS = false) => {
             }
         }
     }
-    rtn.encode = selectedEncode;
-    if (text === '') {
-        return rtn;
-    }
-    rtn.text = text;
-    let textArray = text.split(/\r\n|\r|\n/);
-    rtn.textArray = textArray;
-    return (rtn);
+    return { text, encode: selectedEncode };
 }

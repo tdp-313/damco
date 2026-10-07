@@ -15,58 +15,68 @@ export const regHover = () => {
     });
     monaco.languages.registerHoverProvider('rpg-indent', {
         provideHover: async function (model, position) {
-            // 変数名の取得
-            let word = model.getWordAtPosition(position);
-            if (!word) {
-                return null;
-            };
-            let row = model.getLineContent(position.lineNumber);
-            let text = getRow_TextJs(row, position.column, getModelDbcsMode(model));
-            const wordStr = text.text.trim();
-            if (wordStr.length === 0) {
-                return null;
-            }
-            //rpg-source create
-            model.otherData.sourceRefDef = await sourceRefDefStart(model);
-
-            let tooltip_text = await hoverTextCreate(text, wordStr, "rpg-indent", model);
-            // ホバー情報の作成
-            return {
-                range: new monaco.Range(position.lineNumber, text.startColumn, position.lineNumber, text.endColumn),
-                contents: [
-                    { value: tooltip_text[0] },
-                    { value: tooltip_text[1] },
-                    { value: tooltip_text[2] }
-                ]
-            };
+            return rpgIndentHover(model, position);
         }
     });
     monaco.languages.registerHoverProvider('dds', {
         provideHover: async function (model, position) {
-            // 変数名の取得
-            let word = model.getWordAtPosition(position);
-            if (!word) {
-                return null;
-            };
-            let row = model.getLineContent(position.lineNumber);
-            let text = getRow_DDSText(row, position.column);
-
-            const wordStr = text.text.trim();
-            if (wordStr.length === 0) {
-                return null;
-            }
-            let tooltip_text = await hoverTextCreate(text, wordStr, "dds", model);
-            // ホバー情報の作成
-            return {
-                range: new monaco.Range(position.lineNumber, text.startColumn, position.lineNumber, text.endColumn),
-                contents: [
-                    { value: tooltip_text[0] },
-                    { value: tooltip_text[1] },
-                    { value: tooltip_text[2] }
-                ]
-            };
+            return ddsHover(model, position);
         }
     });
+}
+
+// RPG III(インデント済み)のホバー。VS Code 拡張機能からも使う
+export const rpgIndentHover = async (model, position) => {
+    // 変数名の取得
+    let word = model.getWordAtPosition(position);
+    if (!word) {
+        return null;
+    };
+    let row = model.getLineContent(position.lineNumber);
+    let text = getRow_TextJs(row, position.column, getModelDbcsMode(model));
+    const wordStr = text.text.trim();
+    if (wordStr.length === 0) {
+        return null;
+    }
+    //rpg-source create
+    model.otherData.sourceRefDef = await sourceRefDefStart(model);
+
+    let tooltip_text = await hoverTextCreate(text, wordStr, "rpg-indent", model);
+    // ホバー情報の作成
+    return {
+        range: new monaco.Range(position.lineNumber, text.startColumn, position.lineNumber, text.endColumn),
+        contents: [
+            { value: tooltip_text[0] },
+            { value: tooltip_text[1] },
+            { value: tooltip_text[2] }
+        ]
+    };
+}
+
+// DDS のホバー。VS Code 拡張機能からも使う
+export const ddsHover = async (model, position) => {
+    // 変数名の取得
+    let word = model.getWordAtPosition(position);
+    if (!word) {
+        return null;
+    };
+    let row = model.getLineContent(position.lineNumber);
+    let text = getRow_DDSText(row, position.column);
+
+    const wordStr = text.text.trim();
+    if (wordStr.length === 0) {
+        return null;
+    }
+    let tooltip_text = await hoverTextCreate(text, wordStr, "dds", model);
+    // ホバー情報の作成
+    return {
+        range: new monaco.Range(position.lineNumber, text.startColumn, position.lineNumber, text.endColumn),
+        contents: [
+            { value: tooltip_text[0] },
+            { value: tooltip_text[1] },
+            { value: tooltip_text[2] }
+        ]
+    };
 }
 
 export const hoverTextCreate = async (text, wordStr, lang, model) => {
