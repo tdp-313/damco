@@ -15,6 +15,9 @@ const emptyOtherData = () => ({
     status: 'none',
 });
 
+// Web 版は表示の前に各行を 80 桁まで空白で埋める(addSpaces)。解析も同じ形のテキストで行う
+const padLine = (line) => (line.length < 80 ? line + ' '.repeat(80 - line.length) : line);
+
 const documentLines = (document) => {
     const lines = [];
     for (let i = 0; i < document.lineCount; i++) {
@@ -72,7 +75,8 @@ export class DocumentService {
             entry = { model: new TextModel(document.uri, map.indentLines, { languageId: 'rpg-indent', version: document.version, otherData }), map };
         } else {
             const languageId = document.languageId === INDENT_LANGUAGE ? 'rpg-indent' : document.languageId.replace(/^damco-/, '');
-            entry = { model: new TextModel(document.uri, lines, { languageId, version: document.version, otherData }), map: null };
+            const modelLines = document.languageId === INDENT_LANGUAGE ? lines : lines.map(padLine);
+            entry = { model: new TextModel(document.uri, modelLines, { languageId, version: document.version, otherData }), map: null };
         }
         entry.version = document.version;
         entry.languageId = document.languageId;

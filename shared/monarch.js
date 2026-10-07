@@ -218,3 +218,15 @@ export const tokenizeLines = (lexer, lines) => {
         return result.tokens;
     });
 };
+
+// 固定形式のソース用。Web 版は表示の前に各行を 80 桁まで空白で埋める(text_extend.js の addSpaces)ので、
+// 色分けの定義(.{1,10} などの欄)もそれを前提にしている。同じように埋めてから色分けし、元の行の長さで切る
+export const tokenizeFixedLines = (lexer, lines, width = 80) => {
+    const padded = lines.map((line) => (line.length < width ? line + ' '.repeat(width - line.length) : line));
+    return tokenizeLines(lexer, padded).map((tokens, i) => {
+        const length = lines[i].length;
+        return tokens
+            .filter((t) => t.start < length)
+            .map((t) => (t.start + t.length > length ? Object.assign({}, t, { length: length - t.start }) : t));
+    });
+};

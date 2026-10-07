@@ -1,6 +1,6 @@
 // 色分け。Web 版の Monarch の定義(src/monaco/lang/syntax)を shared/monarch.js で動かし、セマンティックトークンにする
 import * as vscode from 'vscode';
-import { compileMonarch, tokenizeLines } from '../../shared/monarch.js';
+import { compileMonarch, tokenizeFixedLines } from '../../shared/monarch.js';
 import { rpg_token } from '../../src/monaco/lang/syntax/rpg.js';
 import { rpg_token2 } from '../../src/monaco/lang/syntax/rpg_indent.js';
 import { rpgle_token } from '../../src/monaco/lang/syntax/rpgle.js';
@@ -33,7 +33,7 @@ export const buildSemanticTokens = (document) => {
         lines.push(document.lineAt(i).text);
     }
     const builder = new vscode.SemanticTokensBuilder(LEGEND);
-    const tokenized = tokenizeLines(lexerOf(document.languageId), lines);
+    const tokenized = tokenizeFixedLines(lexerOf(document.languageId), lines);
     for (let line = 0; line < tokenized.length; line++) {
         for (const token of tokenized[line]) {
             const type = semanticTypeOf(token.token);
