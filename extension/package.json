@@ -2,7 +2,7 @@
   "name": "damco",
   "displayName": "DAMCO",
   "description": "IBM i ソース(RPG III / RPGLE / DDS / CL)の色分け・ホバー・定義ジャンプ・使用ファイル一覧",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "publisher": "tdp-313",
   "private": true,
   "repository": {

@@ -52,9 +52,7 @@ export const buildFileList = (otherData, sourceFiles, filter) => {
                 total++;
                 existing.add(key);
                 if (kind === 'dsp' || isDisplay(value.use)) {
-                    // 説明(TEXT)がないと解析処理は文字列 'undefined' を入れる
-                    const description = value.s_description === 'undefined' ? '' : value.s_description;
-                    files.push({ name: key, kind, description, use: useString(value.use), uri: value.location.uri, found: true });
+                    files.push({ name: key, kind, description: value.s_description, use: useString(value.use), uri: value.location.uri, found: true });
                 }
             }
         }
