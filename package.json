@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:vscode": "npm --prefix extension run build && node test/vscode/run.mjs",
+    "test:vscode:noibmi": "npm --prefix extension run build && node test/vscode/run.mjs --without-ibmi",
     "corpus:fetch": "node test/corpus/fetch.mjs",
     "sample:generate": "python test/sample-root/generate.py test/sample-root",
     "accuracy": "node test/accuracy/report.mjs",

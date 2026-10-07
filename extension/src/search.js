@@ -75,7 +75,9 @@ export const registerSearch = (context) => {
     const view = vscode.window.createTreeView('damco.search', { treeDataProvider: provider });
     context.subscriptions.push(view);
 
-    context.subscriptions.push(vscode.commands.registerCommand('damco.searchSource', async () => {
+    // options: { files: ['QRPGLESRC'], queries: ['検索語1', '検索語2'] } を渡すと、選択・入力を省いて検索する(キーバインドやテストから使う)
+    context.subscriptions.push(vscode.commands.registerCommand('damco.searchSource', async (options) => {
+        const given = options && Array.isArray(options.files) && Array.isArray(options.queries) ? options : null;
         const editor = vscode.window.activeTextEditor;
         const parsed = editor ? parseSourcePath(editor.document.uri) : null;
         if (!parsed) {
@@ -92,30 +94,37 @@ export const registerSearch = (context) => {
         } catch {
             folders = [parsed.file];
         }
-        const picked = await vscode.window.showQuickPick(
-            folders.map((name) => ({ label: name, picked: name === parsed.file })),
-            { canPickMany: true, title: 'ソース検索: 検索するソースファイル(' + parsed.lib + ')' });
-        if (!picked || picked.length === 0) {
-            return;
+        let picked;
+        let queries;
+        if (given) {
+            picked = given.files.map((label) => ({ label }));
+            queries = [given.queries[0] || '', given.queries[1] || ''];
+        } else {
+            picked = await vscode.window.showQuickPick(
+                folders.map((name) => ({ label: name, picked: name === parsed.file })),
+                { canPickMany: true, title: 'ソース検索: 検索するソースファイル(' + parsed.lib + ')' });
+            if (!picked || picked.length === 0) {
+                return;
+            }
+            const previous = context.workspaceState.get(STATE_KEY, ['', '']);
+            const query1 = await vscode.window.showInputBox({
+                title: 'ソース検索 (1/2)',
+                prompt: '検索語(正規表現。% を含むと % = 任意の文字列、_ = 任意の 1 文字)。ファイル名やフィールド名など',
+                value: previous[0],
+            });
+            if (query1 === undefined) {
+                return;
+            }
+            const query2 = await vscode.window.showInputBox({
+                title: 'ソース検索 (2/2)',
+                prompt: 'さらに絞り込む検索語(AND。空なら 1 つ目だけ)',
+                value: previous[1],
+            });
+            if (query2 === undefined) {
+                return;
+            }
+            queries = [query1, query2];
         }
-        const previous = context.workspaceState.get(STATE_KEY, ['', '']);
-        const query1 = await vscode.window.showInputBox({
-            title: 'ソース検索 (1/2)',
-            prompt: '検索語(正規表現。% を含むと % = 任意の文字列、_ = 任意の 1 文字)。ファイル名やフィールド名など',
-            value: previous[0],
-        });
-        if (query1 === undefined) {
-            return;
-        }
-        const query2 = await vscode.window.showInputBox({
-            title: 'ソース検索 (2/2)',
-            prompt: 'さらに絞り込む検索語(AND。空なら 1 つ目だけ)',
-            value: previous[1],
-        });
-        if (query2 === undefined) {
-            return;
-        }
-        const queries = [query1, query2];
         await context.workspaceState.update(STATE_KEY, queries);
         try {
             createSourceMatcher(queries);
@@ -137,6 +146,7 @@ export const registerSearch = (context) => {
         view.description = results.length + ' 件';
         view.message = results.length === 0 ? '見つかりませんでした(' + queries.filter((q) => q).join(', ') + ')' : undefined;
         await vscode.commands.executeCommand('damco.search.focus');
+        return results;
     }));
 
     // 結果をタブ区切りでクリップボードへ(Web 版の「結果をコピー」と同じ形)

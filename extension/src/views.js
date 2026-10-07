@@ -52,7 +52,9 @@ export const buildFileList = (otherData, sourceFiles, filter) => {
                 total++;
                 existing.add(key);
                 if (kind === 'dsp' || isDisplay(value.use)) {
-                    files.push({ name: key, kind, description: value.s_description, use: useString(value.use), uri: value.location.uri, found: true });
+                    // 説明(TEXT)がないと解析処理は文字列 'undefined' を入れる
+                    const description = value.s_description === 'undefined' ? '' : value.s_description;
+                    files.push({ name: key, kind, description, use: useString(value.use), uri: value.location.uri, found: true });
                 }
             }
         }
@@ -132,12 +134,30 @@ export const registerViews = (context, service) => {
     context.subscriptions.push(filesView, programsView);
     const filter = { Input: true, Update: true, Output: true, Ref: true };
 
-    const refresh = () => {
+    // 一覧に出しているソース。ほかのファイル(設定など)に切り替えても、直前のソースの一覧を残す
+    let shownUri = null;
+    const target = () => {
         const editor = vscode.window.activeTextEditor;
-        if (!editor || !isDamcoDocument(editor.document)) {
-            return; // ほかのファイルに切り替えても、直前の一覧を残す
+        if (editor && isDamcoDocument(editor.document)) {
+            return editor.document;
         }
-        const document = editor.document;
+        return shownUri === null ? null : vscode.workspace.textDocuments.find((d) => d.uri.toString() === shownUri && isDamcoDocument(d)) || null;
+    };
+
+    const refresh = () => {
+        const document = target();
+        if (!document) {
+            if (shownUri !== null) {
+                shownUri = null;
+                filesProvider.set([]);
+                programsProvider.set([]);
+                filesView.description = undefined;
+                filesView.message = undefined;
+                programsView.message = undefined;
+            }
+            return;
+        }
+        shownUri = document.uri.toString();
         const otherData = service.referenceEntry(document).otherData;
         const config = readConfig(document.uri);
         const status = otherData.status;
@@ -157,17 +177,17 @@ export const registerViews = (context, service) => {
         programsView.message = status === 'pending' || status === 'none' ? '検索中…' : undefined;
     };
 
-    const activate = (editor) => {
-        if (editor && isDamcoDocument(editor.document)) {
-            service.ensureReferences(editor.document);
+    const activate = () => {
+        const document = target();
+        if (document) {
+            service.ensureReferences(document);
         }
         refresh();
     };
 
     context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(activate));
     context.subscriptions.push(service.onDidUpdate((document) => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor && editor.document === document) {
+        if (document.uri.toString() === shownUri || (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document === document)) {
             refresh();
         }
     }));
@@ -177,10 +197,12 @@ export const registerViews = (context, service) => {
         const editor = vscode.window.activeTextEditor;
         if (editor && editor.document === e.document && isDamcoDocument(e.document)) {
             clearTimeout(timer);
-            timer = setTimeout(() => activate(editor), 1000);
+            timer = setTimeout(activate, 1000);
         }
     }));
-    context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(() => setTimeout(() => activate(vscode.window.activeTextEditor), 0)));
+    // 言語の割り当て・設定の変更ではドキュメントが開き直される
+    context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(() => setTimeout(activate, 0)));
+    context.subscriptions.push(vscode.workspace.onDidCloseTextDocument(() => setTimeout(activate, 0)));
 
     context.subscriptions.push(vscode.commands.registerCommand('damco.filterFiles', async () => {
         const items = [
@@ -198,6 +220,6 @@ export const registerViews = (context, service) => {
         }
     }));
 
-    activate(vscode.window.activeTextEditor);
+    activate();
     return { refresh, filesProvider, programsProvider };
 };

@@ -2,7 +2,7 @@
   "name": "damco",
   "displayName": "DAMCO",
   "description": "IBM i ソース(RPG III / RPGLE / DDS / CL)の色分け・ホバー・定義ジャンプ・使用ファイル一覧",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "tdp-313",
   "private": true,
   "repository": {
@@ -527,7 +527,7 @@
     "build": "node scripts/build.mjs",
     "watch": "node scripts/build.mjs --watch",
     "test": "node scripts/build.mjs && node ../test/vscode/run.mjs",
-    "package": "node scripts/build.mjs && vsce package --no-dependencies --skip-license"
+    "package": "node scripts/build.mjs && vsce package --no-dependencies --skip-license --no-rewrite-relative-links"
   },
   "devDependencies": {
     "@types/vscode": "1.101.0",

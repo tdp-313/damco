@@ -8,6 +8,7 @@
 //   - next: '@pop' / '@push' / '@popall' / '@状態名'
 //   - ignoreCase、defaultToken、正規表現の中の @属性名
 //   - '^' で始まる規則は行頭でだけ使う
+import { detectDbcsMode, toColumnLine, FILL } from '../src/monaco/lang/column.js';
 
 const escapeRegExpSource = (value) => (value instanceof RegExp ? value.source : String(value));
 
@@ -220,13 +221,33 @@ export const tokenizeLines = (lexer, lines) => {
 };
 
 // 固定形式のソース用。Web 版は表示の前に各行を 80 桁まで空白で埋める(text_extend.js の addSpaces)ので、
-// 色分けの定義(.{1,10} などの欄)もそれを前提にしている。同じように埋めてから色分けし、元の行の長さで切る
+// 色分けの定義(.{1,10} などの欄)もそれを前提にしている。同じように埋めてから色分けし、元の行の長さで切る。
+// さらに全角文字(2 桁)を含む行は、解析と同じく桁どおりの行(column.js の toColumnLine)で色分けして、
+// 全角の文字定数より右の欄がずれないようにする(Web 版の色分けはここがずれる)
 export const tokenizeFixedLines = (lexer, lines, width = 80) => {
-    const padded = lines.map((line) => (line.length < width ? line + ' '.repeat(width - line.length) : line));
+    const mode = detectDbcsMode(lines);
+    const columnLines = lines.map((line) => toColumnLine(line, mode));
+    const padded = columnLines.map((line) => (line.length < width ? line + ' '.repeat(width - line.length) : line));
     return tokenizeLines(lexer, padded).map((tokens, i) => {
-        const length = lines[i].length;
-        return tokens
-            .filter((t) => t.start < length)
-            .map((t) => (t.start + t.length > length ? Object.assign({}, t, { length: length - t.start }) : t));
+        const line = lines[i];
+        const columnLine = columnLines[i];
+        // 桁どおりの行の位置 → 元の行の位置
+        let toJs = (index) => index;
+        if (columnLine !== line) {
+            const map = [0];
+            for (let c = 0; c < columnLine.length; c++) {
+                map.push(map[c] + (columnLine[c] === FILL ? 0 : 1));
+            }
+            toJs = (index) => (index <= columnLine.length ? map[index] : line.length + index - columnLine.length);
+        }
+        const result = [];
+        for (const t of tokens) {
+            const start = toJs(t.start);
+            const end = Math.min(toJs(t.start + t.length), line.length);
+            if (end > start) {
+                result.push({ start, length: end - start, token: t.token });
+            }
+        }
+        return result;
     });
 };
