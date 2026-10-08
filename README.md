@@ -102,4 +102,6 @@ npm test           # テスト
 | `extension/` | VS Code 拡張機能 |
 | `docs/` | ドキュメント |
 
+VS Code 拡張機能の VSIX は GitHub Actions(`.github/workflows/vsix.yml`)で作られます。push のたびに Actions の成果物に置かれ、`ext-v0.2.3` のように拡張機能の版のタグを push するとリリースに添付されます。
+
 公開(GitHub Pages)はリポジトリ直下の `index.html` と `assets/` です。`npm run build` のあと、直下の `assets/` を空にしてから `dist/` の中身をコピーしてください。

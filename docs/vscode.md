@@ -36,7 +36,7 @@ Web 版 DAMCO の解析処理をそのまま使っているので、色分け・
 
 必要なもの: VS Code 1.101 以降
 
-1. `damco-x.x.x.vsix` を用意します。
+1. `damco-x.x.x.vsix` を用意します。[GitHub のリリース](https://github.com/tdp-313/damco/releases)(`ext-v` で始まるもの)からダウンロードできます。
 2. VS Code の拡張機能ビュー(Ctrl+Shift+X)の右上の「…」→「VSIX からのインストール...」で選びます。
    コマンドで入れる場合:
    ```
