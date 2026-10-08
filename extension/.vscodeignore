@@ -1,0 +1,7 @@
+src/**
+.vscode/**
+scripts/**
+node_modules/**
+dist/**/*.map
+*.vsix
+images/**

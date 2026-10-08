@@ -1,7 +1,14 @@
 import * as monaco from 'monaco-editor';
 
 export const dds_DefinitionList = async (model, map, refName, handle, use, otherFileFlagReference) => {
-    const createDescription = async (start_row, i, model, max, loopCheck = 0) => {
+    // TEXT / COLHDG の説明。見つからなければ空文字(以前は文字列 'undefined' や undefined が入っていた)
+    const createDescription = async (start_row, i, model, max) => {
+        const description = await readDescription(start_row, i, model, max);
+        return typeof description === 'string' ? description : '';
+    };
+    // 説明があれば「名前 : 説明」、なければ名前だけ
+    const withDescription = (name, description) => description ? name + ' : ' + description : name;
+    const readDescription = async (start_row, i, model, max, loopCheck = 0) => {
         let sp_op_full = start_row.substring(44, 80).trim();
         let text_p = sp_op_full.indexOf("TEXT('");
         let colhdg_p = sp_op_full.indexOf("COLHDG('");
@@ -46,12 +53,12 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
             }
         } else {
             if (loopCheck >= 3 || max === i) {
-                return 'undefined';
+                return '';
             } else {
                 for (let p = i + 1; p <= max; p++) {
                     let nextText = await model.getLineContent(p);
                     if (nextText.substring(5, 6) === 'A' && nextText.substring(6, 7) !== '*') {
-                        return createDescription(nextText, p, model, max, loopCheck + 1);
+                        return readDescription(nextText, p, model, max, loopCheck + 1);
                     }
                 }
 
@@ -101,7 +108,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                             break;
                         }
                     }
-                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle, file: refName };
+                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: withDescription(refName, description), s_description: description, sourceType: "definition", handle: handle, file: refName };
                     if (map.has(rangeContinue_value)) {
                         let before = map.get(rangeContinue_value);
                         before.push(mapValue)
@@ -131,7 +138,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
                             break;
                         }
                     }
-                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle, file: refName };
+                    let mapValue = { location: { range: new monaco.Range(start, 5, end, Number.MAX_VALUE), uri: model.uri }, description: withDescription(refName, description), s_description: description, sourceType: "definition", handle: handle, file: refName };
                     if (map.has(rangeContinue_value)) {
                         let before = map.get(rangeContinue_value);
                         before.push(mapValue)
@@ -167,7 +174,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
         }
 
         if (rangeContinue > 0 && lineCount === i) {
-            let mapValue = { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: refName + ' : ' + description, s_description: description, sourceType: "definition", handle: handle, file: refName };
+            let mapValue = { location: { range: new monaco.Range(rangeContinue, 5, i, Number.MAX_VALUE), uri: model.uri }, description: withDescription(refName, description), s_description: description, sourceType: "definition", handle: handle, file: refName };
             if (map.has(rangeContinue_value)) {
                 let before = map.get(rangeContinue_value);
                 before.push(mapValue)
@@ -193,7 +200,7 @@ export const dds_DefinitionList = async (model, map, refName, handle, use, other
         let before = map.get(refName);
         clone.io = new Set([...clone.io, ...before[0].use.io]);
     }
-    let fileValue = { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: handle.name.replace(/\.[^/.]+$/, "") + ' : ' + fileDescription, s_description: fileDescription, sourceType: "file", handle: handle, use: clone };
+    let fileValue = { location: { range: new monaco.Range(1, 5, lineCount, Number.MAX_VALUE), uri: model.uri }, description: withDescription(handle.name.replace(/\.[^/.]+$/, ""), fileDescription), s_description: fileDescription, sourceType: "file", handle: handle, use: clone };
     if (map.has(refName)) {
         let before = map.get(refName);
         for (let i = 0; i < before.length; i++) {

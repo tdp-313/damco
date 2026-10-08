@@ -1,0 +1,78 @@
+# VS Code 拡張機能(VSIX)を作る。
+#   - push / プルリクエスト / 手動実行: VSIX を作り、Actions の成果物(Artifacts)に置く
+#   - タグ ext-v* を push: さらに GitHub のリリースを作り、VSIX を添付する(例: ext-v0.2.3)
+# GitHub Pages(Web 版)の公開は別の仕組み(ブランチからの公開)なので、このワークフローとは関係しない。
+name: VSIX
+
+on:
+  push:
+    branches: [main]
+    tags: ['ext-v*']
+    paths:
+      - 'extension/**'
+      - 'shared/**'
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/vsix.yml'
+  pull_request:
+    paths:
+      - 'extension/**'
+      - 'shared/**'
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/vsix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  vsix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            extension/package-lock.json
+
+      # リポジトリ直下の依存(拡張機能のテーマを Web 版の monaco-editor のテーマから作る)
+      - run: npm ci
+      - run: npm ci
+        working-directory: extension
+
+      - name: VSIX を作る
+        run: npm run package
+        working-directory: extension
+
+      - name: 版を確認する
+        id: version
+        run: echo "version=$(node -p "require('./extension/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: タグと拡張機能の版が合っているか
+        if: startsWith(github.ref, 'refs/tags/ext-v')
+        run: |
+          if [ "${GITHUB_REF_NAME}" != "ext-v${{ steps.version.outputs.version }}" ]; then
+            echo "タグ ${GITHUB_REF_NAME} と extension/package.json の版 ${{ steps.version.outputs.version }} が違います"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: damco-${{ steps.version.outputs.version }}
+          path: extension/damco-*.vsix
+
+      - name: リリースを作る
+        if: startsWith(github.ref, 'refs/tags/ext-v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" extension/damco-*.vsix \
+            --title "DAMCO for VS Code ${{ steps.version.outputs.version }}" \
+            --notes "VS Code 拡張機能 ${{ steps.version.outputs.version }}。変更点は extension/CHANGELOG.md を見てください。入れ方: 拡張機能ビューの「…」→「VSIX からのインストール...」で damco-${{ steps.version.outputs.version }}.vsix を選ぶ。"

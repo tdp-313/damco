@@ -21,20 +21,28 @@ export const regDefinition = () => {
 
     monaco.languages.registerDefinitionProvider('dds', {
         provideDefinition: async function (model, position) {
-            let row = model.getLineContent(position.lineNumber);
-            let text = getRow_DDSText(row, position.column);
-            const wordStr = text.text.trim();
-            if (wordStr === "") {
-                return null;
-            }
-            let ranges = [];
-            let refDef = await model.otherData.normalRefDef.get(wordStr);
-            if (typeof (refDef) !== 'undefined') {
-                ranges.push(refDef.location);
-            }
-            return ranges;
+            return ddsDefinition(model, position);
         }
     });
+}
+
+// DDS の定義ジャンプ。VS Code 拡張機能からも使う
+export const ddsDefinition = async (model, position) => {
+    let row = model.getLineContent(position.lineNumber);
+    let text = getRow_DDSText(row, position.column);
+    const wordStr = text.text.trim();
+    if (wordStr === "") {
+        return null;
+    }
+    let ranges = [];
+    // 定義は配列(そのフィールドを定義しているファイルごと)
+    let refDef = await model.otherData.normalRefDef.get(wordStr);
+    if (Array.isArray(refDef)) {
+        for (const def of refDef) {
+            ranges.push(def.location);
+        }
+    }
+    return ranges;
 }
 
 export const defGetModule = async (model, position) => {

@@ -12,26 +12,12 @@ import { initPermissonCheck } from "../setting.js";
 //
 import darkTherme from "./theme/dark_1.json"
 
-import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
-import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
-import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
-import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 export const readEditorStatus = { normal: false, diff: false };
 
+// IBM i のソースしか扱わないので、エディタ本体のワーカーだけを使う
+// (他の言語の定義・ワーカーは vite.config.js でビルドに含めないようにしている)
 self.MonacoEnvironment = {
-    getWorker(_, label) {
-        if (label === "json") {
-            return new jsonWorker();
-        }
-        if (label === "css" || label === "scss" || label === "less") {
-            return new cssWorker();
-        }
-        if (label === "html" || label === "handlebars" || label === "razor") {
-            return new htmlWorker();
-        }
-        if (label === "typescript" || label === "javascript") {
-            return new tsWorker();
-        }
+    getWorker() {
         return new editorWorker();
     },
 };
@@ -44,7 +30,6 @@ export const monacoStart = async () => {
     monaco.editor.defineTheme('myTheme', darkTherme);
 
     const editorOptionGeneral = {
-        language: 'vb',
         mouseWheelZoom: true,
         scrollBeyondLastLine: false,
         locale: 'ja',
@@ -54,6 +39,8 @@ export const monacoStart = async () => {
             enabled: true,
         },
         readOnly: true,
+        // 全角文字を含む行の色分け(lang/semanticTokens.js)
+        'semanticHighlighting.enabled': true,
     };
 
     normalEditor = monaco.editor.create(document.getElementById('monaco-code'), {

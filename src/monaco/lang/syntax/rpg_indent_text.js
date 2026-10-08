@@ -185,10 +185,6 @@ export const tip_rpg = {
                 name: "",
                 description: "ファイル内で処理されているレコードを提供したプログラム装置の名前"
             },
-            IND: {
-                name: "",
-                description: "配列に関する記述を行います。"
-            },
             IGNORE: {
                 name: "",
                 description: "レコード様式を無視する。レコード様式が無いような状態で動作する。"
