@@ -15,6 +15,7 @@ dist-ssr
 *.local
 .env
 .env.*
+.claude
 
 # テスト(非公開。ローカルのみで管理)
 coverage
