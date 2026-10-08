@@ -91,7 +91,7 @@ DAMCO の解析処理をそのまま使った VS Code 拡張機能もありま�
 ```bash
 npm install
 npm run dev        # 開発用サーバー(http://localhost:5173)
-npm run build      # dist/ に公開用のファイルを作る
+npm run build      # dist/ に公開用のファイルを作り、直下の index.html と assets/ に反映する
 npm test           # テスト
 ```
 
@@ -104,4 +104,4 @@ npm test           # テスト
 
 VS Code 拡張機能の VSIX は GitHub Actions(`.github/workflows/vsix.yml`)で作られます。push のたびに Actions の成果物に置かれ、`ext-v0.2.3` のように拡張機能の版のタグを push するとリリースに添付されます。
 
-公開(GitHub Pages)はリポジトリ直下の `index.html` と `assets/` です。`npm run build` のあと、直下の `assets/` を空にしてから `dist/` の中身をコピーしてください。
+公開(GitHub Pages)はリポジトリ直下の `index.html` と `assets/` です。`npm run build` で自動的に置き換わる(`assets/` は前のファイルを消してから入れ直す)ので、そのままコミットして main に push すれば公開されます。
