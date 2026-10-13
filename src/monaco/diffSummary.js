@@ -108,12 +108,6 @@ export const initDiffSummary = (diffEditor) => {
     diffEditor.onDidChangeModel(render);
     diffEditor.onDidUpdateDiff(render);
 
-    // スクロールして 1 行目より下を見ているときは本文と重なるので、薄くする
-    // (左右のスクロールは同期しているので、インライン表示でも使う右側で見る)
-    modifiedEditor.onDidScrollChange((e) => {
-        node.classList.toggle('diff-summary-scrolled', e.scrollTop > 0);
-    });
-
     let visible = false;
     const setVisible = (value) => {
         visible = value;
