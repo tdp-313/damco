@@ -4,6 +4,7 @@ import { themeDiffApply, themeApply } from "./theme/theme.js";
 import { setModeChange } from "./header/header_button.js";
 import { rulerChange, initRpgleRuler } from "./lang/ruler.js";
 import { initDynamicChange } from "./file/dynamicChange.js";
+import { initDiffSummary, DIFF_SUMMARY_PADDING_TOP } from "./diffSummary.js";
 import { headerFileListCreate, diff_headerFileListCreate } from "./webworker/filesystem_main.js";
 import * as monaco from 'monaco-editor';
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -53,7 +54,9 @@ export const monacoStart = async () => {
         enableSplitViewResizing: false,
         autoSurround: 'brackets',
         automaticLayout: true,
+        padding: { top: DIFF_SUMMARY_PADDING_TOP },
     });
+    initDiffSummary(diffEditor);
     rulerChange(Setting.getRuler);
     initRpgleRuler(normalEditor);
     editorFontSizeChange(Setting.editorFontSize);
