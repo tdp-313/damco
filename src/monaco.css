@@ -385,7 +385,8 @@ header input[type="radio"]:checked+label,
     font-size: 12px;
     white-space: nowrap;
     box-sizing: border-box;
-    transition: opacity 0.2s;
+    /* スティッキースクロールの帯(z-index: 4)より上に出す。検索ボックスと同じ扱い */
+    z-index: 5;
 }
 
 .diff-summary.diff-summary-hidden,
@@ -403,10 +404,6 @@ header input[type="radio"]:checked+label,
 
 .diff-summary[data-state="changed"] {
     border-left-color: #d0453a;
-}
-
-.diff-summary.diff-summary-scrolled:not(:hover) {
-    opacity: 0.45;
 }
 
 .diff-summary-label {
