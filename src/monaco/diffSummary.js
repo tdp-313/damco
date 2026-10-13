@@ -50,7 +50,7 @@ export const initDiffSummary = (diffEditor) => {
     const prevButton = createNavButton('▲', '前の差分', 'previous');
     const nextButton = createNavButton('▼', '次の差分', 'next');
 
-    const closeButton = createButton('×', '閉じる (Ctrl+Shift+D)', () => setVisible(false));
+    const closeButton = createButton('×', '閉じる (F4)', () => setVisible(false));
     closeButton.classList.add('diff-summary-close');
 
     node.append(label, prevButton, nextButton, closeButton);
@@ -126,7 +126,9 @@ export const initDiffSummary = (diffEditor) => {
         editor.addAction({
             id: 'damco.toggleDiffSummary',
             label: '差分の概要を表示/非表示',
-            keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyD],
+            keybindings: [monaco.KeyCode.F4],
+            // 参照の一覧(Peek)を開いている間の F4 は「次の参照へ」なので、そちらを優先する
+            keybindingContext: '!referenceSearchVisible',
             contextMenuGroupId: 'navigation',
             contextMenuOrder: 0,
             run: () => setVisible(!visible),
