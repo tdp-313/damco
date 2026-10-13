@@ -388,6 +388,7 @@ header input[type="radio"]:checked+label,
     transition: opacity 0.2s;
 }
 
+.diff-summary.diff-summary-hidden,
 .diff-summary[data-state="empty"] {
     display: none;
 }
@@ -412,7 +413,7 @@ header input[type="radio"]:checked+label,
     margin-right: 0.3rem;
 }
 
-.diff-summary-nav {
+.diff-summary-button {
     padding: 0 0.3rem;
     border: none;
     border-radius: 3px;
@@ -422,11 +423,16 @@ header input[type="radio"]:checked+label,
     cursor: pointer;
 }
 
-.diff-summary-nav:hover:not(:disabled) {
+.diff-summary-button:hover:not(:disabled) {
     background-color: rgba(255, 174, 0, 0.35);
 }
 
-.diff-summary-nav:disabled {
+.diff-summary-button:disabled {
     opacity: 0.35;
     cursor: default;
+}
+
+.diff-summary-close {
+    margin-left: 0.2rem;
+    font-size: 14px;
 }

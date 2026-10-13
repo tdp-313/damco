@@ -3,9 +3,13 @@
 //   - 比較中 : setModel 直後で、まだ差分の計算結果がない(getLineChanges() が null)
 //   - 差分なし: 計算結果が空
 //   - 差分あり: 差分ブロック数と、追加(右側)・削除(左側)の行数を表示し、▲▼ で前後の差分へ移動する
+// 検索ボックスと同じように、右クリックメニューかショートカットキーで表示/非表示を切り替える。
+// 最初は非表示で、開いたら閉じるまで(ソースを切り替えても)表示したままにする。状態は保存しない
 
-// バッジの高さぶん、エディタの上に余白を作る(1行目と重ならないように)
-export const DIFF_SUMMARY_PADDING_TOP = 26;
+import * as monaco from 'monaco-editor';
+
+// 表示中は、バッジの高さぶんエディタの上に余白を作る(1行目と重ならないように)
+const PADDING_TOP = 26;
 
 // getLineChanges() の結果から、差分ブロック数と追加・削除の行数を数える。
 // 片側の End が 0 のときは、その側に行がない(純粋な追加/削除)
@@ -30,22 +34,26 @@ export const initDiffSummary = (diffEditor) => {
     const label = document.createElement('span');
     label.className = 'diff-summary-label';
 
-    const createNavButton = (text, title, target) => {
+    const createButton = (text, title, onClick) => {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'diff-summary-nav';
+        button.className = 'diff-summary-button';
         button.textContent = text;
         button.title = title;
-        button.addEventListener('click', () => {
-            diffEditor.goToDiff(target);
-            diffEditor.getModifiedEditor().focus();
-        });
+        button.addEventListener('click', onClick);
         return button;
     };
+    const createNavButton = (text, title, target) => createButton(text, title, () => {
+        diffEditor.goToDiff(target);
+        diffEditor.getModifiedEditor().focus();
+    });
     const prevButton = createNavButton('▲', '前の差分', 'previous');
     const nextButton = createNavButton('▼', '次の差分', 'next');
 
-    node.append(label, prevButton, nextButton);
+    const closeButton = createButton('×', '閉じる (Ctrl+Shift+D)', () => setVisible(false));
+    closeButton.classList.add('diff-summary-close');
+
+    node.append(label, prevButton, nextButton, closeButton);
 
     const widget = {
         getId: () => 'damco.diffSummary',
@@ -106,5 +114,25 @@ export const initDiffSummary = (diffEditor) => {
         node.classList.toggle('diff-summary-scrolled', e.scrollTop > 0);
     });
 
+    let visible = false;
+    const setVisible = (value) => {
+        visible = value;
+        node.classList.toggle('diff-summary-hidden', !visible);
+        diffEditor.updateOptions({ padding: { top: visible ? PADDING_TOP : 0 } });
+    };
+
+    // 右クリックメニューとショートカットキー(左右どちらのエディタでも使えるようにする)
+    for (const editor of [originalEditor, modifiedEditor]) {
+        editor.addAction({
+            id: 'damco.toggleDiffSummary',
+            label: '差分の概要を表示/非表示',
+            keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyD],
+            contextMenuGroupId: 'navigation',
+            contextMenuOrder: 0,
+            run: () => setVisible(!visible),
+        });
+    }
+
+    setVisible(false);
     render();
 };
