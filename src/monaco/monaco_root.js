@@ -7,7 +7,7 @@ import { initDynamicChange } from "./file/dynamicChange.js";
 import { initDiffSummary } from "./diffSummary.js";
 import { headerFileListCreate, diff_headerFileListCreate } from "./webworker/filesystem_main.js";
 import * as monaco from 'monaco-editor';
-import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import editorWorker from "monaco-editor/editor/editor.worker?worker";
 import { initPermissonCheck } from "../setting.js";
 
 //
@@ -42,6 +42,8 @@ export const monacoStart = async () => {
         readOnly: true,
         // 全角文字を含む行の色分け(lang/semanticTokens.js)
         'semanticHighlighting.enabled': true,
+        // 全角を半角 2 文字分の幅にして、固定形式の桁をそろえる
+        fullwidthCharacterWidth: 'twoCells',
     };
 
     normalEditor = monaco.editor.create(document.getElementById('monaco-code'), {
