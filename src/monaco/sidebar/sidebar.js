@@ -7,9 +7,11 @@ import { libraryListSave, regExpSave } from "../../setting.js";
 import { fileTypeGet2 } from "../file/fileType.js";
 import { getNormalEditor_Model } from "../textmodel.js";
 import { createView, SearchExportClipboard } from "../webworker/textSearch_main.js";
+import { renderUsage } from "./usage.js";
 
 import databese_search_svg from "../../icon/database-search.svg"
 import pencil_svg from "../../icon/pencil.svg"
+import hierarchy_svg from "../../icon/hierarchy.svg"
 
 // Initialize search values from sessionStorage
 const getInitialSearchValues = () => {
@@ -44,6 +46,28 @@ sidebar_mode_pgm.addEventListener('click', async (event) => {
     await createUseFileList(model);
 });
 
+// 逆引きのタブ。index.html は変えずに、ここで「PGM」と「ソース検索」の間に足す
+const sidebar_mode_usage = document.createElement('input');
+sidebar_mode_usage.type = 'radio';
+sidebar_mode_usage.className = 'displayHide';
+sidebar_mode_usage.id = 'rs-mode-usage';
+sidebar_mode_usage.name = 'rs-mode';
+sidebar_mode_usage.value = 'usage';
+const sidebar_mode_usage_label = document.createElement('label');
+sidebar_mode_usage_label.htmlFor = 'rs-mode-usage';
+sidebar_mode_usage_label.className = 'control-iconButton';
+sidebar_mode_usage_label.style.cssText = 'width: 6rem; min-width: 0;';
+sidebar_mode_usage_label.title = '逆引き(使っているソース・呼び出しツリー)';
+const sidebar_mode_usage_icon = document.createElement('img');
+sidebar_mode_usage_icon.className = 'refSize';
+sidebar_mode_usage_icon.src = hierarchy_svg;
+sidebar_mode_usage_label.append(sidebar_mode_usage_icon);
+sidebar_mode_def.before(sidebar_mode_usage, sidebar_mode_usage_label);
+sidebar_mode_usage.addEventListener('click', async (event) => {
+    let model = await getNormalEditor_Model();
+    await createUseFileList(model);
+});
+
 const sidebar_mode_setting = document.getElementById('rs-mode-setting');
 sidebar_mode_setting.addEventListener('click', async (event) => {
     await createUseFileList(null);
@@ -60,6 +84,11 @@ export const createUseFileList = async (model) => {
     const selectedRadio = document.querySelector('input[name="rs-mode"]:checked');
     let mode = selectedRadio.value;
     sidebar_contents.innerHTML = "";
+    if (mode === 'usage') {
+        // 逆引き・呼び出しツリー(このタブを開いたときだけ索引を作る)
+        renderUsage(sidebar_contents, model);
+        return;
+    }
     let filter_style = themeCSS_FilterStyle();
     const get_template = (fileName, desc, library, langIcon, filter, use) => {
         if (use.io.size === 0) {

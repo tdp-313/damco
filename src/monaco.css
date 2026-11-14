@@ -433,3 +433,372 @@ header input[type="radio"]:checked+label,
     margin-left: 0.2rem;
     font-size: 14px;
 }
+
+/* サイドバーの逆引き・呼び出しツリー */
+.usage-panel {
+    --usage-line: color-mix(in srgb, var(--font-color) 28%, transparent);
+    --usage-card: color-mix(in srgb, var(--font-color) 7%, transparent);
+    --usage-card-hover: color-mix(in srgb, var(--font-color) 16%, transparent);
+    --usage-dim: color-mix(in srgb, var(--font-color) 62%, transparent);
+    padding: 0.2rem 0.5rem 1rem 0.3rem;
+}
+
+.usage-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 1.6rem;
+    font-size: 0.75rem;
+    color: var(--usage-dim);
+}
+
+.usage-scope {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.usage-status img {
+    width: 1.2rem;
+    height: 1.2rem;
+    padding: 0.15rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+}
+
+.usage-section {
+    margin-top: 0.9rem;
+}
+
+.usage-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.usage-title-text {
+    font-size: 0.8rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+}
+
+.usage-count {
+    min-width: 1.2rem;
+    padding: 0 0.4rem;
+    border-radius: 1rem;
+    background: var(--usage-card-hover);
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.usage-button {
+    margin-left: auto;
+    padding: 0.1rem 0.6rem;
+    border: 1px solid var(--usage-line);
+    border-radius: 1rem;
+    background: transparent;
+    color: var(--font-color);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.usage-button:hover {
+    background: var(--usage-card-hover);
+}
+
+.usage-empty {
+    padding: 0.4rem 0.2rem;
+    font-size: 0.75rem;
+    color: var(--usage-dim);
+}
+
+.usage-node {
+    position: relative;
+    margin-top: 0.3rem;
+}
+
+.usage-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.28rem 0.5rem 0.28rem 0.3rem;
+    border-radius: 0.5rem;
+    border-left: 0.2rem solid transparent;
+    background: var(--usage-card);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+}
+
+.usage-row:hover {
+    background: var(--usage-card-hover);
+    transform: translateX(0.1rem);
+}
+
+.usage-root {
+    border: 1px solid var(--usage-line);
+    background: var(--usage-card-hover);
+    cursor: default;
+    padding-left: 0.6rem;
+}
+
+.usage-root:hover {
+    transform: none;
+}
+
+.usage-io-i {
+    border-left-color: skyblue;
+}
+
+.usage-io-u {
+    border-left-color: yellowgreen;
+}
+
+.usage-io-o {
+    border-left-color: brown;
+}
+
+.usage-missing {
+    background: transparent;
+    border: 1px dashed var(--usage-line);
+    cursor: default;
+    opacity: 0.75;
+}
+
+.usage-caret {
+    flex: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    line-height: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    transition: transform 0.18s, background 0.15s;
+}
+
+.usage-caret:not(.usage-leaf):hover {
+    background: var(--usage-line);
+}
+
+.usage-caret.usage-open {
+    transform: rotate(90deg);
+}
+
+.usage-type {
+    flex: none;
+    min-width: 2.7rem;
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.3rem;
+    background: color-mix(in srgb, var(--usage-type-color, #888) 24%, transparent);
+    border: 1px solid color-mix(in srgb, var(--usage-type-color, #888) 70%, transparent);
+    font-size: 0.62rem;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+
+.usage-type-rpgle {
+    --usage-type-color: #4f9cf9;
+}
+
+.usage-type-rpg {
+    --usage-type-color: #a987f5;
+}
+
+.usage-type-cl {
+    --usage-type-color: #f0a04b;
+}
+
+.usage-type-dds {
+    --usage-type-color: #3fbf8f;
+}
+
+.usage-type-lf {
+    --usage-type-color: #2aa7b8;
+}
+
+.usage-type-dsp {
+    --usage-type-color: #e86aa6;
+}
+
+.usage-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    line-height: 1.15;
+}
+
+.usage-name {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.usage-where {
+    font-size: 0.65rem;
+    color: var(--usage-dim);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.usage-badges {
+    display: flex;
+    flex: none;
+    gap: 0.25rem;
+}
+
+.usage-chip {
+    padding: 0.05rem 0.4rem;
+    border-radius: 1rem;
+    border: 1px solid var(--usage-line);
+    font-size: 0.65rem;
+    white-space: nowrap;
+}
+
+.usage-io-i .usage-chip-io {
+    border-color: skyblue;
+}
+
+.usage-io-u .usage-chip-io {
+    border-color: yellowgreen;
+}
+
+.usage-io-o .usage-chip-io {
+    border-color: brown;
+}
+
+/* 下の階層: 縦の線と、各節への枝 */
+.usage-children {
+    margin-left: 0.6rem;
+    padding-left: 0.65rem;
+    border-left: 1px solid var(--usage-line);
+    animation: usage-in 0.18s ease-out;
+}
+
+.usage-children > .usage-node::before {
+    content: "";
+    position: absolute;
+    left: -0.65rem;
+    top: 1rem;
+    width: 0.55rem;
+    border-top: 1px solid var(--usage-line);
+}
+
+@keyframes usage-in {
+    from {
+        opacity: 0;
+        transform: translateY(-0.3rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* 索引を作っている間の進み具合 */
+.usage-progress {
+    margin-top: 0.4rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 0.5rem;
+    background: var(--usage-card);
+    font-size: 0.75rem;
+}
+
+.usage-progress-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+    white-space: nowrap;
+}
+
+.usage-progress-head span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+}
+
+.usage-progress-count {
+    color: var(--usage-dim);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.usage-bar {
+    height: 0.4rem;
+    border-radius: 1rem;
+    background: var(--usage-card-hover);
+    overflow: hidden;
+}
+
+.usage-bar-small {
+    height: 0.25rem;
+}
+
+.usage-bar-fill {
+    width: 0;
+    height: 100%;
+    border-radius: 1rem;
+    background: #4f9cf9;
+    transition: width 0.15s linear;
+}
+
+/* 件数が分かるまでは、左右に流す */
+.usage-bar-wait {
+    width: 30%;
+    animation: usage-wait 1s ease-in-out infinite alternate;
+}
+
+@keyframes usage-wait {
+    from {
+        margin-left: 0;
+    }
+
+    to {
+        margin-left: 70%;
+    }
+}
+
+.usage-progress-libs {
+    margin-top: 0.6rem;
+}
+
+.usage-progress-lib {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr 5.5rem;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.usage-progress-name {
+    font-family: Consolas, "Courier New", monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.usage-progress-lib .usage-progress-count {
+    text-align: right;
+}
+
+.usage-progress-done .usage-bar-fill {
+    background: #3fbf8f;
+}
+
+.usage-progress-done .usage-progress-count {
+    color: #3fbf8f;
+}
+
+.usage-more {
+    display: block;
+    margin: 0.5rem auto 0;
+}

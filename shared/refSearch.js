@@ -17,19 +17,10 @@ import { decodeText } from '../src/monaco/webworker/fileOpen.js';
 import { addIndent, addSpaces } from '../src/monaco/file/text_extend.js';
 import { pgm_nameGet } from '../src/monaco/lang/pgmName.js';
 import { dds_DefinitionList } from '../src/monaco/ref/dds_newRefDef.js';
-import { matchSearchName, resolveSourceType, categoryOf } from './sourceFiles.js';
+import { matchSearchName, resolveSourceType, categoryOf, stripExtension, resolveSearchLibraries } from './sourceFiles.js';
 import { TextModel } from './textModel.js';
 
-export const stripExtension = (name) => name.replace(/\.[^/.]+$/, '');
-
-// 探すライブラリ。設定のライブラリリストにあればそれを、なければ「自分」と「先頭 3 文字を含むもの」
-export const resolveSearchLibraries = (lib, libraryList) => {
-    const setting = libraryList && Array.isArray(libraryList[lib]) ? libraryList[lib] : [];
-    if (setting.length !== 0) {
-        return [...setting];
-    }
-    return [lib, '%' + lib.substring(0, 3) + '%'];
-};
+export { stripExtension, resolveSearchLibraries };
 
 const selfEntry = (name) => {
     return { name: name, use: new UseIO_Layout(false), isFound: false, data: {}, uri_path: {}, isRegExpFound: false };

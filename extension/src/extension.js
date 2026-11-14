@@ -8,6 +8,7 @@ import { registerIndentView } from './indentView.js';
 import { registerRulers } from './rulers.js';
 import { registerViews, buildFileList, buildProgramList } from './views.js';
 import { registerSearch, searchSources } from './search.js';
+import { registerUsage } from './usage.js';
 import { readConfig, referenceRootUris } from './config.js';
 import { isDamcoDocument } from './languages.js';
 
@@ -22,7 +23,8 @@ export const activate = (context) => {
     registerProviders(context, service, output);
     registerIndentView(context);
     registerRulers(context);
-    const views = registerViews(context, service);
+    const usageViews = registerUsage(context, service, output);
+    const views = registerViews(context, service, usageViews);
     registerSearch(context);
 
     // ファイルが増えた・消えた・変わったら、次に使うときに探し直す
@@ -32,6 +34,8 @@ export const activate = (context) => {
         if (editor && isDamcoDocument(editor.document)) {
             service.ensureReferences(editor.document);
         }
+        // 逆引きの一覧が見えていれば、変わったメンバーだけ読み直して出し直す
+        usageViews.refresh();
     };
     let timer;
     const scheduleInvalidate = () => {
@@ -74,6 +78,9 @@ export const activate = (context) => {
     // テスト用(結合テストから中身を確かめる)
     return {
         service,
+        usage: usageViews.usage,
+        usageProvider: usageViews.provider,
+        programsProvider: views.programsProvider,
         buildFileList,
         buildProgramList,
         searchSources,
