@@ -12,6 +12,10 @@ export const rightSidebarRead = async () => {
   const r_sidebar_contents = document.getElementById('right-sideBar-contents');
   r_sidebar_contents.addEventListener('click', async (e) => {
     const selectedRadio = document.querySelector('input[name="rs-mode"]:checked');
+    if (selectedRadio.value === "usage") {
+      // 逆引きのクリックは sidebar/usage.js で処理する
+      return null;
+    }
     if (e.target.id.indexOf("sidebar-filter") !== -1) {
       if (typeof (e.target.checked) !== 'undefined') {
         filterSettingUpdate(e.target.id.substring(15, e.target.id.length), e.target.checked);

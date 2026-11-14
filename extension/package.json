@@ -1,8 +1,8 @@
 {
   "name": "damco",
   "displayName": "DAMCO",
-  "description": "IBM i ソース(RPG III / RPGLE / DDS / CL)の色分け・ホバー・定義ジャンプ・使用ファイル一覧",
-  "version": "0.2.3",
+  "description": "IBM i ソース(RPG III / RPGLE / DDS / CL)の色分け・ホバー・定義ジャンプ・使用ファイル一覧・逆引き",
+  "version": "0.3.0",
   "publisher": "tdp-313",
   "private": true,
   "repository": {
@@ -416,6 +416,11 @@
           "name": "呼び出しプログラム"
         },
         {
+          "id": "damco.usedBy",
+          "name": "逆引き(使っているソース)",
+          "visibility": "collapsed"
+        },
+        {
           "id": "damco.search",
           "name": "ソース検索"
         }
@@ -429,6 +434,10 @@
       {
         "view": "damco.search",
         "contents": "開いているソースと同じライブラリから、文字列を含むソースを探します。\n[ソース検索](command:damco.searchSource)"
+      },
+      {
+        "view": "damco.usedBy",
+        "contents": "DDS のソースを開くと、そのファイルを使っているソースが出ます。プログラムのソースを開くと、そのプログラムを呼んでいるソースが出ます。"
       }
     ],
     "commands": [
@@ -467,6 +476,24 @@
         "title": "使用ファイルの絞り込み",
         "category": "DAMCO",
         "icon": "$(filter)"
+      },
+      {
+        "command": "damco.showUsedBy",
+        "title": "逆引き(使っているソース)を表示",
+        "category": "DAMCO",
+        "icon": "$(references)"
+      },
+      {
+        "command": "damco.copyUsedBy",
+        "title": "逆引きの結果をコピー",
+        "category": "DAMCO",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "damco.rebuildUsageIndex",
+        "title": "逆引きの索引を作り直す",
+        "category": "DAMCO",
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
@@ -508,6 +535,16 @@
         {
           "command": "damco.copySearchResults",
           "when": "view == damco.search",
+          "group": "navigation"
+        },
+        {
+          "command": "damco.copyUsedBy",
+          "when": "view == damco.usedBy",
+          "group": "navigation"
+        },
+        {
+          "command": "damco.rebuildUsageIndex",
+          "when": "view == damco.usedBy",
           "group": "navigation"
         }
       ],

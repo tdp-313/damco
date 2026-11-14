@@ -26,6 +26,17 @@ const documentLines = (document) => {
     return lines;
 };
 
+// 参照先を探すルート。開いているソースのルートと、設定の referenceRoots
+export const searchRoots = (mainRoot, config) => {
+    const roots = [{ name: 'main', ref: mainRoot }];
+    for (const uri of referenceRootUris(config)) {
+        if (!roots.some((r) => r.ref.toString() === uri.toString())) {
+            roots.push({ name: uri.path.split('/').filter((s) => s !== '').pop() || uri.toString(), ref: uri });
+        }
+    }
+    return roots;
+};
+
 export class DocumentService {
     constructor(output) {
         this.output = output;
@@ -130,12 +141,7 @@ export class DocumentService {
         }
         const model = this.get(document).model;
         otherData.status = 'pending';
-        const roots = [{ name: 'main', ref: parsed.root }];
-        for (const uri of referenceRootUris(config)) {
-            if (!roots.some((r) => r.ref.toString() === uri.toString())) {
-                roots.push({ name: uri.path.split('/').filter((s) => s !== '').pop() || uri.toString(), ref: uri });
-            }
-        }
+        const roots = searchRoots(parsed.root, config);
         const result = await computeReferences({
             sourceType,
             member: parsed.member,

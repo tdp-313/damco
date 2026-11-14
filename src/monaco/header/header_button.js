@@ -20,6 +20,7 @@ import { readEditorStatus } from "../monaco_root.js";
 import { diff_headerFileListCreate, headerFileListCreate } from "../webworker/filesystem_main.js";
 import { nowReadFilePath } from "../webworker/filesystem_main.js";
 import { rulerChange } from "../lang/ruler.js";
+import { markUsageStale } from "../sidebar/usage.js";
 export let isFileSelectSync = true;
 
 export const readFileButtonCreate = () => {
@@ -83,6 +84,8 @@ export const readFileButtonCreate = () => {
 }
 
 export const reload_Process = async () => {
+    // 逆引きの索引は、次に出すときに変わったメンバーを読み直す
+    markUsageStale();
     const modeChangeCode = document.getElementById('control-EditorModeChange-code');
     const modeChangeDiff = document.getElementById('control-EditorModeChange-diff');
     if (modeChangeCode.checked) {

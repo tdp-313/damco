@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { resolveSourceType } from '../../shared/sourceFiles.js';
 import { readConfig } from './config.js';
 import { isDamcoDocument } from './languages.js';
+import { calleeNodes, usageTreeItem } from './usage.js';
 
 export const useString = (use) => {
     const io = use && use.io ? use.io : new Set();
@@ -110,6 +111,33 @@ class ListProvider {
     }
 }
 
+// 呼び出しプログラム。項目を開くと、そのプログラムが呼び出しているプログラム(呼び出しツリー)。
+// 最初の階層は参照先の検索の結果(今までと同じ)。下の階層は、開いたときに逆引きの索引から出す
+class ProgramTreeProvider extends ListProvider {
+    constructor(usage, getDocument) {
+        super();
+        this.usage = usage;
+        this.getDocument = getDocument;
+    }
+
+    getTreeItem(element) {
+        return element instanceof vscode.TreeItem ? element : usageTreeItem(element);
+    }
+
+    getChildren(element) {
+        if (!element) {
+            return this.items;
+        }
+        const document = this.getDocument();
+        if (!document) {
+            return [];
+        }
+        return element instanceof vscode.TreeItem
+            ? calleeNodes(this.usage, document, element.damcoUri, [])
+            : calleeNodes(this.usage, document, element.entry.member, element.path);
+    }
+}
+
 const toTreeItem = (entry, icon) => {
     const item = new vscode.TreeItem(entry.name, vscode.TreeItemCollapsibleState.None);
     item.description = [entry.use, entry.description].filter((s) => s).join('  ');
@@ -124,9 +152,24 @@ const toTreeItem = (entry, icon) => {
     return item;
 };
 
-export const registerViews = (context, service) => {
+// 呼び出しプログラムの最初の階層。見つかったものは開ける(索引ができていて、呼び出し先がないと分かるものは開けない)
+const toProgramItem = (entry, index) => {
+    const item = toTreeItem(entry, 'symbol-method');
+    if (entry.uri) {
+        item.damcoUri = entry.uri;
+        const text = entry.uri.toString();
+        const member = index ? index.members.find((m) => m.uri.toString() === text) : null;
+        if (!member || member.programs.length > 0) {
+            item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+        }
+    }
+    return item;
+};
+
+export const registerViews = (context, service, usageViews) => {
     const filesProvider = new ListProvider();
-    const programsProvider = new ListProvider();
+    let shownDocument = null;
+    const programsProvider = new ProgramTreeProvider(usageViews.usage, () => shownDocument);
     const filesView = vscode.window.createTreeView('damco.files', { treeDataProvider: filesProvider });
     const programsView = vscode.window.createTreeView('damco.programs', { treeDataProvider: programsProvider });
     context.subscriptions.push(filesView, programsView);
@@ -144,6 +187,8 @@ export const registerViews = (context, service) => {
 
     const refresh = () => {
         const document = target();
+        shownDocument = document;
+        usageViews.show(document);
         if (!document) {
             if (shownUri !== null) {
                 shownUri = null;
@@ -168,7 +213,8 @@ export const registerViews = (context, service) => {
         }
         const { files, total } = buildFileList(otherData, config.sourceFiles, filter);
         filesProvider.set(files.map((f) => toTreeItem(f, f.kind === 'dsp' ? 'window' : 'database')));
-        programsProvider.set(buildProgramList(otherData).map((p) => toTreeItem(p, 'symbol-method')));
+        const index = usageViews.usage.peek(document);
+        programsProvider.set(buildProgramList(otherData).map((p) => toProgramItem(p, index)));
         filesView.description = files.length + '/' + total;
         const libraries = otherData.searchLibName && otherData.searchLibName.length > 0 ? 'ライブラリ: ' + otherData.searchLibName.join(', ') : '';
         filesView.message = status === 'pending' || status === 'none' ? '検索中…' : status === 'error' ? '検索に失敗しました(出力パネルの DAMCO を参照)' : libraries;
