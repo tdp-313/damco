@@ -33,7 +33,6 @@ export const monacoStart = async () => {
     const editorOptionGeneral = {
         mouseWheelZoom: true,
         scrollBeyondLastLine: false,
-        locale: 'ja',
         theme: "myTheme",
         definitionLinkOpensInPeek: true,
         stickyScroll: {
