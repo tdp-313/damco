@@ -5,6 +5,7 @@ import { tip_rpg } from "../syntax/rpg_indent_text.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
 import { getModelDbcsMode } from "../column.js";
 import { rpgleHover } from "./rpgle.js";
+import { clHover } from "./cl.js";
 import * as monaco from 'monaco-editor';
 
 export const regHover = () => {
@@ -21,6 +22,11 @@ export const regHover = () => {
     monaco.languages.registerHoverProvider('dds', {
         provideHover: async function (model, position) {
             return ddsHover(model, position);
+        }
+    });
+    monaco.languages.registerHoverProvider('cl', {
+        provideHover: async function (model, position) {
+            return clHover(model, position);
         }
     });
 }

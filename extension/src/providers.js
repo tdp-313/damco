@@ -7,6 +7,7 @@ import { defGetModule, ddsDefinition } from '../../src/monaco/lang/Provider/defi
 import { rpgIndentReferences } from '../../src/monaco/lang/Provider/reference.js';
 import { rpgIndentFolding } from '../../src/monaco/lang/Provider/folding.js';
 import { rpgIndentCodeLenses } from '../../src/monaco/lang/Provider/codeLens.js';
+import { clHover, clDefinition, clReferences } from '../../src/monaco/lang/Provider/cl.js';
 import { isDamcoDocument, languagesOfKind } from './languages.js';
 
 const MAX_COLUMN = 10000;
@@ -88,6 +89,7 @@ export const registerProviders = (context, service, output) => {
     const rpgle = selector('rpgle');
     const rpgIndent = selector('rpg', 'rpg-indent');
     const dds = selector('dds');
+    const cl = selector('cl');
     const register = (disposable) => context.subscriptions.push(disposable);
     const sync = (name, fn) => (document) => {
         if (!isDamcoDocument(document)) {
@@ -160,5 +162,19 @@ export const registerProviders = (context, service, output) => {
     register(vscode.languages.registerDefinitionProvider(dds, {
         provideDefinition: safe(output, 'definition', (document, position) => withModel(document, async (entry) =>
             toLocations(await ddsDefinition(entry.model, toMonacoPosition(entry, position)), entry, document))),
+    }));
+
+    // CL
+    register(vscode.languages.registerHoverProvider(cl, {
+        provideHover: safe(output, 'hover', (document, position) => withModel(document, (entry) =>
+            toHover(clHover(entry.model, toMonacoPosition(entry, position)), entry))),
+    }));
+    register(vscode.languages.registerDefinitionProvider(cl, {
+        provideDefinition: safe(output, 'definition', (document, position) => withModel(document, (entry) =>
+            toLocations(clDefinition(entry.model, toMonacoPosition(entry, position)), entry, document))),
+    }));
+    register(vscode.languages.registerReferenceProvider(cl, {
+        provideReferences: safe(output, 'references', (document, position) => withModel(document, (entry) =>
+            toLocations(clReferences(entry.model, toMonacoPosition(entry, position)), entry, document))),
     }));
 };

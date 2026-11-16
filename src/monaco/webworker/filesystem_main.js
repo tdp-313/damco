@@ -78,6 +78,9 @@ filesystem_worker.addEventListener(
         cache_data[target].lib = e.data.body;
         let searchLib = Lib.value === "" ? initOpenCache[target].lib : Lib.value;
         await populatePulldown(Lib, cache_data[target].lib, searchLib);
+        if (!cache_data[target].lib.has(Lib.value)) {
+          clearPulldowns(target, ['Folder', 'File', 'Version']);
+        }
         sendDirectoryHandleToWorker(await cache_data[target].lib.get(Lib.value), 'lib-folder', target);
         break;
       case 'lib-folder':
@@ -85,6 +88,9 @@ filesystem_worker.addEventListener(
         cache_data[target].folder = e.data.body;
         let searchFolder = Folder.value === "" ? initOpenCache[target].folder : Folder.value;
         await populatePulldown(Folder, cache_data[target].folder, searchFolder);
+        if (!cache_data[target].folder.has(Folder.value)) {
+          clearPulldowns(target, ['File', 'Version']);
+        }
         sendDirectoryHandleToWorker(await cache_data[target].folder.get(Folder.value), 'folder-file', target, "file");
         break;
       case 'folder-file':
@@ -191,7 +197,22 @@ history_worker.addEventListener(
   false
 );
 
+// 上の階層に選ぶものがないとき(空のライブラリ・空のソースファイル)は、下のプルダウンを空にする。
+// 前に選んでいたソースファイル・メンバーが残っていると、そこにあるように見えてしまう
+const clearPulldowns = (target, ids) => {
+  for (const id of ids) {
+    const element = document.getElementById('control-' + id + '-' + target);
+    if (element) {
+      element.innerHTML = '';
+    }
+  }
+};
+
 export const sendDirectoryHandleToWorker = (directoryHandle, type, target, kind = 'directory') => {
+  // フォルダを登録していない・プルダウンが空で選ぶものがないときは、読むものがない
+  if (!directoryHandle) {
+    return;
+  }
   filesystem_worker.postMessage({ type: type, body: directoryHandle, target, kind });
 }
 

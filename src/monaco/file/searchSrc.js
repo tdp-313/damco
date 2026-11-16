@@ -1,7 +1,7 @@
 import { file_read_text } from "./IO.js";
 import { modelChange, createURI } from "../textmodel.js";
 import { tabs_add } from "../../tabs.js";
-import { addIndent } from "./text_extend.js";
+import { addIndent, addSpaces } from "./text_extend.js";
 import { fileTypeGet } from "./read.js";
 
 export const readText_Model = async (lib, file, member, r_handle, rootHandleName) => {
@@ -54,6 +54,8 @@ export const readText_Model = async (lib, file, member, r_handle, rootHandleName
     let new_uri = await createURI(rootHandleName, libHandle.name, file, filename_c, source_File.time, lang);
     let source_text = source_File.text;
 
-    let normalEditorModel = await modelChange(await addIndent(source_text), lang, new_uri);
+    // インデント表示にするのは RPG III だけ。RPGLE などにかけると C 仕様書の欄がずれる
+    let formattedText = lang.includes('indent') ? addIndent(source_text) : addSpaces(source_text);
+    let normalEditorModel = await modelChange(formattedText, lang, new_uri);
     await tabs_add(normalEditorModel, true);
 }

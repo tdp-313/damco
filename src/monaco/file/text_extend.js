@@ -21,26 +21,15 @@ export const addSpaces = (str, limit = 80) => {
     // 改行コードを検出する
     let newline = detectNewline(str);
 
-    // 改行コードで分割して配列にする
-    let lines = str.split(newline);
-    // 結果を格納する変数
-    let result = "";
-    // 配列の各要素に対して処理する
-    for (let line of lines) {
-        // 文字数が80文字未満なら、空白を追加する
-        if (line.length < limit) {
-            // 空白の数を計算する
-            let spaces = limit - line.length;
-            // 空白を生成する
-            let padding = " ".repeat(spaces);
-            // 結果に空白を追加した行を追加する
-            result += line + padding + newline;
-        } else {
-            // 文字数が80文字以上なら、そのまま結果に追加する
-            result += line + newline;
-        }
+    // 改行のない 1 行だけのテキスト(空文字で分割すると 1 文字ずつになってしまう)
+    if (newline === "") {
+        return str === "" ? "" : str.padEnd(limit);
     }
-    return result;
+    // 各行を limit 桁まで空白で埋める。最後の改行の後ろ(空の行)は埋めない。
+    // 埋めると、開くたびに元のソースにない行が末尾に増える
+    const lines = str.split(newline);
+    const last = lines.length - 1;
+    return lines.map((line, i) => (i === last && line === "" ? line : line.padEnd(limit))).join(newline);
 }
 
 export const revIndent = (textArray) => {

@@ -5,6 +5,7 @@ import { get_langIcon } from "../../tabs.js";
 import { themeCSS_FilterStyle } from "../theme/theme.js";
 
 import { addIndent, addSpaces } from "../file/text_extend";
+import { escapeHtml } from "../sidebar/escape.js";
 
 export let SearchPGM = new Map()
 
@@ -120,7 +121,8 @@ filesystem_worker.addEventListener(
                     let uri = await createURI(nowReadHandle.root, nowReadHandle.lib, nowReadHandle.folder, nowReadHandle.file, nowReadHandle.extTimestamp, nowReadHandle.lang);
                     let model = await modelChange(nowReadHandle.formattedText, nowReadHandle.lang, uri);
                     //End
-                    SearchPGM.set(nowReadHandle.file, model);
+                    // 同じ名前のメンバーが別のソースファイルにもあるので、場所(/ライブラリ/ソースファイル/メンバー)で覚える
+                    SearchPGM.set(model.uri.path, model);
                     createView();
                 }
                 if (processCount === searchCount) {
@@ -162,13 +164,17 @@ export const createView = async () => {
             searchContents.innerHTML = "";
             let filter_style = themeCSS_FilterStyle();
             let temp = "";
+            // 複数のソースファイルから見つかったときは、どのソースファイルかも出す
+            const folders = new Set();
+            SearchPGM.forEach((model) => folders.add(model.uri.path.split('/')[2]));
             SearchPGM.forEach((model, key) => {
                 let langType = model.getLanguageId(); // Get language from the model
                 let icon = get_langIcon(langType);
-                let fileName = model.uri.path.split('/')[3]; // Use path as description for now
+                let fileName = escapeHtml(model.uri.path.split('/')[3]);
 
                 let useStr = "-";
                 let desc = document.getElementById("sidebar-searchInput-2").value === "" ? document.getElementById("sidebar-searchInput-1").value : document.getElementById("sidebar-searchInput-1").value + ", " + document.getElementById("sidebar-searchInput-2").value;
+                desc = escapeHtml((folders.size > 1 ? model.uri.path.split('/')[2] + ' : ' : '') + desc);
                 const border_class = 'input_border';
 
                 temp += '<div id="sidebar-contents-' + fileName + ' " class="sidebar-contents hoverButton ' + border_class + '"style="grid-template-rows:1.2rem 0">';
@@ -176,7 +182,7 @@ export const createView = async () => {
                 temp += '<span class="sidebar-filename">' + fileName + '</span>';
                 temp += '<span style="overflow: overlay; text-wrap: nowrap;">' + desc + '</span>';
                 temp += '<span style="font-size: 0.8rem; justly-contents: center;display:none">' + useStr + '</span>';
-                temp += '<span class="sidebar-lfm" style="font-size: 0.8rem;display:none">' + model.uri.path + '</span>';
+                temp += '<span class="sidebar-lfm" style="font-size: 0.8rem;display:none">' + escapeHtml(model.uri.path) + '</span>';
                 temp += '</div>';
 
             });
@@ -189,8 +195,8 @@ export const createView = async () => {
 export const SearchExportClipboard = () => {
     let exportText = "";
     let desc = document.getElementById("sidebar-searchInput-2").value === "" ? document.getElementById("sidebar-searchInput-1").value : document.getElementById("sidebar-searchInput-1").value + "\t" + document.getElementById("sidebar-searchInput-2").value;
-    for (const key of SearchPGM.keys()) {
-        exportText += key + "\t" + desc + "\n";
+    for (const model of SearchPGM.values()) {
+        exportText += model.uri.path.split('/')[3] + "\t" + desc + "\n";
     }
     navigator.clipboard.writeText(exportText);
     window.alert("Copied to clipboard!");

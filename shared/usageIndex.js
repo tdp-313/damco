@@ -14,6 +14,7 @@
 import { createRefList, createRefList_rpgle } from '../src/monaco/ref/refList.js';
 import { decodeText } from '../src/monaco/webworker/fileOpen.js';
 import { addIndent } from '../src/monaco/file/text_extend.js';
+import { parseCl } from '../src/monaco/lang/cl/clParse.js';
 import { matchSearchName, resolveSourceType, categoryOf, resolveSearchLibraries, stripExtension } from './sourceFiles.js';
 
 const upper = (name) => String(name).toUpperCase();
@@ -26,24 +27,19 @@ const objectName = (text) => {
     return /^[A-Z#@$¥][A-Z0-9#@$¥_.]*$/.test(name) ? name : null;
 };
 
-// CL: CALL PGM(...) と DCLF FILE(...)。SBMJOB CMD(CALL PGM(...)) の中の CALL も拾う
+// メンバーごとの結果(scanSource)の形・読み方を変えたら上げる。覚えておいた古い結果は使わずに読み直す
+const SCAN_VERSION = 2;
+
+// CL: CALL PGM(...) と DCLF FILE(...)。SBMJOB CMD(CALL PGM(...)) の中の CALL も拾う。
+// 解析は、使用ファイルの一覧・定義へ移動と同じ(clParse.js)。
+// DCLF のファイルは、表示装置ファイルなら入出力、そうでなければ入力。どちらかは一覧に出すときに決める(device: 'DCLF')
 const scanCl = (text) => {
+    const parsed = parseCl(text.split(/\r\n|\r|\n/));
     const files = new Map();
-    const programs = new Set();
-    const source = text.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/\+[ \t]*\r?\n/g, ' ');
-    for (const m of source.matchAll(/\bCALL\s+(?:PGM\s*\(\s*)?([^\s()]+)/gi)) {
-        const name = objectName(m[1]);
-        if (name !== null && name !== 'PGM') {
-            programs.add(name);
-        }
+    for (const file of parsed.files) {
+        files.set(file.name, { name: file.name, io: 'I', device: 'DCLF' });
     }
-    for (const m of source.matchAll(/\bDCLF\s+(?:FILE\s*\(\s*)?([^\s()]+)/gi)) {
-        const name = objectName(m[1]);
-        if (name !== null && name !== 'FILE') {
-            files.set(name, { name, io: 'I', device: '' });
-        }
-    }
-    return { files: [...files.values()], programs: [...programs], based: [] };
+    return { files: [...files.values()], programs: [...new Set(parsed.programs.map((p) => p.name))], based: [] };
 };
 
 // DDS: 論理ファイルの元の物理ファイル(PFILE / JFILE)
@@ -182,7 +178,7 @@ export const buildUsageIndex = async ({ roots, sourceFiles, fs, libraries = null
                 used.add(key);
                 stamp = fs.stamp ? await fs.stamp(target.ref) : '';
                 const cached = cache.get(key);
-                if (cached && cached.stamp === stamp && cached.type === target.type) {
+                if (cached && cached.stamp === stamp && cached.type === target.type && cached.version === SCAN_VERSION) {
                     scan = cached.scan;
                 }
             }
@@ -191,7 +187,7 @@ export const buildUsageIndex = async ({ roots, sourceFiles, fs, libraries = null
                 scan = scanSource(target.type, text);
                 read++;
                 if (key !== null) {
-                    cache.set(key, { stamp, type: target.type, scan });
+                    cache.set(key, { stamp, type: target.type, version: SCAN_VERSION, scan });
                 }
             }
         } catch {
@@ -330,7 +326,7 @@ export const usageRoots = (index, source) => {
     if (category === 'pgm') {
         return callerItems(index, source.member);
     }
-    const items = fileUserItems(index, source.member);
+    const items = fileUserItems(index, source.member, category === 'dsp');
     for (const logical of index.logicalsOf(source.member)) {
         const count = index.usersOfFile(logical.member).length;
         items.push(memberItem(logical, { kind: 'lf', note: '論理ファイル', expandable: count > 0, count }));
@@ -338,8 +334,9 @@ export const usageRoots = (index, source) => {
     return items;
 };
 
-const fileUserItems = (index, name) => sortItems(index.usersOfFile(name).map((user) => memberItem(user.member, {
-    use: useLabel(user.io),
+// display: 表示装置ファイルを使っているソースの一覧か(CL の DCLF は、表示装置ファイルなら I/O)
+const fileUserItems = (index, name, display = false) => sortItems(index.usersOfFile(name).map((user) => memberItem(user.member, {
+    use: useLabel(display && user.device === 'DCLF' ? 'IO' : user.io),
     expandable: isProgram(user.member) && index.callersOf(user.member.member).length > 0,
 })));
 

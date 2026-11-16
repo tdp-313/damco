@@ -1,6 +1,7 @@
 import { getRow_TextJs } from "../syntax/rpg_indent_text.js";
 import { getModelDbcsMode, toColumnLine, ibmToJsColumn } from "../column.js";
 import { rpgleReferences } from "./rpgle.js";
+import { clReferences } from "./cl.js";
 import * as monaco from 'monaco-editor';
 
 export const regReference = () => {
@@ -13,6 +14,12 @@ export const regReference = () => {
     monaco.languages.registerReferenceProvider('rpg-indent', {
         provideReferences: async function (model, position) {
             return rpgIndentReferences(model, position);
+        }
+    });
+
+    monaco.languages.registerReferenceProvider('cl', {
+        provideReferences: async function (model, position) {
+            return clReferences(model, position);
         }
     });
 }

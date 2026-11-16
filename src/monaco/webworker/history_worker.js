@@ -2,6 +2,12 @@ self.onmessage = async (event) => {
     //input: { root: handle, lib: name, folder: name, file: name }
     const target = event.data.body;
 
+    // 履歴のフォルダを登録していないときは、過去の版はない
+    if (!target.root) {
+        self.postMessage({ type: "nodata", body: null, target: event.data.target });
+        return;
+    }
+
     //lib
     let libHandle = null;
     for await (const [key, value] of target.root.entries()) {

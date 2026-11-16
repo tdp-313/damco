@@ -4,7 +4,7 @@ import { UseIO_Layout } from "./other.js";
 import { sourceTypeOfFile } from "../file/fileType.js";
 import { categoryOf } from "../../../shared/sourceFiles.js";
 import { fileOpen } from "../webworker/fileOpen.js";
-import { createRefList, createRefList_rpgle } from "./refList.js";
+import { createRefList, createRefList_rpgle, createRefList_cl, settleEitherFiles, pfileName } from "./refList.js";
 
 function matchSearchName(targetName, searchName) {
     if (searchName.startsWith('%') && searchName.endsWith('%') && searchName.length > 2) {
@@ -46,6 +46,8 @@ export const searchRefDef = async (otherData, IsForceSJIS) => {
         otherData.refListFile = createRefList(otherData.textLine);
     } else if (otherData.lang === 'rpgle') {
         otherData.refListFile = createRefList_rpgle(otherData.textLine);
+    } else if (otherData.lang === 'cl') {
+        otherData.refListFile = createRefList_cl(otherData.textLine);
     } else if (otherData.lang === 'dds') {
         if (otherData.langType === "dsp") {
             otherData.refListFile.dsp.set(otherData.uri_parse.member, { name: otherData.uri_parse.member, use: new UseIO_Layout(false), isFound: false, data: {}, uri_path: {}, isRegExpFound: false });
@@ -61,7 +63,7 @@ export const searchRefDef = async (otherData, IsForceSJIS) => {
     //Root-Lib
     let libraryHandle = [];
     for (let r = 0; r < otherData.refDefRootHandle.length; r++) {
-        if (otherData.refDefRootHandle[r].handle === null) {
+        if (!otherData.refDefRootHandle[r].handle) {
             console.warn("handle is Null");
             return null;
         }
@@ -141,7 +143,7 @@ export const searchRefDef = async (otherData, IsForceSJIS) => {
                 if (row.substring(5, 6) === 'A' && row.substring(6, 7) !== '*') {
                     let sp_op = row.substring(44, 49).trim();
                     if (sp_op === 'PFILE') {
-                        let key = row.substring(50, row.indexOf(')'));
+                        let key = pfileName(row);
                         let newFileMember = structuredClone(value);
                         if (R_name.has(key)) {
                             let existingSet = R_name.get(key);
@@ -180,6 +182,9 @@ export const searchRefDef = async (otherData, IsForceSJIS) => {
             }
         }
     }
+
+    // CL の DCLF: 表示装置ファイルと DDS の両方に入れておいた項目を、見つかった方だけにする
+    settleEitherFiles(otherData.refListFile);
 
     otherData.isComplete = true;
     return otherData;

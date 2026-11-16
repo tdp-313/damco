@@ -127,6 +127,10 @@ export const monacoStart = async () => {
 
     const reIndentProcess = () => {
         const model = normalEditor.getModel();
+        // 構造の線を引き直すのは RPG III のインデント表示だけ。RPGLE などにかけると C 仕様書の欄が消える
+        if (model === null || model.getLanguageId() !== 'rpg-indent') {
+            return;
+        }
         const fullRange = model.getFullModelRange();
         const text = model.getValue();
         const lines = text.split("\n");

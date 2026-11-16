@@ -11,7 +11,7 @@
 //   - ソースファイル名(QRPGSRC など)は設定(sourceFiles)で決める。既定は完全一致
 //   - ライブラリはライブラリリストの順に探す(同じメンバーが複数あればリストの前の方を使う)
 //   - ライブラリ・ソースファイル・メンバーの名前は大文字・小文字を区別しない
-import { createRefList, createRefList_rpgle } from '../src/monaco/ref/refList.js';
+import { createRefList, createRefList_rpgle, createRefList_cl, settleEitherFiles, pfileName } from '../src/monaco/ref/refList.js';
 import { UseIO_Layout } from '../src/monaco/ref/other.js';
 import { decodeText } from '../src/monaco/webworker/fileOpen.js';
 import { addIndent, addSpaces } from '../src/monaco/file/text_extend.js';
@@ -34,6 +34,8 @@ export const createRefListFile = (sourceType, member, lines) => {
             return createRefList(lines);
         case 'rpgle':
             return createRefList_rpgle(lines);
+        case 'cl':
+            return createRefList_cl(lines);
         case 'dds':
             return { dds: new Map([[member, selfEntry(member)]]), dsp: new Map(), pgm: new Map() };
         case 'dsp':
@@ -157,7 +159,7 @@ export const searchReferences = async ({ refListFile, roots, searchLibName, sour
         }
         for (const row of fileMember.value.data.textArray) {
             if (row.substring(5, 6) === 'A' && row.substring(6, 7) !== '*' && row.substring(44, 49).trim() === 'PFILE') {
-                const key = row.substring(50, row.indexOf(')'));
+                const key = pfileName(row);
                 const use = structuredClone(fileMember.value.use);
                 if (pfiles.has(key)) {
                     use.io = new Set([...pfiles.get(key).io, ...use.io]);
@@ -183,7 +185,8 @@ export const searchReferences = async ({ refListFile, roots, searchLibName, sour
             }
         }
     }
-    return refListFile;
+    // CL の DCLF: 表示装置ファイルと DDS の両方に入れておいた項目を、見つかった方だけにする
+    return settleEitherFiles(refListFile);
 };
 
 // 見つかったメンバーから、定義の一覧(normalRefDef)と表示装置の標識の参照(otherFileFlagReference)を作る
