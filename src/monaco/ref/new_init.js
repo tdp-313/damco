@@ -25,28 +25,27 @@ export const newRefDefStart = async (model) => {
     model.otherData.refListFile = { dds: new Map(), dsp: new Map(), pgm: new Map() };
     model.otherData.searchLibName = [];
 
+    // 探すルート。登録していないフォルダ(ハンドルがない)は除く
+    const rootOf = (name) => {
+        const handle = linkStatus[name] ? linkStatus[name].handle : null;
+        return handle ? [{ name: name, handle: handle }] : [];
+    };
     let SearchRootHandle = [];
     switch (model.otherData.uri_parse.root) {
         case (monaco_handleName):
-            if (typeof linkStatus[monaco_handleName_RefMaster] === "undefined") {
-                SearchRootHandle = [
-                    { name: monaco_handleName, handle: linkStatus[monaco_handleName].handle }
-                ];
-                console.warn("RefMaster not found");
-            } else {
-                SearchRootHandle = [
-                    { name: monaco_handleName, handle: linkStatus[monaco_handleName].handle },
-                    { name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }
-                ];
-            }
+            SearchRootHandle = [...rootOf(monaco_handleName), ...rootOf(monaco_handleName_RefMaster)];
             break;
         case (monaco_handleName_RefMaster):
-            SearchRootHandle = [{ name: monaco_handleName_RefMaster, handle: linkStatus[monaco_handleName_RefMaster].handle }];
+            SearchRootHandle = rootOf(monaco_handleName_RefMaster);
             break;
         default:
             searchStatusChange('off');
             console.error("error", model.otherData.uri_parse.root);
             return;
+    }
+    if (SearchRootHandle.length === 0) {
+        searchStatusChange('off');
+        return;
     }
     model.otherData.refDefRootHandle = SearchRootHandle;
     let searchLibName = [model.otherData.uri_parse.lib, "%" + model.otherData.uri_parse.lib.substring(0, 3) + "%"];

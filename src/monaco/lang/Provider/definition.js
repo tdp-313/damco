@@ -4,6 +4,7 @@ import { getRow_TextJs } from "../syntax/rpg_indent_text.js";
 import { sourceRefDefStart } from "../../ref/sourceRefDef.js";
 import { getModelDbcsMode, toColumnLine } from "../column.js";
 import { rpgleDefinition } from "./rpgle.js";
+import { clDefinition } from "./cl.js";
 import * as monaco from 'monaco-editor';
 
 export const regDefinition = () => {
@@ -22,6 +23,12 @@ export const regDefinition = () => {
     monaco.languages.registerDefinitionProvider('dds', {
         provideDefinition: async function (model, position) {
             return ddsDefinition(model, position);
+        }
+    });
+
+    monaco.languages.registerDefinitionProvider('cl', {
+        provideDefinition: async function (model, position) {
+            return clDefinition(model, position);
         }
     });
 }

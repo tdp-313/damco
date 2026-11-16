@@ -3,14 +3,20 @@ import { monaco_handleName_RefMaster } from "../../root.js";
 import { linkStatus } from "../file/directory.js";
 import { readText_Model } from "../file/searchSrc.js";
 
+// RefMaster のフォルダ。登録していなければ null
+const refMasterHandle = () => {
+    const status = linkStatus[monaco_handleName_RefMaster];
+    return status && status.handle ? status.handle : null;
+};
+
 export const searchOpen = () => {
     const exLinkFile = document.getElementById('control-search-status');
     exLinkFile.addEventListener('click', async () => {
 
-        if (typeof (linkStatus[monaco_handleName_RefMaster]) === 'undefined') {
+        let handle = refMasterHandle();
+        if (handle === null) {
             return null;
         }
-        let handle = linkStatus[monaco_handleName_RefMaster].handle;
         let path = handle.name + "/";
         let now_model = await getNormalEditor_Model();
         let array_uri_path = now_model.uri.path.split('/').filter(str => str !== '');
@@ -27,10 +33,10 @@ export const searchOpen = () => {
     });
     exLinkFile.addEventListener('contextmenu', async (e) => {
         e.preventDefault();
-        if (typeof (linkStatus[monaco_handleName_RefMaster]) === 'undefined') {
+        let handle = refMasterHandle();
+        if (handle === null) {
             return null;
         }
-        let handle = linkStatus[monaco_handleName_RefMaster].handle;
         let path = handle.name + "/";
         let now_model = await getNormalEditor_Model();
         let array_uri_path = now_model.uri.path.split('/').filter(str => str !== '');

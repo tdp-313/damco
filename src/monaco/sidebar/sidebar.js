@@ -8,6 +8,7 @@ import { fileTypeGet2 } from "../file/fileType.js";
 import { getNormalEditor_Model } from "../textmodel.js";
 import { createView, SearchExportClipboard } from "../webworker/textSearch_main.js";
 import { renderUsage } from "./usage.js";
+import { escapeHtml } from "./escape.js";
 
 import databese_search_svg from "../../icon/database-search.svg"
 import pencil_svg from "../../icon/pencil.svg"
@@ -91,6 +92,10 @@ export const createUseFileList = async (model) => {
     }
     let filter_style = themeCSS_FilterStyle();
     const get_template = (fileName, desc, library, langIcon, filter, use) => {
+        // 名前・説明(DDS の TEXT)に < や & があっても、そのまま文字として出す
+        fileName = escapeHtml(fileName);
+        desc = escapeHtml(desc);
+        library = escapeHtml(library);
         if (use.io.size === 0) {
             let temp = "";
             temp += '<div id="sidebar-contents-' + fileName + ' " class="sidebar-contents hoverButton">';
@@ -249,9 +254,9 @@ export const createUseFileList = async (model) => {
             for (let i = 0; i < folderElem.options.length; i++) {
                 let option = folderElem.options[i];
                 if (folderElem.selectedIndex === i) {
-                    html += '<option value="' + option.value + '" selected>' + option.text + '</option>';
+                    html += '<option value="' + escapeHtml(option.value) + '" selected>' + escapeHtml(option.text) + '</option>';
                 } else {
-                    html += '<option value="' + option.value + '">' + option.text + '</option>';
+                    html += '<option value="' + escapeHtml(option.value) + '">' + escapeHtml(option.text) + '</option>';
                 }
 
             }
@@ -261,9 +266,9 @@ export const createUseFileList = async (model) => {
         html += '</div>';
         html += '<div style="margin-top:0.5rem">Search (Regular Expression)</div>'
         html += '<span style="display:grid;grid-template-columns:1fr 5rem;grid-template-rows:1.5rem 1.5rem">'
-        html += '<input type="text" placeholder="search text (File or FieldName)" id="sidebar-searchInput-1" style="width:100%" value="' + initSearchReg[0] + '"></input>'
+        html += '<input type="text" placeholder="search text (File or FieldName)" id="sidebar-searchInput-1" style="width:100%" value="' + escapeHtml(initSearchReg[0]) + '"></input>'
         html += '<span><img id="sidebar-resultCopy" class="refSize control-iconButton" style="filter: ' + filter_style + ';" src="' + pencil_svg + '"></span>'
-        html += '<input type="text" placeholder="search text (And Field Name)" id="sidebar-searchInput-2" style="width:100%" value="' + initSearchReg[1] + '"></input>'
+        html += '<input type="text" placeholder="search text (And Field Name)" id="sidebar-searchInput-2" style="width:100%" value="' + escapeHtml(initSearchReg[1]) + '"></input>'
         html += '<button id="sidebar-searchButton" style="margin: 0 0.5rem;">Search</button>'
         html += '</span>'
         html += '<div class="verticalLine"></div>'
@@ -298,11 +303,11 @@ export const createUseFileList = async (model) => {
     if (mode === 'setting') {
         html = "<h4>Library List Setting</h4>";
         html += "<div>Library List</div>";
-        html += '<textarea id="settingLibraryList"rows="15" cols="41">' + JSON.stringify(Setting.libraryList) + '</textarea>';
+        html += '<textarea id="settingLibraryList"rows="15" cols="41">' + escapeHtml(JSON.stringify(Setting.libraryList)) + '</textarea>';
         html += "<button id='settingLibrarySaveButton'>Save</button>";
         html += "<div>RegExp</div>";
-        html += '<textarea id="settingDivRegExpPattern"rows="1" cols="41">' + Setting.DivRegExpPattern + '</textarea>';
-        html += '<textarea id="settingSearchRegExpPattern"rows="1" cols="41">' + Setting.SearchRefExpPattern + '</textarea>';
+        html += '<textarea id="settingDivRegExpPattern"rows="1" cols="41">' + escapeHtml(Setting.DivRegExpPattern) + '</textarea>';
+        html += '<textarea id="settingSearchRegExpPattern"rows="1" cols="41">' + escapeHtml(Setting.SearchRefExpPattern) + '</textarea>';
         html += "<button id='settingRegExpSaveButton'>Save</button>";
         html += "<h4>Other Setting</h4>";
         html += '<div class="settingOther";>';
@@ -316,7 +321,7 @@ export const createUseFileList = async (model) => {
         html += "</div>";
         html += '<div>Prompt</div>'
         html += ' ';
-        html += '<textarea id="settingPrompt"rows="15" cols="41" placeholder="%{name} %{main} %{wstn} %{disk} %{pgm}">' + Setting.getPrompt + '</textarea>';
+        html += '<textarea id="settingPrompt"rows="15" cols="41" placeholder="%{name} %{main} %{wstn} %{disk} %{pgm}">' + escapeHtml(Setting.getPrompt) + '</textarea>';
         html += "<button id='settingPromptSaveButton'>Save</button>";
     }
     sidebar_contents.innerHTML = html;

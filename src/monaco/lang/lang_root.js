@@ -61,7 +61,9 @@ export const monacoLang = async () => {
         ],
         "comments": {
             "blockComment": ["/*", "*/"]
-        }
+        },
+        // 変数(&VAR)・特殊値(*CHAR)・組み込み関数(%SST)を 1 語として扱う。名前は # @ $ を含められる
+        wordPattern: /[&%*]?[A-Za-z_#@$][A-Za-z0-9_#@$.]*/,
     });
     monaco.languages.setLanguageConfiguration('rpg-indent', {
         indentSize: 2,

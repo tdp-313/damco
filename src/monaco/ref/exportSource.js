@@ -1,13 +1,8 @@
-import { revIndent } from "../file/text_extend"
+import { exportSourceText, fillPrompt } from "./promptText.js";
 import { Setting } from "../../setting";
 
 export const sourceExportClipboard = (model) => {
-    const text = model.getValue();
-    const lines = text.split("\n");
-    for (let i = 0; i < lines.length; i++){
-        lines[i] = lines[i].trimEnd();
-    }
-    const rawText = revIndent(lines);
+    const rawText = exportSourceText(model.getValue(), model.getLanguageId());
 
 
     let files = model.otherData.refListFile;
@@ -24,10 +19,7 @@ export const sourceExportClipboard = (model) => {
     replaceTextSet.push({ placement: "%{wstn}", text: JSON.stringify(dspText) });
     replaceTextSet.push({ placement: "%{pgm}", text: JSON.stringify(pgmText) });
 
-    let prompt = Setting.getPrompt;
-    for (let i = 0; i < replaceTextSet.length; i++) {
-        prompt = prompt.replace(replaceTextSet[i].placement, replaceTextSet[i].text);
-    }
+    const prompt = fillPrompt(Setting.getPrompt, replaceTextSet);
     if (Setting.getSourceOutput) {
         const name = model.otherData.uri_parse.member;
         const date = new Date();
@@ -51,7 +43,8 @@ export const sourceExportClipboard = (model) => {
 const FileListExport = (map) => {
     let tempObj = {};
     map.forEach((value, key) => {
-        if (value.isFound) {
+        // 部分一致(設定の RegExp)で見つかったものも中身を出す
+        if (value.isFound || value.isRegExpFound) {
             tempObj[key] = value.data.text;
         } else {
             tempObj[key] = "N/A";

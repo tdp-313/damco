@@ -18,7 +18,7 @@ export const otherTabsOpenInit = () => {
     });
 
     const otherDiffTabOpen = document.getElementById('control-extraLinkFile');
-    otherDiffTabOpen.addEventListener('click', async () => {
+    otherDiffTabOpen.addEventListener('click', async (event) => {
         let model = await getNormalEditor_Model();
         sourceExportClipboard(model)
         if (!Setting.getSourceOutput) {

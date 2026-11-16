@@ -65,18 +65,24 @@ const fileSearch = async (fileHandle, searchQuery) => {
         let query = searchQuery[i];
         let reg;
 
-        // Check if the query contains '%' characters for wildcard matching
-        if (query.includes('%')) {
-            // Convert SQL-like wildcards to regex
-            // '%' matches any number of characters, '_' matches single character
-            let regPattern = query
-                .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars
-                .replace(/%/g, '.*') // Replace % with .*
-                .replace(/_/g, '.'); // Replace _ with .
-            reg = new RegExp(regPattern);
-        } else {
-            // Standard regex pattern
-            reg = new RegExp(query);
+        try {
+            // Check if the query contains '%' characters for wildcard matching
+            if (query.includes('%')) {
+                // Convert SQL-like wildcards to regex
+                // '%' matches any number of characters, '_' matches single character
+                let regPattern = query
+                    .replace(/[.+^${}()|[\]\\]/g, '\\$&') // Escape regex special chars
+                    .replace(/%/g, '.*') // Replace % with .*
+                    .replace(/_/g, '.'); // Replace _ with .
+                reg = new RegExp(regPattern);
+            } else {
+                // Standard regex pattern
+                reg = new RegExp(query);
+            }
+        } catch {
+            // 正規表現として読めない検索語( ( だけ、など)は、その文字のまま探す。
+            // ここで止まると結果が返らず、検索が終わらなくなる
+            reg = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
         }
 
         if (!reg.test(text.text)) {

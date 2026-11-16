@@ -27,7 +27,8 @@ export const rightSidebarRead = async () => {
         SearchStart();
         return null;
       } else if (e.target.parentNode.id.indexOf("sidebar-contents") !== -1) {
-        let model = SearchPGM.get(e.target.parentNode.getElementsByClassName('sidebar-filename')[0].innerText);
+        // 検索結果は場所(/ライブラリ/ソースファイル/メンバー)で覚えている。場所の欄は表示していないので textContent で読む
+        let model = SearchPGM.get(e.target.parentNode.getElementsByClassName('sidebar-lfm')[0].textContent);
         if (typeof (model) !== 'undefined') {
           // 検索ワードを保存（ファイル選択時に検索UIに反映させる）
           const input_1 = document.getElementById("sidebar-searchInput-1");
