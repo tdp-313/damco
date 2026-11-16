@@ -19,12 +19,20 @@ const monacoBaseRules = (name) => {
         throw new Error('monaco-editor が見つかりません。リポジトリの直下で npm install を実行してください: ' + path);
     }
     const source = readFileSync(path, 'utf8');
-    const start = source.indexOf('export const ' + name + ' = {');
-    const end = source.indexOf('export const', start + 1);
-    const block = source.slice(start, end === -1 ? undefined : end);
+    // Monaco 0.47 は 'export const vs = {'、0.56 以降は 'const vs = {' と最後の 'export { ... }' なので、どちらでも読む
+    const startMatch = new RegExp('(?:export\\s+)?const ' + name + ' = \\{').exec(source);
+    if (!startMatch) {
+        throw new Error('monaco-editor のテーマ ' + name + ' が themes.js に見つかりません。書き方が変わった可能性があります: ' + path);
+    }
+    const start = startMatch.index;
+    const endMatch = /\n(?:export\s+)?const \w+ = \{|\nexport \{/.exec(source.slice(start + 1));
+    const block = source.slice(start, endMatch ? start + 1 + endMatch.index : undefined);
     const rules = Object.create(null);
     for (const m of block.matchAll(/\{\s*token:\s*'([^']*)',\s*foreground:\s*'([0-9A-Fa-f]{6})'/g)) {
         rules[m[1]] = m[2];
+    }
+    if (Object.keys(rules).length === 0) {
+        throw new Error('monaco-editor のテーマ ' + name + ' から色を読めませんでした: ' + path);
     }
     return rules;
 };
